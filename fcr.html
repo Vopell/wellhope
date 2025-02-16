@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>料肉比计算器</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f5f5f5, #e1e1e1);
+      color: #333;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #007bff;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    /* 输入区域样式 */
+    .input-group {
+      margin-bottom: 15px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .input-group label {
+      font-size: 16px;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+      width: 150px; /* 固定标签宽度 */
+      text-align: left; /* 标签左对齐 */
+    }
+
+    .input-group input {
+      padding: 10px 15px;
+      width: 48%; /* 每行两个输入框 */
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      transition: all 0.3s ease;
+      margin-bottom: 15px;
+    }
+
+    .input-group input:focus {
+      border-color: #007bff;
+      box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+    }
+
+    .input-group input.error {
+      border-color: red;
+    }
+
+    .input-group input::placeholder {
+      color: #999;
+      font-style: italic;
+    }
+
+    .input-group input.error::placeholder {
+      color: red; /* 错误提示字体颜色为红色 */
+    }
+
+    /* 按钮样式 */
+    .btn {
+      padding: 10px 20px;
+      background: linear-gradient(45deg, #007bff, #0056b3);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      margin-top: 20px;
+      width: 100%;
+      max-width: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .btn i {
+      margin-right: 8px;
+    }
+
+    .reset-btn {
+      padding: 12px 30px;
+      background: linear-gradient(45deg, #e74c3c, #f1948a);
+      color: white;
+      border: none;
+      border-radius: 25px;
+      font-size: 16px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      width: 100%;
+      max-width: 250px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .reset-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .reset-btn:active {
+      transform: translateY(0);
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    }
+
+    .reset-btn i {
+      margin-right: 8px;
+    }
+
+    /* 结果显示区域 */
+    .output-group {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+      animation: fadeIn 0.5s ease-out;
+      width: 100%;
+      max-width: 600px;
+    }
+
+    .output-group h2 {
+      color: #333;
+    }
+
+    .result-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .result-item {
+      width: 48%; /* 每行两个结果 */
+      text-align: left;
+    }
+
+    #result {
+      color: green;
+      font-weight: bold;
+      font-size: 20px;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; }
+      100% { opacity: 1; }
+    }
+
+    /* 响应式布局 */
+    @media (max-width: 600px) {
+      .input-group input {
+        font-size: 14px;
+      }
+
+      .btn, .reset-btn {
+        font-size: 14px;
+      }
+
+      .output-group {
+        font-size: 16px;
+      }
+
+      #result {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>料肉比计算器</h1>
+
+  <div class="input-group">
+    <div>
+      <label for="totalFeed">饲料总量: </label>
+      <input type="number" id="totalFeed" placeholder="请输入饲料总量" onfocus="clearError('totalFeed')" />
+    </div>
+    <div>
+      <label for="entryWeight">入栏总重: </label>
+      <input type="number" id="entryWeight" placeholder="请输入入栏总重" onfocus="clearError('entryWeight')" />
+    </div>
+  </div>
+
+  <div class="input-group">
+    <div>
+      <label for="entryHead">入栏头数: </label>
+      <input type="number" id="entryHead" placeholder="请输入入栏头数" onfocus="clearError('entryHead')" />
+    </div>
+    <div>
+      <label for="exitWeight">出栏总重: </label>
+      <input type="number" id="exitWeight" placeholder="请输入出栏总重" onfocus="clearError('exitWeight')" />
+    </div>
+  </div>
+
+  <div class="input-group">
+    <div>
+      <label for="exitHead">出栏头数: </label>
+      <input type="number" id="exitHead" placeholder="请输入出栏头数" onfocus="clearError('exitHead')" />
+    </div>
+    <div>
+      <label for="totalMedicine">药费总额: </label>
+      <input type="number" id="totalMedicine" placeholder="请输入药费总额" onfocus="clearError('totalMedicine')" />
+    </div>
+  </div>
+
+  <!-- 按钮区域 -->
+  <button class="btn" onclick="calculateResult()">
+    <i class="fas fa-calculator"></i> 计算料肉比
+  </button>
+
+  <button class="reset-btn" onclick="resetForm()">
+    <i class="fas fa-redo"></i> 重置
+  </button>
+
+  <!-- 结果显示区域 -->
+  <div class="output-group">
+    <h2>计算结果:</h2>
+    <div id="result">
+      <div class="result-row">
+        <div class="result-item">
+          <span>入栏均重:</span> <span id="entryAvgWeight">0.000</span> kg
+        </div>
+        <div class="result-item">
+          <span>出栏均重:</span> <span id="exitAvgWeight">0.000</span> kg
+        </div>
+      </div>
+      <div class="result-row">
+        <div class="result-item">
+          <span>头均耗料:</span> <span id="feedPerHead">0.000</span> kg
+        </div>
+        <div class="result-item">
+          <span>头均药费:</span> <span id="medicinePerHead">0.000</span> 元
+        </div>
+      </div>
+      <div class="result-row">
+        <div class="result-item">
+          <span>料肉比:</span> <span id="feedMeatRatio">0.000</span>
+        </div>
+        <div class="result-item">
+          <span>成活率:</span> <span id="survivalRate">0.000%</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const initialPlaceholders = {
+      totalFeed: '请输入饲料总量',
+      entryWeight: '请输入入栏总重',
+      entryHead: '请输入入栏头数',
+      exitWeight: '请输入出栏总重',
+      exitHead: '请输入出栏头数',
+      totalMedicine: '请输入药费总额',
+    };
+
+    function clearError(inputId) {
+      const inputElement = document.getElementById(inputId);
+      inputElement.classList.remove('error');
+      inputElement.placeholder = initialPlaceholders[inputId];
+    }
+
+    function handleInputError(inputId, errorMessage) {
+      const inputElement = document.getElementById(inputId);
+      inputElement.classList.add('error');
+      inputElement.placeholder = errorMessage;
+    }
+
+    function updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate) {
+      document.getElementById('entryAvgWeight').innerText = entryAvgWeight.toFixed(2);
+      document.getElementById('exitAvgWeight').innerText = exitAvgWeight.toFixed(2);
+      document.getElementById('feedPerHead').innerText = feedPerHead.toFixed(2);
+      document.getElementById('medicinePerHead').innerText = medicinePerHead.toFixed(2);
+      document.getElementById('feedMeatRatio').innerText = feedMeatRatio.toFixed(3);
+      document.getElementById('survivalRate').innerText = survivalRate.toFixed(2) + '%';
+    }
+
+    function resetInputs() {
+      document.getElementById('totalFeed').value = '';
+      document.getElementById('entryWeight').value = '';
+      document.getElementById('entryHead').value = '';
+      document.getElementById('exitWeight').value = '';
+      document.getElementById('exitHead').value = '';
+      document.getElementById('totalMedicine').value = '';
+    }
+
+    function resetForm() {
+      resetInputs();
+      clearError('totalFeed');
+      clearError('entryWeight');
+      clearError('entryHead');
+      clearError('exitWeight');
+      clearError('exitHead');
+      clearError('totalMedicine');
+      document.getElementById('entryAvgWeight').innerText = '0.000';
+      document.getElementById('exitAvgWeight').innerText = '0.000';
+      document.getElementById('feedPerHead').innerText = '0.000';
+      document.getElementById('medicinePerHead').innerText = '0.000';
+      document.getElementById('feedMeatRatio').innerText = '0.000';
+      document.getElementById('survivalRate').innerText = '0.000';
+    }
+
+    function calculateResult() {
+      const totalFeed = parseFloat(document.getElementById('totalFeed').value);
+      const entryWeight = parseFloat(document.getElementById('entryWeight').value);
+      const entryHead = parseFloat(document.getElementById('entryHead').value);
+      const exitWeight = parseFloat(document.getElementById('exitWeight').value);
+      const exitHead = parseFloat(document.getElementById('exitHead').value);
+      const totalMedicine = parseFloat(document.getElementById('totalMedicine').value);
+
+      let hasError = false;
+
+      if (isNaN(totalFeed) || totalFeed === '') {
+        handleInputError('totalFeed', '无效输入');
+        hasError = true;
+      }
+      if (isNaN(entryWeight) || entryWeight === '') {
+        handleInputError('entryWeight', '无效输入');
+        hasError = true;
+      }
+      if (isNaN(entryHead) || entryHead === '') {
+        handleInputError('entryHead', '无效输入');
+        hasError = true;
+      }
+      if (isNaN(exitWeight) || exitWeight === '') {
+        handleInputError('exitWeight', '无效输入');
+        hasError = true;
+      }
+      if (isNaN(exitHead) || exitHead === '') {
+        handleInputError('exitHead', '无效输入');
+        hasError = true;
+      }
+      if (isNaN(totalMedicine) || totalMedicine === '') {
+        handleInputError('totalMedicine', '无效输入');
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      // 计算各项
+      const entryAvgWeight = entryWeight / entryHead;
+      const exitAvgWeight = exitWeight / exitHead;
+      const feedPerHead = totalFeed / exitHead;
+      const medicinePerHead = totalMedicine / exitHead;
+      const feedMeatRatio = feedPerHead / entryAvgWeight;
+      const survivalRate = (exitHead / entryHead) * 100;
+
+      updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate);
+    }
+  </script>
+
+</body>
+</html>
