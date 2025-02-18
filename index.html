@@ -6,6 +6,7 @@
   <title>主页 - 智慧养猪</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    /* 基础样式 */
     body {
       margin: 0;
       padding: 0;
@@ -15,12 +16,12 @@
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: url('https://www.example.com/your-background-image.jpg') no-repeat center center fixed;
+      background: linear-gradient(135deg, #1e3c72, #2a5298); /* 渐变背景 */
       background-size: cover;
+      color: white;
     }
 
     h1 {
-      color: white;
       font-size: 36px;
       text-align: center;
       margin-bottom: 40px;
@@ -42,14 +43,17 @@
       border: none;
       border-radius: 25px;
       cursor: pointer;
-      width: 280px;
+      width: auto;
+      min-width: 280px;
       text-align: center;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+      white-space: nowrap;
     }
 
     .btn:hover {
       transform: translateY(-5px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+      background: linear-gradient(45deg, #0056b3, #007bff); /* 悬停时渐变反转 */
     }
 
     .btn:active {
@@ -76,9 +80,21 @@
       }
 
       .btn {
-        width: 80%;
         font-size: 16px;
+        min-width: 240px;
       }
+    }
+
+    /* 加载动画 */
+    .loading {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 24px;
+      color: white;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
     }
   </style>
 </head>
@@ -99,7 +115,7 @@
   </div>
 
   <div class="footer">
-    <p>版权所有 &copy; 2025 料肉比计算器 | 设计 & 开发</p>
+    <p>版权所有 &copy; 2025 智慧养猪 | 设计 & 开发</p>
   </div>
 
 </body>
