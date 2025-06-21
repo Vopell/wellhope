@@ -28,7 +28,7 @@
             margin-bottom: 20px;
             align-items: center;
         }
-
+    
         /* 表单组容器 */
         .form-group {
             display: flex;
@@ -103,6 +103,10 @@
         }
 
         /* 按钮样式 */
+        h1 + .home-btn {
+            margin-top: -10px; /* 减小与标题间距 */
+            margin-bottom: 15px; /* 增加与表单间距 */
+        }
         button, .reset-button {
             padding: 12px 30px;
             background: linear-gradient(45deg, #4CAF50, #81C784);
@@ -170,7 +174,7 @@
 </head>
 <body>
   <h1>出栏奖金计算器</h1>
-  <button class="btn" onclick="window.location.href='index.html'">
+  <button class="home-btn" onclick="window.location.href='index.html'">
     <i class="fas fa-home"></i> 返回主页
   </button>
     
