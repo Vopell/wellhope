@@ -76,6 +76,21 @@
     }
 
     /* 按钮样式 */
+    .home-btn {
+      padding: 8px 16px; /* 减小内边距 */
+      background: linear-gradient(45deg, #6c757d, #0056b3); /* 使用更柔和的灰色 */
+      color: white;
+      border: none;
+      border-radius: 20px; /* 更小的圆角 */
+      font-size: 14px; /* 减小字体大小 */
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 5px; /* 减小上边距 */
+    }
     .btn {
       padding: 12px 30px;
       background: linear-gradient(45deg, #007bff, #0056b3); /* 计算按钮改为浅蓝色渐变 */
@@ -190,7 +205,7 @@
 </head>
 <body>
   <h1>还原料肉比计算器</h1>
-  <button class="btn" onclick="window.location.href='index.html'">
+  <button class="home-btn" onclick="window.location.href='index.html'">
     <i class="fas fa-home"></i> 返回主页
   </button>
 
