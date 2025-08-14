@@ -318,7 +318,7 @@
                 }
 
                 // 校验一级猪数是否小于出栏头数
-                if (isValid && firstGradeCount >= outputCount) {
+                if (isValid && firstGradeCount > outputCount) {
                     firstGradeCountElem.value = '';
                     firstGradeCountElem.placeholder = "不可大于出栏头数";
                     firstGradeCountElem.classList.add('error');
