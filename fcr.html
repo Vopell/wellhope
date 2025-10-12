@@ -71,14 +71,8 @@
       font-style: italic;
     }
 
-    .input-group input.error::placeholder {
-      color: red;
-    }
-
-    .btn {
+    .btn, .reset-btn {
       padding: 10px 20px;
-      background: linear-gradient(45deg, #007bff, #0056b3);
-      color: white;
       border: none;
       border-radius: 25px;
       font-size: 16px;
@@ -91,51 +85,30 @@
       display: flex;
       align-items: center;
       justify-content: center;
+      color: white;
     }
 
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .btn i {
-      margin-right: 8px;
+    .btn {
+      background: linear-gradient(45deg, #007bff, #0056b3);
     }
 
     .reset-btn {
-      padding: 12px 30px;
       background: linear-gradient(45deg, #e74c3c, #f1948a);
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
+      padding: 12px 30px;
       margin-top: 10px;
-      width: 100%;
-      max-width: 250px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
     }
 
-    .reset-btn:hover {
+    .btn:hover, .reset-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
     }
 
-    .reset-btn:active {
+    .btn:active, .reset-btn:active {
       transform: translateY(0);
       box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
-    .reset-btn i {
+    .btn i, .reset-btn i {
       margin-right: 8px;
     }
 
@@ -273,98 +246,118 @@
   </div>
 
   <script>
-    const initialPlaceholders = {
-      totalFeed: '请输入饲料总量',
-      entryWeight: '请输入入栏总重',
-      entryHead: '请输入入栏头数',
-      exitWeight: '请输入出栏总重',
-      exitHead: '请输入出栏头数',
-      totalMedicine: '请输入药费总额',
+    'use strict';
+
+    // 缓存DOM元素和配置
+    const inputs = {
+      totalFeed: { id: 'totalFeed', placeholder: '请输入饲料总量', name: '饲料总量' },
+      entryWeight: { id: 'entryWeight', placeholder: '请输入入栏总重', name: '入栏总重' },
+      entryHead: { id: 'entryHead', placeholder: '请输入入栏头数', name: '入栏头数' },
+      exitWeight: { id: 'exitWeight', placeholder: '请输入出栏总重', name: '出栏总重' },
+      exitHead: { id: 'exitHead', placeholder: '请输入出栏头数', name: '出栏头数' },
+      totalMedicine: { id: 'totalMedicine', placeholder: '请输入药费总额', name: '药费总额' }
     };
 
+    const elements = {
+      ...Object.fromEntries(Object.entries(inputs).map(([key, { id }]) => [key, document.getElementById(id)])),
+      entryAvgWeight: document.getElementById('entryAvgWeight'),
+      exitAvgWeight: document.getElementById('exitAvgWeight'),
+      feedPerHead: document.getElementById('feedPerHead'),
+      medicinePerHead: document.getElementById('medicinePerHead'),
+      feedMeatRatio: document.getElementById('feedMeatRatio'),
+      survivalRate: document.getElementById('survivalRate')
+    };
+
+    // 通用错误清除（仅移除高亮，恢复placeholder）
     function clearError(inputId) {
-      const inputElement = document.getElementById(inputId);
-      inputElement.classList.remove('error');
-      inputElement.placeholder = initialPlaceholders[inputId];
+      const input = elements[inputId];
+      input.classList.remove('error');
+      input.placeholder = inputs[inputId].placeholder;
     }
 
-    function handleInputError(inputId, errorMessage) {
-      const inputElement = document.getElementById(inputId);
-      inputElement.classList.add('error');
-      inputElement.placeholder = errorMessage;
+    // 设置输入高亮（不改placeholder）
+    function setInputError(inputId) {
+      elements[inputId].classList.add('error');
     }
 
+    // 更新结果显示
     function updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate) {
-      document.getElementById('entryAvgWeight').innerText = entryAvgWeight.toFixed(2);
-      document.getElementById('exitAvgWeight').innerText = exitAvgWeight.toFixed(2);
-      document.getElementById('feedPerHead').innerText = feedPerHead.toFixed(2);
-      document.getElementById('medicinePerHead').innerText = medicinePerHead.toFixed(2);
-      document.getElementById('feedMeatRatio').innerText = feedMeatRatio === 'N/A' ? 'N/A' : feedMeatRatio;
-      document.getElementById('survivalRate').innerText = survivalRate.toFixed(2) + '%';
+      elements.entryAvgWeight.textContent = entryAvgWeight.toFixed(2);
+      elements.exitAvgWeight.textContent = exitAvgWeight.toFixed(2);
+      elements.feedPerHead.textContent = feedPerHead.toFixed(2);
+      elements.medicinePerHead.textContent = medicinePerHead.toFixed(2);
+      elements.feedMeatRatio.textContent = feedMeatRatio;
+      elements.survivalRate.textContent = survivalRate.toFixed(2) + '%';
     }
 
+    // 重置输入
     function resetInputs() {
-      document.getElementById('totalFeed').value = '';
-      document.getElementById('entryWeight').value = '';
-      document.getElementById('entryHead').value = '';
-      document.getElementById('exitWeight').value = '';
-      document.getElementById('exitHead').value = '';
-      document.getElementById('totalMedicine').value = '';
+      Object.entries(inputs).forEach(([key]) => {
+        elements[key].value = '';
+        clearError(key);
+      });
     }
 
+    // 重置表单
     function resetForm() {
       resetInputs();
-      clearError('totalFeed');
-      clearError('entryWeight');
-      clearError('entryHead');
-      clearError('exitWeight');
-      clearError('exitHead');
-      clearError('totalMedicine');
-      document.getElementById('entryAvgWeight').innerText = '0.000';
-      document.getElementById('exitAvgWeight').innerText = '0.000';
-      document.getElementById('feedPerHead').innerText = '0.000';
-      document.getElementById('medicinePerHead').innerText = '0.000';
-      document.getElementById('feedMeatRatio').innerText = '0.000';
-      document.getElementById('survivalRate').innerText = '0.000';
+      elements.entryAvgWeight.textContent = '0.000';
+      elements.exitAvgWeight.textContent = '0.000';
+      elements.feedPerHead.textContent = '0.000';
+      elements.medicinePerHead.textContent = '0.000';
+      elements.feedMeatRatio.textContent = '0.000';
+      elements.survivalRate.textContent = '0.000%';
     }
 
+    // 计算结果
     function calculateResult() {
-      const totalFeed = parseFloat(document.getElementById('totalFeed').value);
-      const entryWeight = parseFloat(document.getElementById('entryWeight').value);
-      const entryHead = parseFloat(document.getElementById('entryHead').value);
-      const exitWeight = parseFloat(document.getElementById('exitWeight').value);
-      const exitHead = parseFloat(document.getElementById('exitHead').value);
-      const totalMedicine = parseFloat(document.getElementById('totalMedicine').value);
+      const values = Object.fromEntries(Object.entries(inputs).map(([key]) => [key, parseFloat(elements[key].value)]));
 
+      const errors = [];
       let hasError = false;
 
-      if (isNaN(totalFeed) || totalFeed === '') {
-        handleInputError('totalFeed', '无效输入');
+      // 基础NaN/空值检查
+      Object.entries(values).forEach(([key, value]) => {
+        if (isNaN(value) || value === '') {
+          errors.push(`${inputs[key].name}：此字段不能为空`);
+          setInputError(key);
+          hasError = true;
+        }
+      });
+
+      // 业务逻辑检查（仅针对非NaN值）
+      if (!isNaN(values.totalFeed) && values.totalFeed <= 0) {
+        errors.push('饲料总量：必须大于0');
+        setInputError('totalFeed');
         hasError = true;
       }
-      if (isNaN(entryWeight) || entryWeight === '') {
-        handleInputError('entryWeight', '无效输入');
+      if (!isNaN(values.entryHead) && values.entryHead <= 0) {
+        errors.push('入栏头数：必须大于0');
+        setInputError('entryHead');
         hasError = true;
       }
-      if (isNaN(entryHead) || entryHead === '') {
-        handleInputError('entryHead', '无效输入');
+      if (!isNaN(values.entryWeight) && values.entryWeight <= 0) {
+        errors.push('入栏总重：必须大于0');
+        setInputError('entryWeight');
         hasError = true;
       }
-      if (isNaN(exitWeight) || exitWeight === '') {
-        handleInputError('exitWeight', '无效输入');
+      if (!isNaN(values.exitHead) && !isNaN(values.entryHead) && values.exitHead > values.entryHead) {
+        errors.push('出栏头数：必须小于等于入栏头数');
+        setInputError('exitHead');
         hasError = true;
       }
-      if (isNaN(exitHead) || exitHead === '') {
-        handleInputError('exitHead', '无效输入');
-        hasError = true;
-      }
-      if (isNaN(totalMedicine) || totalMedicine === '') {
-        handleInputError('totalMedicine', '无效输入');
+      if (!isNaN(values.exitWeight) && !isNaN(values.entryWeight) && values.exitWeight < values.entryWeight) {
+        errors.push('出栏总重：必须大于等于入栏总重');
+        setInputError('exitWeight');
         hasError = true;
       }
 
-      if (hasError) return;
+      if (hasError) {
+        alert(errors.join('\n'));
+        return;
+      }
 
+      const { entryWeight, entryHead, exitWeight, exitHead, totalFeed, totalMedicine } = values;
       const entryAvgWeight = entryWeight / entryHead;
       const exitAvgWeight = exitWeight / exitHead;
       const feedPerHead = totalFeed / exitHead;
