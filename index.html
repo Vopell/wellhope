@@ -48,6 +48,8 @@
       text-align: center;
       transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
       white-space: nowrap;
+      text-decoration: none;
+      display: inline-block;
     }
 
     .btn:hover {
@@ -84,39 +86,21 @@
         min-width: 240px;
       }
     }
-
-    /* 加载动画 */
-    .loading {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      font-size: 24px;
-      color: white;
-      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-    }
   </style>
 </head>
 <body>
 
   <h1>智慧养猪</h1>
 
-  <div class="btn-container">
-    <a href="fcr.html">
-      <button class="btn"><i class="fas fa-weight-hanging"></i> 料肉比 (FCR)</button>
-    </a>
-    <a href="restore-fcr.html">
-      <button class="btn"><i class="fas fa-sync-alt"></i> 还原料肉比</button>
-    </a>
-    <a href="bonus.html">
-      <button class="btn"><i class="fas fa-cogs"></i> 出栏奖金</button>
-    </a>
-  </div>
+  <main class="btn-container">
+    <a href="fcr.html" class="btn"><i class="fas fa-weight-hanging"></i> 料肉比 (FCR)</a>
+    <a href="restore-fcr.html" class="btn"><i class="fas fa-sync-alt"></i> 还原料肉比</a>
+    <a href="bonus.html" class="btn"><i class="fas fa-cogs"></i> 出栏奖金</a>
+  </main>
 
-  <div class="footer">
+  <footer class="footer">
     <p>版权所有 &copy; 2025 智慧养猪 | 设计 & 开发</p>
-  </div>
+  </footer>
 
 </body>
 </html>
