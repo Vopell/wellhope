@@ -19,7 +19,6 @@
             justify-content: center;
             min-height: 100vh;
             box-sizing: border-box;
-            overflow: hidden; /* 隐藏滚动条 */
         }
 
         h1 {
@@ -222,6 +221,8 @@
     </div>
     
     <script>
+        'use strict';
+
         // 常量定义
         const constants = {
             BASE_REWARD: 3,
@@ -231,6 +232,28 @@
             FEED_REWARD_UNIT: 2,
             MEDICINE_REWARD_UNIT: 0.05,
             QUALITY_REWARD_UNIT: 100, // 正品率奖励单位
+        };
+
+        // 配置输入字段
+        const inputFields = [
+            { id: 'outputCount', placeholder: '请输入出栏头数' },
+            { id: 'feedRatio', placeholder: '请输入还原料肉比', step: '0.01' },
+            { id: 'medicineCost', placeholder: '请输入头均药费', step: '0.01' },
+            { id: 'firstGradeCount', placeholder: '请输入一级猪数' }
+        ];
+
+        // 缓存DOM元素
+        const elements = {
+            inputs: Object.fromEntries(inputFields.map(field => [field.id, document.getElementById(field.id)])),
+            rewards: {
+                outputCount: document.getElementById('outputCountReward'),
+                feedRatio: document.getElementById('feedRatioReward'),
+                medicineCost: document.getElementById('medicineCostReward'),
+                firstGradeCount: document.getElementById('firstGradeCountReward')
+            },
+            finalBonus: document.getElementById('finalBonus'),
+            calculateButton: document.getElementById('calculateButton'),
+            resetButton: document.getElementById('resetButton')
         };
 
         // 工具函数
@@ -256,131 +279,91 @@
                     elem.className = 'reward-value negative';
                 }
             },
+
+            // 统一焦点事件恢复
+            bindFocusRestore(input) {
+                input.addEventListener('focus', () => {
+                    const field = inputFields.find(f => f.id === input.id);
+                    utils.restorePlaceholder(input, field.placeholder);
+                });
+            }
         };
 
         // 主逻辑
         const bonusCalculator = {
             // 计算奖金
             calculateBonus() {
-                const outputCountElem = document.getElementById('outputCount');
-                const feedRatioElem = document.getElementById('feedRatio');
-                const medicineCostElem = document.getElementById('medicineCost');
-                const firstGradeCountElem = document.getElementById('firstGradeCount');
-                const resultElem = document.getElementById('finalBonus');
-
-                const outputCountRewardElem = document.getElementById('outputCountReward');
-                const feedRatioRewardElem = document.getElementById('feedRatioReward');
-                const medicineCostRewardElem = document.getElementById('medicineCostReward');
-                const firstGradeCountRewardElem = document.getElementById('firstGradeCountReward');
-
-                const outputCount = parseFloat(outputCountElem.value);
-                const feedRatio = parseFloat(feedRatioElem.value);
-                const medicineCost = parseFloat(medicineCostElem.value);
-                const firstGradeCount = parseFloat(firstGradeCountElem.value);
+                const values = Object.fromEntries(
+                    inputFields.map(field => [field.id, parseFloat(elements.inputs[field.id].value)])
+                );
 
                 let isValid = true;
 
                 // 输入校验
-                if (!utils.isValidNumber(outputCount)) {
-                    outputCountElem.value = '';
-                    outputCountElem.placeholder = "无效输入";
-                    outputCountElem.classList.add('error');
-                    isValid = false;
-                } else {
-                    utils.restorePlaceholder(outputCountElem, "请输入出栏头数");
-                }
-
-                if (!utils.isValidNumber(feedRatio)) {
-                    feedRatioElem.value = '';
-                    feedRatioElem.placeholder = "无效输入";
-                    feedRatioElem.classList.add('error');
-                    isValid = false;
-                } else {
-                    utils.restorePlaceholder(feedRatioElem, "请输入还原料肉比");
-                }
-
-                if (!utils.isValidNumber(medicineCost)) {
-                    medicineCostElem.value = '';
-                    medicineCostElem.placeholder = "无效输入";
-                    medicineCostElem.classList.add('error');
-                    isValid = false;
-                } else {
-                    utils.restorePlaceholder(medicineCostElem, "请输入头均药费");
-                }
-
-                if (!utils.isValidNumber(firstGradeCount)) {
-                    firstGradeCountElem.value = '';
-                    firstGradeCountElem.placeholder = "无效输入";
-                    firstGradeCountElem.classList.add('error');
-                    isValid = false;
-                } else {
-                    utils.restorePlaceholder(firstGradeCountElem, "请输入一级猪数");
-                }
+                inputFields.forEach(field => {
+                    const value = values[field.id];
+                    const elem = elements.inputs[field.id];
+                    if (!utils.isValidNumber(value)) {
+                        elem.value = '';
+                        elem.placeholder = '无效输入';
+                        elem.classList.add('error');
+                        isValid = false;
+                    } else {
+                        utils.restorePlaceholder(elem, field.placeholder);
+                    }
+                });
 
                 // 校验一级猪数是否小于出栏头数
-                if (isValid && firstGradeCount > outputCount) {
-                    firstGradeCountElem.value = '';
-                    firstGradeCountElem.placeholder = "不可大于出栏头数";
-                    firstGradeCountElem.classList.add('error');
+                if (isValid && values.firstGradeCount > values.outputCount) {
+                    const elem = elements.inputs.firstGradeCount;
+                    elem.value = '';
+                    elem.placeholder = '不可大于出栏头数';
+                    elem.classList.add('error');
                     isValid = false;
                 }
 
                 // 如果输入不合法，直接返回
                 if (!isValid) {
-                    resultElem.textContent = "-";
-                    outputCountRewardElem.textContent = '';
-                    feedRatioRewardElem.textContent = '';
-                    medicineCostRewardElem.textContent = '';
-                    firstGradeCountRewardElem.textContent = '';
+                    elements.finalBonus.textContent = '-';
+                    Object.values(elements.rewards).forEach(el => el.textContent = '');
                     return;
                 }
 
                 // 计算各项奖励
                 const baseReward = constants.BASE_REWARD;
-                const feedReward = (constants.FEED_RATIO - feedRatio) / 0.1 * constants.FEED_REWARD_UNIT;
-                const medicineReward = (constants.MEDICINE_COST - medicineCost) / 2 * constants.MEDICINE_REWARD_UNIT;
-                const qualityReward = (firstGradeCount / outputCount - constants.QUALITY_THRESHOLD) * outputCount * constants.QUALITY_REWARD_UNIT;
+                const feedReward = (constants.FEED_RATIO - values.feedRatio) / 0.1 * constants.FEED_REWARD_UNIT;
+                const medicineReward = (constants.MEDICINE_COST - values.medicineCost) / 2 * constants.MEDICINE_REWARD_UNIT;
+                const qualityReward = (values.firstGradeCount / values.outputCount - constants.QUALITY_THRESHOLD) * values.outputCount * constants.QUALITY_REWARD_UNIT;
 
                 // 显示各项奖励
-                utils.displayReward(outputCountRewardElem, baseReward);
-                utils.displayReward(feedRatioRewardElem, feedReward);
-                utils.displayReward(medicineCostRewardElem, medicineReward);
-                utils.displayReward(firstGradeCountRewardElem, qualityReward);
+                utils.displayReward(elements.rewards.outputCount, baseReward);
+                utils.displayReward(elements.rewards.feedRatio, feedReward);
+                utils.displayReward(elements.rewards.medicineCost, medicineReward);
+                utils.displayReward(elements.rewards.firstGradeCount, qualityReward);
 
                 // 计算最终奖金
-                const totalBonus = outputCount * (baseReward + feedReward + medicineReward) + qualityReward;
-                resultElem.textContent = `¥${totalBonus.toFixed(2)}`;
+                const totalBonus = values.outputCount * (baseReward + feedReward + medicineReward) + qualityReward;
+                elements.finalBonus.textContent = `¥${totalBonus.toFixed(2)}`;
             },
 
             // 重置表单
             resetForm() {
-                document.getElementById('outputCount').value = '';
-                document.getElementById('feedRatio').value = '';
-                document.getElementById('medicineCost').value = '';
-                document.getElementById('firstGradeCount').value = '';
-                document.getElementById('finalBonus').textContent = '-';
-                document.querySelectorAll('.reward-value').forEach(el => el.textContent = '');
-                document.querySelectorAll('input').forEach(el => utils.restorePlaceholder(el, el.placeholder));
+                inputFields.forEach(field => {
+                    const elem = elements.inputs[field.id];
+                    elem.value = '';
+                    utils.restorePlaceholder(elem, field.placeholder);
+                });
+                elements.finalBonus.textContent = '-';
+                Object.values(elements.rewards).forEach(el => el.textContent = '');
             },
 
             // 初始化事件绑定
             init() {
-                document.getElementById('calculateButton').addEventListener('click', this.calculateBonus.bind(this));
-                document.getElementById('resetButton').addEventListener('click', this.resetForm.bind(this));
+                elements.calculateButton.addEventListener('click', this.calculateBonus.bind(this));
+                elements.resetButton.addEventListener('click', this.resetForm.bind(this));
 
-                // 绑定焦点事件以恢复初始提示文本
-                document.getElementById('outputCount').addEventListener('focus', function() {
-                    utils.restorePlaceholder(this, "请输入出栏头数");
-                });
-                document.getElementById('feedRatio').addEventListener('focus', function() {
-                    utils.restorePlaceholder(this, "请输入还原料肉比");
-                });
-                document.getElementById('medicineCost').addEventListener('focus', function() {
-                    utils.restorePlaceholder(this, "请输入头均药费");
-                });
-                document.getElementById('firstGradeCount').addEventListener('focus', function() {
-                    utils.restorePlaceholder(this, "请输入一级猪数");
-                });
+                // 绑定焦点事件
+                inputFields.forEach(field => utils.bindFocusRestore(elements.inputs[field.id]));
             },
         };
 
