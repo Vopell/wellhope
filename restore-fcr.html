@@ -3,299 +3,356 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>还原料肉比计算</title>
+  <title>还原料肉比计算器（更新版）</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    /* 页面背景和基础样式 */
-    body {
-      background: linear-gradient(135deg, #f5f5f5, #e1e1e1);
-      color: #333;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #333;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      box-sizing: border-box;
-      overflow: hidden; /* 隐藏滚动条 */
     }
-
+    
+    .container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      margin: 20px;
+    }
+    
     h1 {
-      font-size: 24px;
-      color: #007bff; /* 标题颜色改为浅蓝色 */
-      margin-bottom: 20px;
+      color: #2c3e50;
       text-align: center;
+      margin-bottom: 10px;
+      font-size: 24px;
     }
-
-    /* 输入组样式 */
+    
+    .subtitle {
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+    
     .input-group {
-      margin-bottom: 15px;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-      max-width: 300px; /* 缩小编辑框宽度 */
+      margin-bottom: 20px;
     }
-
+    
     .input-group label {
-      font-size: 16px;
+      display: block;
       margin-bottom: 8px;
-      font-weight: bold;
-      color: #333;
+      font-weight: 600;
+      color: #2c3e50;
     }
-
+    
     .input-group input {
-      padding: 10px 15px;
       width: 100%;
-      font-size: 16px;
-      border: 1px solid #ccc;
+      padding: 12px 15px;
+      border: 2px solid #e1e8ed;
       border-radius: 8px;
-      outline: none;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-      transition: all 0.3s ease;
-    }
-
-    .input-group input:focus {
-      border-color: #007bff; /* 聚焦时边框颜色改为浅蓝色 */
-      box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
-    }
-
-    .input-group input.error {
-      border-color: red;
-    }
-
-    .input-group input::placeholder {
-      color: #999;
-      font-style: italic;
-    }
-
-    .input-group input.error::placeholder {
-      color: red;
-    }
-
-    /* 按钮样式 */
-    .btn {
-      padding: 12px 30px;
-      background: linear-gradient(45deg, #007bff, #0056b3); /* 计算按钮改为浅蓝色渐变 */
-      color: white;
-      border: none;
-      border-radius: 25px;
       font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
       transition: all 0.3s ease;
+    }
+    
+    .input-group input:focus {
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      outline: none;
+    }
+    
+    .input-group input.error {
+      border-color: #e74c3c;
+    }
+    
+    .coefficient-info {
+      background: #f8f9fa;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 20px 0;
+      font-size: 14px;
+    }
+    
+    .coefficient-info h3 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    
+    .coefficient-info p {
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 15px;
       margin-top: 20px;
-      width: 100%;
-      max-width: 250px; /* 缩小按钮宽度 */
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
     }
-
+    
+    .btn.calculate {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+    }
+    
+    .btn.reset {
+      background: #e1e8ed;
+      color: #2c3e50;
+    }
+    
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-
+    
     .btn:active {
       transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
-
+    
     .btn i {
-      margin-right: 8px; /* 图标与文字的间距 */
+      margin-right: 8px;
     }
-
-    .reset-btn {
-      padding: 12px 30px;
-      background: linear-gradient(45deg, #e74c3c, #f1948a); /* 重置按钮保持红色渐变 */
-      color: white;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
-      margin-top: 10px;
-      width: 100%;
-      max-width: 250px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .reset-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
-    }
-
-    .reset-btn:active {
-      transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    }
-
-    .reset-btn i {
-      margin-right: 8px; /* 图标与文字的间距 */
-    }
-
-    /* 结果显示区域 */
-    .output-group {
-      margin-top: 20px;
-      font-size: 18px;
+    
+    .result-container {
+      margin-top: 25px;
       text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
       animation: fadeIn 0.5s ease-out;
     }
-
-    .output-group h2 {
-      color: #333;
+    
+    .result-container h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
     }
-
+    
     #result {
-      color: green;
-      font-weight: bold;
-      font-size: 24px;
+      font-size: 32px;
+      font-weight: 700;
+      color: #27ae60;
     }
-
-    /* 提示文本淡入动画 */
+    
+    .formula {
+      background: #f1f2f6;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    
     @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
-
-    /* 响应式布局 */
+    
     @media (max-width: 600px) {
-      h1 {
-        font-size: 20px;
+      .container {
+        padding: 20px;
       }
-
-      .input-group input {
-        font-size: 14px;
-      }
-
-      .btn, .reset-btn {
-        font-size: 14px;
-      }
-
-      .output-group {
-        font-size: 16px;
-      }
-
-      #result {
-        font-size: 20px;
+      
+      .btn-group {
+        flex-direction: column;
       }
     }
   </style>
 </head>
 <body>
-  <h1>还原料肉比计算器
-    <button class="btn" onclick="window.location.href='index.html'">
-      <i class="fas fa-home"></i> 返回主页
-    </button>
-  </h1>
-
-  <!-- 用户输入区域 -->
-  <div class="input-group">
-    <label for="feedConsumption">头均耗料 (kg): </label>
-    <input type="number" id="feedConsumption" placeholder="请输入头均耗料" onfocus="clearError('feedConsumption')" />
-  </div>
-
-  <div class="input-group">
-    <label for="finalWeight">出栏均重 (kg): </label>
-    <input type="number" id="finalWeight" placeholder="请输入出栏均重" onfocus="clearError('finalWeight')" />
-  </div>
-
-  <div class="input-group">
-    <label for="initialWeight">入栏均重 (kg): </label>
-    <input type="number" id="initialWeight" placeholder="请输入入栏均重" onfocus="clearError('initialWeight')" />
-  </div>
-
-  <!-- 计算按钮 -->
-  <button class="btn" onclick="calculateResult()">
-    <i class="fas fa-calculator"></i> 计算还原料肉比
-  </button>
-
-  <!-- 重置按钮 -->
-  <button class="reset-btn" onclick="resetForm()">
-    <i class="fas fa-redo"></i> 重置
-  </button>
-
-  <!-- 计算结果显示区域 -->
-  <div class="output-group">
-    <h2>还原料肉比: <span id="result">0.000</span></h2>
+  <div class="container">
+    <h1>还原料肉比计算器</h1>
+    <div class="subtitle">基于最新公式，自动匹配系数</div>
+    
+    <div class="input-group">
+      <label for="feedConsumption">头均耗料 (kg)</label>
+      <input type="number" id="feedConsumption" placeholder="请输入头均耗料" min="0" step="0.1">
+    </div>
+    
+    <div class="input-group">
+      <label for="initialWeight">入栏均重 (kg)</label>
+      <input type="number" id="initialWeight" placeholder="请输入入栏均重 (4-30kg)" min="4" max="30" step="0.1">
+    </div>
+    
+    <div class="input-group">
+      <label for="finalWeight">出栏均重 (kg)</label>
+      <input type="number" id="finalWeight" placeholder="请输入出栏均重" min="4" step="0.1">
+    </div>
+    
+    <div class="coefficient-info">
+      <h3>当前系数信息</h3>
+      <p>入栏系数: <span id="initialCoefficient">-</span></p>
+      <p>出栏系数: <span id="finalCoefficient">-</span></p>
+    </div>
+    
+    <div class="btn-group">
+      <button class="btn calculate" onclick="calculateResult()">
+        <i class="fas fa-calculator"></i> 计算还原料肉比
+      </button>
+      <button class="btn reset" onclick="resetForm()">
+        <i class="fas fa-redo"></i> 重置
+      </button>
+    </div>
+    
+    <div class="result-container">
+      <h2>还原料肉比</h2>
+      <div id="result">0.000</div>
+    </div>
+    
+    </div>
   </div>
 
   <script>
-    // 初始提示文本
-    const initialPlaceholders = {
-      feedConsumption: '请输入头均耗料',
-      finalWeight: '请输入出栏均重',
-      initialWeight: '请输入入栏均重',
+    'use strict';
+    
+    // 缓存DOM元素引用
+    const elements = {
+      feedConsumption: document.getElementById('feedConsumption'),
+      initialWeight: document.getElementById('initialWeight'),
+      finalWeight: document.getElementById('finalWeight'),
+      initialCoefficient: document.getElementById('initialCoefficient'),
+      finalCoefficient: document.getElementById('finalCoefficient'),
+      result: document.getElementById('result')
     };
-
-    // 清空输入框内的错误信息
-    function clearError(inputId) {
-      const inputElement = document.getElementById(inputId);
-      inputElement.classList.remove('error');
-      inputElement.placeholder = initialPlaceholders[inputId];
+    
+    // 获取入栏均重系数
+    function getInitialCoefficient(weight) {
+      if (weight <= 10) return { value: 1.3, range: ' (4-10kg)' };
+      if (weight < 20) return { value: 1.5, range: ' (10-20kg)' };
+      return { value: 1.7, range: ' (20-30kg)' };
     }
-
-    // 计算还原料肉比的函数
-    function calculateResult() {
-      // 获取用户输入的值
-      const feedConsumption = parseFloat(document.getElementById('feedConsumption').value); // 头均耗料
-      const finalWeight = parseFloat(document.getElementById('finalWeight').value); // 出栏均重
-      const initialWeight = parseFloat(document.getElementById('initialWeight').value); // 入栏均重
-
-      let hasError = false;
-
-      // 检查用户是否输入了有效数字
-      if (isNaN(feedConsumption) || feedConsumption === '') {
-        const feedConsumptionInput = document.getElementById('feedConsumption');
-        feedConsumptionInput.classList.add('error');
-        feedConsumptionInput.placeholder = '无效输入';
-        hasError = true;
+    
+    // 获取出栏均重系数
+    function getFinalCoefficient(weight) {
+      if (weight <= 90) return { value: 3.0, range: ' (≤90kg-异常猪)' };
+      if (weight <= 100) return { value: 2.9, range: ' (90-100kg)' };
+      if (weight <= 110) return { value: 3.1, range: ' (100-110kg)' };
+      if (weight <= 120) return { value: 3.3, range: ' (110-120kg)' };
+      if (weight <= 130) return { value: 3.5, range: ' (120-130kg)' };
+      return { value: 3.7, range: ' (130kg以上)' };
+    }
+    
+    // 更新系数显示（通用函数）
+    function updateCoefficientDisplay(type, value) {
+      const span = type === 'initial' ? elements.initialCoefficient : elements.finalCoefficient;
+      if (!isNaN(value)) {
+        const coeff = type === 'initial' ? getInitialCoefficient(value) : getFinalCoefficient(value);
+        span.textContent = `${coeff.value}${coeff.range}`;
+      } else {
+        span.textContent = '-';
       }
-      if (isNaN(finalWeight) || finalWeight === '') {
-        const finalWeightInput = document.getElementById('finalWeight');
-        finalWeightInput.classList.add('error');
-        finalWeightInput.placeholder = '无效输入';
-        hasError = true;
-      }
-      if (isNaN(initialWeight) || initialWeight === '') {
-        const initialWeightInput = document.getElementById('initialWeight');
-        initialWeightInput.classList.add('error');
-        initialWeightInput.placeholder = '无效输入';
-        hasError = true;
-      }
-
+    }
+    
+    // 通用错误类处理
+    function toggleErrorClass(input, hasError) {
       if (hasError) {
-        return; // 如果有错误就不执行计算
+        input.classList.add('error');
+      } else {
+        input.classList.remove('error');
       }
-
-      // 按照公式计算
-      const result = (feedConsumption - ((finalWeight - 120) * 3.7) + ((initialWeight - 7) * 1.3)) / 113;
-
-      // 显示计算结果（保留三位小数）
-      document.getElementById('result').innerText = result.toFixed(3);
     }
-
-    // 重置按钮功能
+    
+    // 计算还原料肉比
+    function calculateResult() {
+      const feedConsumption = parseFloat(elements.feedConsumption.value);
+      const initialWeight = parseFloat(elements.initialWeight.value);
+      const finalWeight = parseFloat(elements.finalWeight.value);
+      
+      // 验证输入
+      let hasError = false;
+      let errorMessage = '';
+      
+      if (isNaN(feedConsumption) || feedConsumption <= 0) {
+        toggleErrorClass(elements.feedConsumption, true);
+        hasError = true;
+        errorMessage = '请输入有效的头均耗料（大于0）';
+      } else {
+        toggleErrorClass(elements.feedConsumption, false);
+      }
+      
+      if (isNaN(initialWeight) || initialWeight < 4 || initialWeight > 30) {
+        toggleErrorClass(elements.initialWeight, true);
+        hasError = true;
+        errorMessage = '请输入有效的入栏均重（4-30kg）';
+      } else {
+        toggleErrorClass(elements.initialWeight, false);
+      }
+      
+      if (!isNaN(initialWeight) && finalWeight <= initialWeight) {
+        toggleErrorClass(elements.finalWeight, true);
+        hasError = true;
+        errorMessage = '出栏均重必须大于入栏均重';
+      } else {
+        toggleErrorClass(elements.finalWeight, false);
+      }
+      
+      if (hasError) {
+        alert(errorMessage);
+        return;
+      }
+      
+      // 更新系数显示
+      updateCoefficientDisplay('initial', initialWeight);
+      updateCoefficientDisplay('final', finalWeight);
+      
+      // 计算结果
+      const initialCoeff = getInitialCoefficient(initialWeight).value;
+      const finalCoeff = getFinalCoefficient(finalWeight).value;
+      const result = (
+        feedConsumption + 
+        (initialWeight - 7) * initialCoeff - 
+        (finalWeight - 120) * finalCoeff
+      ) / 113;
+      
+      elements.result.textContent = result.toFixed(3);
+    }
+    
+    // 重置表单
     function resetForm() {
-      // 重置输入框
-      document.getElementById('feedConsumption').value = '';
-      document.getElementById('finalWeight').value = '';
-      document.getElementById('initialWeight').value = '';
-
-      // 重置错误提示
-      clearError('feedConsumption');
-      clearError('finalWeight');
-      clearError('initialWeight');
-
-      // 重置结果显示
-      document.getElementById('result').innerText = '0.000';
+      elements.feedConsumption.value = '';
+      elements.initialWeight.value = '';
+      elements.finalWeight.value = '';
+      
+      Object.values(elements).forEach(el => {
+        if (el.tagName === 'INPUT') {
+          el.classList.remove('error');
+        } else if (el.tagName === 'SPAN') {
+          el.textContent = '-';
+        }
+      });
+      elements.result.textContent = '0.000';
     }
+    
+    // 事件监听：实时更新系数
+    elements.initialWeight.addEventListener('input', () => updateCoefficientDisplay('initial', parseFloat(elements.initialWeight.value)));
+    elements.finalWeight.addEventListener('input', () => updateCoefficientDisplay('final', parseFloat(elements.finalWeight.value)));
   </script>
 </body>
 </html>
