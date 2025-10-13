@@ -6,12 +6,8 @@
   <title>料肉比计算器</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-    
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       color: #333;
@@ -23,7 +19,7 @@
       justify-content: center;
       min-height: 100vh;
     }
-    
+
     .container {
       background: white;
       border-radius: 15px;
@@ -33,21 +29,14 @@
       max-width: 500px;
       margin: 20px;
     }
-    
+
     h1 {
       color: #2c3e50;
       text-align: center;
       margin-bottom: 10px;
       font-size: 24px;
     }
-    
-    .subtitle {
-      text-align: center;
-      color: #7f8c8d;
-      margin-bottom: 25px;
-      font-size: 14px;
-    }
-    
+
     .input-group {
       margin-bottom: 20px;
       display: flex;
@@ -56,12 +45,9 @@
       justify-content: space-between;
       width: 100%;
     }
-    
-    .input-group > div {
-      flex: 1;
-      min-width: calc(50% - 5px);
-    }
-    
+
+    .input-group > div { flex: 1; min-width: calc(50% - 5px); }
+
     .input-group label {
       display: block;
       margin-bottom: 8px;
@@ -69,7 +55,7 @@
       color: #2c3e50;
       font-size: 14px;
     }
-    
+
     .input-group input {
       width: 100%;
       padding: 12px 15px;
@@ -82,32 +68,25 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    
+
     .input-group input:focus {
       border-color: #3498db;
       box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
       outline: none;
     }
-    
-    .input-group input.error {
-      border-color: #e74c3c;
-    }
-    
-    .input-group input::placeholder {
-      color: #999;
-      font-style: italic;
-    }
-    
-    .input-group input.error::placeholder {
-      color: #e74c3c;
-    }
-    
+
+    .input-group input.error { border-color: #e74c3c; }
+
+    .input-group input::placeholder { color: #999; font-style: italic; }
+
+    .input-group input.error::placeholder { color: #e74c3c; }
+
     .btn-group {
       display: flex;
       gap: 15px;
       margin-top: 20px;
     }
-    
+
     .btn {
       flex: 1;
       padding: 14px;
@@ -122,29 +101,17 @@
       justify-content: center;
       color: white;
     }
-    
-    .btn.calculate {
-      background: linear-gradient(135deg, #3498db, #2980b9);
-    }
-    
-    .btn.reset {
-      background: #e1e8ed;
-      color: #2c3e50;
-    }
-    
-    .btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-    }
-    
-    .btn:active {
-      transform: translateY(0);
-    }
-    
-    .btn i {
-      margin-right: 8px;
-    }
-    
+
+    .btn.calculate { background: linear-gradient(135deg, #3498db, #2980b9); }
+
+    .btn.reset { background: #e1e8ed; color: #2c3e50; }
+
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+
+    .btn:active { transform: translateY(0); }
+
+    .btn i { margin-right: 8px; }
+
     .result-container {
       margin-top: 25px;
       text-align: center;
@@ -154,67 +121,29 @@
       animation: fadeIn 0.5s ease-out;
       width: 100%;
     }
-    
-    .result-container h2 {
-      color: #2c3e50;
-      margin-bottom: 10px;
-    }
-    
-    .result-row {
-      display: flex;
-      justify-content: space-between;
-      margin-bottom: 10px;
-    }
-    
-    .result-item {
-      width: 48%;
-      text-align: left;
-    }
-    
-    #result {
-      color: #27ae60;
-      font-weight: bold;
-      font-size: 20px;
-    }
-    
+
+    .result-container h2 { color: #2c3e50; margin-bottom: 10px; }
+
+    .result-row { display: flex; justify-content: space-between; margin-bottom: 10px; }
+
+    .result-item { width: 48%; text-align: left; }
+
+    #result { color: #27ae60; font-weight: bold; font-size: 20px; }
+
     @keyframes fadeIn {
       0% { opacity: 0; transform: translateY(10px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-    
+
     @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-      
-      .btn-group {
-        flex-direction: column;
-      }
-      
-      .input-group {
-        gap: 15px;
-      }
-      
-      .input-group > div {
-        min-width: calc(50% - 7.5px);
-      }
-      
-      .input-group input {
-        font-size: 14px;
-        padding: 10px 12px;
-      }
-      
-      .btn {
-        font-size: 14px;
-      }
-      
-      .result-container {
-        font-size: 16px;
-      }
-      
-      #result {
-        font-size: 18px;
-      }
+      .container { padding: 20px; }
+      .btn-group { flex-direction: column; }
+      .input-group { gap: 15px; }
+      .input-group > div { min-width: calc(50% - 7.5px); }
+      .input-group input { font-size: 14px; padding: 10px 12px; }
+      .btn { font-size: 14px; }
+      .result-container { font-size: 16px; }
+      #result { font-size: 18px; }
     }
   </style>
 </head>
@@ -225,33 +154,33 @@
     <div class="input-group">
       <div>
         <label for="totalFeed">饲料总量: </label>
-        <input type="number" id="totalFeed" placeholder="请输入饲料总量" onfocus="clearError('totalFeed')" />
+        <input type="number" id="totalFeed" placeholder="请输入饲料总量" />
       </div>
       <div>
         <label for="entryWeight">入栏总重: </label>
-        <input type="number" id="entryWeight" placeholder="请输入入栏总重" onfocus="clearError('entryWeight')" />
+        <input type="number" id="entryWeight" placeholder="请输入入栏总重" />
       </div>
     </div>
 
     <div class="input-group">
       <div>
         <label for="entryHead">入栏头数: </label>
-        <input type="number" id="entryHead" placeholder="请输入入栏头数" onfocus="clearError('entryHead')" />
+        <input type="number" id="entryHead" placeholder="请输入入栏头数" />
       </div>
       <div>
         <label for="exitWeight">出栏总重: </label>
-        <input type="number" id="exitWeight" placeholder="请输入出栏总重" onfocus="clearError('exitWeight')" />
+        <input type="number" id="exitWeight" placeholder="请输入出栏总重" />
       </div>
     </div>
 
     <div class="input-group">
       <div>
         <label for="exitHead">出栏头数: </label>
-        <input type="number" id="exitHead" placeholder="请输入出栏头数" onfocus="clearError('exitHead')" />
+        <input type="number" id="exitHead" placeholder="请输入出栏头数" />
       </div>
       <div>
         <label for="totalMedicine">药费总额: </label>
-        <input type="number" id="totalMedicine" placeholder="请输入药费总额" onfocus="clearError('totalMedicine')" />
+        <input type="number" id="totalMedicine" placeholder="请输入药费总额" />
       </div>
     </div>
 
@@ -259,7 +188,6 @@
       <button class="btn calculate" onclick="calculateResult()">
         <i class="fas fa-calculator"></i> 计算料肉比
       </button>
-
       <button class="btn reset" onclick="resetForm()">
         <i class="fas fa-redo"></i> 重置
       </button>
@@ -269,157 +197,111 @@
       <h2>计算结果:</h2>
       <div id="result">
         <div class="result-row">
-          <div class="result-item">
-            <span>入栏均重:</span> <span id="entryAvgWeight">0.000</span> kg
-          </div>
-          <div class="result-item">
-            <span>出栏均重:</span> <span id="exitAvgWeight">0.000</span> kg
-          </div>
+          <div class="result-item">入栏均重: <span id="entryAvgWeight">0.000</span> kg</div>
+          <div class="result-item">出栏均重: <span id="exitAvgWeight">0.000</span> kg</div>
         </div>
         <div class="result-row">
-          <div class="result-item">
-            <span>头均耗料:</span> <span id="feedPerHead">0.000</span> kg
-          </div>
-          <div class="result-item">
-            <span>头均药费:</span> <span id="medicinePerHead">0.000</span> 元
-          </div>
+          <div class="result-item">头均耗料: <span id="feedPerHead">0.000</span> kg</div>
+          <div class="result-item">头均药费: <span id="medicinePerHead">0.000</span> 元</div>
         </div>
         <div class="result-row">
-          <div class="result-item">
-            <span>料肉比:</span> <span id="feedMeatRatio">0.000</span>
-          </div>
-          <div class="result-item">
-            <span>成活率:</span> <span id="survivalRate">0.000%</span>
-          </div>
+          <div class="result-item">料肉比: <span id="feedMeatRatio">0.000</span></div>
+          <div class="result-item">成活率: <span id="survivalRate">0.000%</span></div>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-    'use strict';
+'use strict';
 
-    // 缓存DOM元素和配置
-    const inputs = {
-      totalFeed: { id: 'totalFeed', placeholder: '请输入饲料总量', name: '饲料总量' },
-      entryWeight: { id: 'entryWeight', placeholder: '请输入入栏总重', name: '入栏总重' },
-      entryHead: { id: 'entryHead', placeholder: '请输入入栏头数', name: '入栏头数' },
-      exitWeight: { id: 'exitWeight', placeholder: '请输入出栏总重', name: '出栏总重' },
-      exitHead: { id: 'exitHead', placeholder: '请输入出栏头数', name: '出栏头数' },
-      totalMedicine: { id: 'totalMedicine', placeholder: '请输入药费总额', name: '药费总额' }
-    };
+// 配置表：placeholder + 显示名称 + 校验规则
+const inputs = {
+  totalFeed: { ph: '请输入饲料总量', name: '饲料总量', rule: v => v > 0 || '饲料总量必须大于0' },
+  entryWeight: { ph: '请输入入栏总重', name: '入栏总重', rule: v => v > 0 || '入栏总重必须大于0' },
+  entryHead: { ph: '请输入入栏头数', name: '入栏头数', rule: v => v > 0 || '入栏头数必须大于0' },
+  exitWeight: { ph: '请输入出栏总重', name: '出栏总重', rule: (v, all) => v >= all.entryWeight || '出栏总重不能小于入栏总重' },
+  exitHead: { ph: '请输入出栏头数', name: '出栏头数', rule: (v, all) => v <= all.entryHead || '出栏头数不能大于入栏头数' },
+  totalMedicine: { ph: '请输入药费总额', name: '药费总额', rule: () => true }
+};
 
-    const elements = {
-      ...Object.fromEntries(Object.entries(inputs).map(([key, { id }]) => [key, document.getElementById(id)])),
-      entryAvgWeight: document.getElementById('entryAvgWeight'),
-      exitAvgWeight: document.getElementById('exitAvgWeight'),
-      feedPerHead: document.getElementById('feedPerHead'),
-      medicinePerHead: document.getElementById('medicinePerHead'),
-      feedMeatRatio: document.getElementById('feedMeatRatio'),
-      survivalRate: document.getElementById('survivalRate')
-    };
+// 缓存 DOM
+const els = Object.fromEntries(Object.keys(inputs).map(k => [k, document.getElementById(k)]));
+const res = ['entryAvgWeight','exitAvgWeight','feedPerHead','medicinePerHead','feedMeatRatio','survivalRate']
+  .reduce((a,k) => ((a[k]=document.getElementById(k)),a),{});
 
-    // 通用错误清除（仅移除高亮，恢复placeholder）
-    function clearError(inputId) {
-      const input = elements[inputId];
-      input.classList.remove('error');
-      input.placeholder = inputs[inputId].placeholder;
+// 清除错误
+function clearError(id) {
+  const el = els[id];
+  el.classList.remove('error');
+  el.placeholder = inputs[id].ph;
+}
+
+// 设置错误
+function setError(id, msg) {
+  const el = els[id];
+  el.classList.add('error');
+  el.placeholder = msg || `请输入${inputs[id].name}`;
+}
+
+// 重置表单
+function resetForm() {
+  for(const k in inputs){ els[k].value=''; clearError(k); }
+  Object.keys(res).forEach(k => res[k].textContent = k==='survivalRate' ? '0.000%' : '0.000');
+}
+
+// 计算结果
+function calculateResult() {
+  const values = Object.fromEntries(Object.keys(inputs).map(k => [k, parseFloat(els[k].value)]));
+  let hasError = false;
+
+  for(const [k, cfg] of Object.entries(inputs)){
+    let v = values[k];
+    // 空值或NaN
+    if(isNaN(v)){
+      setError(k);          // 高亮 + placeholder
+      els[k].value = '';    // 清空输入值
+      hasError = true;
+      continue;
     }
 
-    // 设置输入高亮（不改placeholder）
-    function setInputError(inputId) {
-      elements[inputId].classList.add('error');
+    const ruleResult = cfg.rule(v, values);
+    if(ruleResult !== true){
+      setError(k, ruleResult); // 高亮 + 提示文字
+      els[k].value = '';       // 清空输入值
+      hasError = true;
     }
+  }
 
-    // 更新结果显示
-    function updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate) {
-      elements.entryAvgWeight.textContent = entryAvgWeight.toFixed(2);
-      elements.exitAvgWeight.textContent = exitAvgWeight.toFixed(2);
-      elements.feedPerHead.textContent = feedPerHead.toFixed(2);
-      elements.medicinePerHead.textContent = medicinePerHead.toFixed(2);
-      elements.feedMeatRatio.textContent = feedMeatRatio;
-      elements.survivalRate.textContent = survivalRate.toFixed(2) + '%';
-    }
+  if(hasError) return;
 
-    // 重置输入
-    function resetInputs() {
-      Object.entries(inputs).forEach(([key]) => {
-        elements[key].value = '';
-        clearError(key);
-      });
-    }
+  const {entryWeight,entryHead,exitWeight,exitHead,totalFeed,totalMedicine} = values;
+  const entryAvgWeight = entryWeight/entryHead;
+  const exitAvgWeight = exitWeight/exitHead;
+  const feedPerHead = totalFeed/exitHead;
+  const medicinePerHead = totalMedicine/exitHead;
+  const weightGainPerHead = exitAvgWeight-entryAvgWeight;
+  const feedMeatRatio = weightGainPerHead>0 ? (feedPerHead/weightGainPerHead).toFixed(3) : 'N/A';
+  const survivalRate = (exitHead/entryHead)*100;
 
-    // 重置表单
-    function resetForm() {
-      resetInputs();
-      elements.entryAvgWeight.textContent = '0.000';
-      elements.exitAvgWeight.textContent = '0.000';
-      elements.feedPerHead.textContent = '0.000';
-      elements.medicinePerHead.textContent = '0.000';
-      elements.feedMeatRatio.textContent = '0.000';
-      elements.survivalRate.textContent = '0.000%';
-    }
+  res.entryAvgWeight.textContent = entryAvgWeight.toFixed(2);
+  res.exitAvgWeight.textContent = exitAvgWeight.toFixed(2);
+  res.feedPerHead.textContent = feedPerHead.toFixed(2);
+  res.medicinePerHead.textContent = medicinePerHead.toFixed(2);
+  res.feedMeatRatio.textContent = feedMeatRatio;
+  res.survivalRate.textContent = survivalRate.toFixed(2)+'%';
+}
 
-    // 计算结果
-	function calculateResult() {
-	  const values = Object.fromEntries(Object.entries(inputs).map(([key]) => [key, parseFloat(elements[key].value)]));
+// 自动绑定 focus 清除错误
+document.addEventListener('DOMContentLoaded', () => {
+  Object.keys(inputs).forEach(id => els[id].addEventListener('focus', () => clearError(id)));
+});
 
-	  let hasError = false;
+// 为保持原行为，暴露全局函数
+window.clearError = clearError;
+window.calculateResult = calculateResult;
+window.resetForm = resetForm;
+</script>
 
-	  // 基础NaN/空值检查（仅高亮输入框 + 改 placeholder）
-	  Object.entries(values).forEach(([key, value]) => {
-		if (isNaN(value) || value === '') {
-		  const input = elements[key];
-		  input.classList.add('error');
-		  input.placeholder = `请输入${inputs[key].name}`;
-		  hasError = true;
-		}
-	  });
-
-	  // 业务逻辑检查（仅针对非NaN值）
-	  if (!isNaN(values.totalFeed) && values.totalFeed <= 0) {
-		setInputError('totalFeed');
-		elements.totalFeed.placeholder = '饲料总量必须大于0';
-		hasError = true;
-	  }
-	  if (!isNaN(values.entryHead) && values.entryHead <= 0) {
-		setInputError('entryHead');
-		elements.entryHead.placeholder = '入栏头数必须大于0';
-		hasError = true;
-	  }
-	  if (!isNaN(values.entryWeight) && values.entryWeight <= 0) {
-		setInputError('entryWeight');
-		elements.entryWeight.placeholder = '入栏总重必须大于0';
-		hasError = true;
-	  }
-	  if (!isNaN(values.exitHead) && !isNaN(values.entryHead) && values.exitHead > values.entryHead) {
-		setInputError('exitHead');
-		elements.exitHead.placeholder = '出栏头数不能大于入栏头数';
-		hasError = true;
-	  }
-	  if (!isNaN(values.exitWeight) && !isNaN(values.entryWeight) && values.exitWeight < values.entryWeight) {
-		setInputError('exitWeight');
-		elements.exitWeight.placeholder = '出栏总重不能小于入栏总重';
-		hasError = true;
-	  }
-
-	  // 若存在错误，直接返回，不再弹出 alert
-	  if (hasError) return;
-
-	  // ===== 计算逻辑 =====
-	  const { entryWeight, entryHead, exitWeight, exitHead, totalFeed, totalMedicine } = values;
-	  const entryAvgWeight = entryWeight / entryHead;
-	  const exitAvgWeight = exitWeight / exitHead;
-	  const feedPerHead = totalFeed / exitHead;
-	  const medicinePerHead = totalMedicine / exitHead;
-	  const weightGainPerHead = exitAvgWeight - entryAvgWeight;
-	  const feedMeatRatio = (weightGainPerHead > 0) ? (feedPerHead / weightGainPerHead).toFixed(3) : 'N/A';
-	  const survivalRate = (exitHead / entryHead) * 100;
-
-	  updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate);
-	}
-
-  </script>
-  
 </body>
 </html>
