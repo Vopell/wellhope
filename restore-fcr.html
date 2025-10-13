@@ -11,7 +11,6 @@
       margin: 0;
       padding: 0;
     }
-    
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
       color: #333;
@@ -23,7 +22,6 @@
       justify-content: center;
       min-height: 100vh;
     }
-    
     .container {
       background: white;
       border-radius: 15px;
@@ -33,32 +31,27 @@
       max-width: 500px;
       margin: 20px;
     }
-    
     h1 {
       color: #2c3e50;
       text-align: center;
       margin-bottom: 10px;
       font-size: 24px;
     }
-    
     .subtitle {
       text-align: center;
       color: #7f8c8d;
       margin-bottom: 25px;
       font-size: 14px;
     }
-    
     .input-group {
       margin-bottom: 20px;
     }
-    
     .input-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
       color: #2c3e50;
     }
-    
     .input-group input {
       width: 100%;
       padding: 12px 15px;
@@ -67,17 +60,18 @@
       font-size: 16px;
       transition: all 0.3s ease;
     }
-    
     .input-group input:focus {
       border-color: #3498db;
       box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
       outline: none;
     }
-    
-    .input-group input.error {
-      border-color: #e74c3c;
+
+    /* ✅ 仅修改 placeholder 颜色为红色，不改边框 */
+    .input-group input.error::placeholder {
+      color: #e74c3c;
+      opacity: 1;
     }
-    
+
     .coefficient-info {
       background: #f8f9fa;
       border-radius: 8px;
@@ -85,25 +79,21 @@
       margin: 20px 0;
       font-size: 14px;
     }
-    
     .coefficient-info h3 {
       color: #2c3e50;
       margin-bottom: 10px;
       font-size: 16px;
     }
-    
     .coefficient-info p {
       margin-bottom: 8px;
       display: flex;
       justify-content: space-between;
     }
-    
     .btn-group {
       display: flex;
       gap: 15px;
       margin-top: 20px;
     }
-    
     .btn {
       flex: 1;
       padding: 14px;
@@ -117,30 +107,26 @@
       align-items: center;
       justify-content: center;
     }
-    
     .btn.calculate {
       background: linear-gradient(135deg, #3498db, #2980b9);
       color: white;
     }
-    
     .btn.reset {
       background: #e1e8ed;
       color: #2c3e50;
     }
-    
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-    
     .btn:active {
       transform: translateY(0);
     }
-    
     .btn i {
       margin-right: 8px;
     }
-    
+
+    /* ✅ 保留原结果显示样式 */
     .result-container {
       margin-top: 25px;
       text-align: center;
@@ -149,18 +135,15 @@
       border-radius: 10px;
       animation: fadeIn 0.5s ease-out;
     }
-    
     .result-container h2 {
       color: #2c3e50;
       margin-bottom: 10px;
     }
-    
     #result {
       font-size: 32px;
       font-weight: 700;
       color: #27ae60;
     }
-    
     .formula {
       background: #f1f2f6;
       padding: 15px;
@@ -169,20 +152,13 @@
       font-size: 14px;
       line-height: 1.5;
     }
-    
     @keyframes fadeIn {
       0% { opacity: 0; transform: translateY(10px); }
       100% { opacity: 1; transform: translateY(0); }
     }
-    
     @media (max-width: 600px) {
-      .container {
-        padding: 20px;
-      }
-      
-      .btn-group {
-        flex-direction: column;
-      }
+      .container { padding: 20px; }
+      .btn-group { flex-direction: column; }
     }
   </style>
 </head>
@@ -194,23 +170,23 @@
       <label for="feedConsumption">头均耗料 (kg)</label>
       <input type="number" id="feedConsumption" placeholder="请输入头均耗料" min="0" step="0.1">
     </div>
-    
+
     <div class="input-group">
       <label for="initialWeight">入栏均重 (kg)</label>
       <input type="number" id="initialWeight" placeholder="请输入入栏均重 (4-30kg)" min="4" max="30" step="0.1">
     </div>
-    
+
     <div class="input-group">
       <label for="finalWeight">出栏均重 (kg)</label>
       <input type="number" id="finalWeight" placeholder="请输入出栏均重" min="4" step="0.1">
     </div>
-    
+
     <div class="coefficient-info">
       <h3>当前系数信息</h3>
       <p>入栏系数: <span id="initialCoefficient">-</span></p>
       <p>出栏系数: <span id="finalCoefficient">-</span></p>
     </div>
-    
+
     <div class="btn-group">
       <button class="btn calculate" onclick="calculateResult()">
         <i class="fas fa-calculator"></i> 计算还原料肉比
@@ -219,19 +195,15 @@
         <i class="fas fa-redo"></i> 重置
       </button>
     </div>
-    
+
     <div class="result-container">
       <h2>还原料肉比</h2>
       <div id="result">0.000</div>
-    </div>
-    
     </div>
   </div>
 
   <script>
     'use strict';
-    
-    // 缓存DOM元素引用
     const elements = {
       feedConsumption: document.getElementById('feedConsumption'),
       initialWeight: document.getElementById('initialWeight'),
@@ -240,15 +212,13 @@
       finalCoefficient: document.getElementById('finalCoefficient'),
       result: document.getElementById('result')
     };
-    
-    // 获取入栏均重系数
+
     function getInitialCoefficient(weight) {
       if (weight <= 10) return { value: 1.3, range: ' (4-10kg)' };
       if (weight < 20) return { value: 1.5, range: ' (10-20kg)' };
       return { value: 1.7, range: ' (20-30kg)' };
     }
-    
-    // 获取出栏均重系数
+
     function getFinalCoefficient(weight) {
       if (weight <= 90) return { value: 3.0, range: ' (≤90kg-异常猪)' };
       if (weight <= 100) return { value: 2.9, range: ' (90-100kg)' };
@@ -257,8 +227,7 @@
       if (weight <= 130) return { value: 3.5, range: ' (120-130kg)' };
       return { value: 3.7, range: ' (130kg以上)' };
     }
-    
-    // 更新系数显示（通用函数）
+
     function updateCoefficientDisplay(type, value) {
       const span = type === 'initial' ? elements.initialCoefficient : elements.finalCoefficient;
       if (!isNaN(value)) {
@@ -268,90 +237,79 @@
         span.textContent = '-';
       }
     }
-    
-    // 通用错误类处理
-    function toggleErrorClass(input, hasError) {
-      if (hasError) {
-        input.classList.add('error');
-      } else {
-        input.classList.remove('error');
-      }
+
+    // ✅ 错误提示函数
+    function showInputError(input, message) {
+      input.classList.add('error');
+      input.value = '';
+      input.placeholder = message;
     }
-    
-    // 计算还原料肉比
+    function clearInputError(input, defaultPlaceholder) {
+      input.classList.remove('error');
+      input.placeholder = defaultPlaceholder;
+    }
+
     function calculateResult() {
       const feedConsumption = parseFloat(elements.feedConsumption.value);
       const initialWeight = parseFloat(elements.initialWeight.value);
       const finalWeight = parseFloat(elements.finalWeight.value);
-      
-      // 验证输入
       let hasError = false;
-      let errorMessage = '';
-      
+
       if (isNaN(feedConsumption) || feedConsumption <= 0) {
-        toggleErrorClass(elements.feedConsumption, true);
+        showInputError(elements.feedConsumption, '请输入有效的头均耗料 (>0)');
         hasError = true;
-        errorMessage = '请输入有效的头均耗料（大于0）';
       } else {
-        toggleErrorClass(elements.feedConsumption, false);
+        clearInputError(elements.feedConsumption, '请输入头均耗料');
       }
-      
+
       if (isNaN(initialWeight) || initialWeight < 4 || initialWeight > 30) {
-        toggleErrorClass(elements.initialWeight, true);
+        showInputError(elements.initialWeight, '请输入4-30kg的入栏均重');
         hasError = true;
-        errorMessage = '请输入有效的入栏均重（4-30kg）';
       } else {
-        toggleErrorClass(elements.initialWeight, false);
+        clearInputError(elements.initialWeight, '请输入入栏均重 (4-30kg)');
       }
-      
-      if (!isNaN(initialWeight) && finalWeight <= initialWeight) {
-        toggleErrorClass(elements.finalWeight, true);
+
+      if (isNaN(finalWeight) || finalWeight <= initialWeight) {
+        showInputError(elements.finalWeight, '出栏均重必须大于入栏均重');
         hasError = true;
-        errorMessage = '出栏均重必须大于入栏均重';
       } else {
-        toggleErrorClass(elements.finalWeight, false);
+        clearInputError(elements.finalWeight, '请输入出栏均重');
       }
-      
-      if (hasError) {
-        alert(errorMessage);
-        return;
-      }
-      
-      // 更新系数显示
+
+      if (hasError) return;
+
       updateCoefficientDisplay('initial', initialWeight);
       updateCoefficientDisplay('final', finalWeight);
-      
-      // 计算结果
+
       const initialCoeff = getInitialCoefficient(initialWeight).value;
       const finalCoeff = getFinalCoefficient(finalWeight).value;
       const result = (
-        feedConsumption + 
-        (initialWeight - 7) * initialCoeff - 
+        feedConsumption +
+        (initialWeight - 7) * initialCoeff -
         (finalWeight - 120) * finalCoeff
       ) / 113;
-      
+
       elements.result.textContent = result.toFixed(3);
     }
-    
-    // 重置表单
+
     function resetForm() {
       elements.feedConsumption.value = '';
       elements.initialWeight.value = '';
       elements.finalWeight.value = '';
-      
-      Object.values(elements).forEach(el => {
-        if (el.tagName === 'INPUT') {
-          el.classList.remove('error');
-        } else if (el.tagName === 'SPAN') {
-          el.textContent = '-';
-        }
-      });
+      clearInputError(elements.feedConsumption, '请输入头均耗料');
+      clearInputError(elements.initialWeight, '请输入入栏均重 (4-30kg)');
+      clearInputError(elements.finalWeight, '请输入出栏均重');
+      elements.initialCoefficient.textContent = '-';
+      elements.finalCoefficient.textContent = '-';
       elements.result.textContent = '0.000';
     }
-    
-    // 事件监听：实时更新系数
-    elements.initialWeight.addEventListener('input', () => updateCoefficientDisplay('initial', parseFloat(elements.initialWeight.value)));
-    elements.finalWeight.addEventListener('input', () => updateCoefficientDisplay('final', parseFloat(elements.finalWeight.value)));
+
+    elements.initialWeight.addEventListener('input', () =>
+      updateCoefficientDisplay('initial', parseFloat(elements.initialWeight.value))
+    );
+    elements.finalWeight.addEventListener('input', () =>
+      updateCoefficientDisplay('final', parseFloat(elements.finalWeight.value))
+    );
   </script>
 </body>
 </html>
