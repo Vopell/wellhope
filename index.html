@@ -3,21 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="智慧养猪主页 - 料肉比计算、出栏奖金等工具">
   <title>主页 - 智慧养猪</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
+    :root {
+      --bg-start: #4b0082;
+      --bg-end: #00bfff;
+      --btn-start: #00bfff;
+      --btn-end: #1e90ff;
+      --shadow-glow: rgba(0, 191, 255, 0.2);
+      --text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+    }
+
     /* 基础样式 */
     body {
       margin: 0;
       padding: 0;
-      font-family: Arial, sans-serif;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       height: 100vh;
-      background: linear-gradient(135deg, #1e3c72, #2a5298); /* 渐变背景 */
-      background-size: cover;
+      background: linear-gradient(135deg, var(--bg-start) 0%, var(--bg-end) 100%);
       color: white;
     }
 
@@ -25,7 +34,8 @@
       font-size: 36px;
       text-align: center;
       margin-bottom: 40px;
-      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+      text-shadow: var(--text-shadow);
+      animation: fadeInUp 0.8s ease-out;
     }
 
     .btn-container {
@@ -33,15 +43,17 @@
       flex-direction: column;
       gap: 20px;
       align-items: center;
+      animation: fadeInUp 0.8s ease-out 0.2s both; /* 延时0.2s，顺序出现 */
     }
 
     .btn {
       padding: 15px 30px;
-      background: linear-gradient(45deg, #007bff, #0056b3);
+      background: linear-gradient(45deg, var(--btn-start), var(--btn-end));
       color: white;
       font-size: 18px;
-      border: none;
-      border-radius: 25px;
+      font-weight: 500;
+      border: 1px solid rgba(255, 255, 255, 0.4);
+      border-radius: 28px;
       cursor: pointer;
       width: auto;
       min-width: 280px;
@@ -50,21 +62,23 @@
       white-space: nowrap;
       text-decoration: none;
       display: inline-block;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 4px 8px rgba(0, 0, 0, 0.2);
     }
 
     .btn:hover {
       transform: translateY(-5px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-      background: linear-gradient(45deg, #0056b3, #007bff); /* 悬停时渐变反转 */
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 20px var(--shadow-glow);
+      background: linear-gradient(45deg, var(--btn-end), var(--btn-start));
     }
 
     .btn:active {
       transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2), 0 2px 6px rgba(0, 0, 0, 0.2);
     }
 
     .btn i {
-      margin-right: 10px;
+      margin-right: 8px;
+      font-size: 16px;
     }
 
     .footer {
@@ -72,7 +86,14 @@
       bottom: 20px;
       color: white;
       font-size: 14px;
+      font-weight: 500;
       text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+    }
+
+    /* 动画 */
+    @keyframes fadeInUp {
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     /* 响应式布局 */
@@ -84,6 +105,7 @@
       .btn {
         font-size: 16px;
         min-width: 240px;
+        padding: 13px 25px;
       }
     }
   </style>
@@ -93,9 +115,9 @@
   <h1>智慧养猪</h1>
 
   <main class="btn-container">
-    <a href="fcr.html" class="btn"><i class="fas fa-weight-hanging"></i> 料肉比 (FCR)</a>
-    <a href="restore-fcr.html" class="btn"><i class="fas fa-sync-alt"></i> 还原料肉比</a>
-    <a href="bonus.html" class="btn"><i class="fas fa-cogs"></i> 出栏奖金</a>
+    <a href="fcr.html" class="btn" aria-label="料肉比计算器"><i class="fas fa-weight-hanging"></i> 料肉比 (FCR)</a>
+    <a href="restore-fcr.html" class="btn" aria-label="还原料肉比计算器"><i class="fas fa-sync-alt"></i> 还原料肉比</a>
+    <a href="bonus.html" class="btn" aria-label="出栏奖金计算器"><i class="fas fa-coins"></i> 出栏奖金</a>
   </main>
 
   <footer class="footer">
