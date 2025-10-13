@@ -296,7 +296,7 @@
     </div>
   </div>
 
-  <script>
+<script>
     'use strict';
 
     // 缓存DOM元素和配置
@@ -310,4 +310,116 @@
     };
 
     const elements = {
-      ...Object.fromEntries(Object.entries(inputs).map(([key
+      ...Object.fromEntries(Object.entries(inputs).map(([key, { id }]) => [key, document.getElementById(id)])),
+      entryAvgWeight: document.getElementById('entryAvgWeight'),
+      exitAvgWeight: document.getElementById('exitAvgWeight'),
+      feedPerHead: document.getElementById('feedPerHead'),
+      medicinePerHead: document.getElementById('medicinePerHead'),
+      feedMeatRatio: document.getElementById('feedMeatRatio'),
+      survivalRate: document.getElementById('survivalRate')
+    };
+
+    // 通用错误清除（仅移除高亮，恢复placeholder）
+    function clearError(inputId) {
+      const input = elements[inputId];
+      input.classList.remove('error');
+      input.placeholder = inputs[inputId].placeholder;
+    }
+
+    // 设置输入高亮（不改placeholder）
+    function setInputError(inputId) {
+      elements[inputId].classList.add('error');
+    }
+
+    // 更新结果显示
+    function updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate) {
+      elements.entryAvgWeight.textContent = entryAvgWeight.toFixed(2);
+      elements.exitAvgWeight.textContent = exitAvgWeight.toFixed(2);
+      elements.feedPerHead.textContent = feedPerHead.toFixed(2);
+      elements.medicinePerHead.textContent = medicinePerHead.toFixed(2);
+      elements.feedMeatRatio.textContent = feedMeatRatio;
+      elements.survivalRate.textContent = survivalRate.toFixed(2) + '%';
+    }
+
+    // 重置输入
+    function resetInputs() {
+      Object.entries(inputs).forEach(([key]) => {
+        elements[key].value = '';
+        clearError(key);
+      });
+    }
+
+    // 重置表单
+    function resetForm() {
+      resetInputs();
+      elements.entryAvgWeight.textContent = '0.000';
+      elements.exitAvgWeight.textContent = '0.000';
+      elements.feedPerHead.textContent = '0.000';
+      elements.medicinePerHead.textContent = '0.000';
+      elements.feedMeatRatio.textContent = '0.000';
+      elements.survivalRate.textContent = '0.000%';
+    }
+
+    // 计算结果
+	function calculateResult() {
+	  const values = Object.fromEntries(Object.entries(inputs).map(([key]) => [key, parseFloat(elements[key].value)]));
+
+	  let hasError = false;
+
+	  // 基础NaN/空值检查（仅高亮输入框 + 改 placeholder）
+	  Object.entries(values).forEach(([key, value]) => {
+		if (isNaN(value) || value === '') {
+		  const input = elements[key];
+		  input.classList.add('error');
+		  input.placeholder = `请输入${inputs[key].name}`;
+		  hasError = true;
+		}
+	  });
+
+	  // 业务逻辑检查（仅针对非NaN值）
+	  if (!isNaN(values.totalFeed) && values.totalFeed <= 0) {
+		setInputError('totalFeed');
+		elements.totalFeed.placeholder = '饲料总量必须大于0';
+		hasError = true;
+	  }
+	  if (!isNaN(values.entryHead) && values.entryHead <= 0) {
+		setInputError('entryHead');
+		elements.entryHead.placeholder = '入栏头数必须大于0';
+		hasError = true;
+	  }
+	  if (!isNaN(values.entryWeight) && values.entryWeight <= 0) {
+		setInputError('entryWeight');
+		elements.entryWeight.placeholder = '入栏总重必须大于0';
+		hasError = true;
+	  }
+	  if (!isNaN(values.exitHead) && !isNaN(values.entryHead) && values.exitHead > values.entryHead) {
+		setInputError('exitHead');
+		elements.exitHead.placeholder = '出栏头数不能大于入栏头数';
+		hasError = true;
+	  }
+	  if (!isNaN(values.exitWeight) && !isNaN(values.entryWeight) && values.exitWeight < values.entryWeight) {
+		setInputError('exitWeight');
+		elements.exitWeight.placeholder = '出栏总重不能小于入栏总重';
+		hasError = true;
+	  }
+
+	  // 若存在错误，直接返回，不再弹出 alert
+	  if (hasError) return;
+
+	  // ===== 计算逻辑 =====
+	  const { entryWeight, entryHead, exitWeight, exitHead, totalFeed, totalMedicine } = values;
+	  const entryAvgWeight = entryWeight / entryHead;
+	  const exitAvgWeight = exitWeight / exitHead;
+	  const feedPerHead = totalFeed / exitHead;
+	  const medicinePerHead = totalMedicine / exitHead;
+	  const weightGainPerHead = exitAvgWeight - entryAvgWeight;
+	  const feedMeatRatio = (weightGainPerHead > 0) ? (feedPerHead / weightGainPerHead).toFixed(3) : 'N/A';
+	  const survivalRate = (exitHead / entryHead) * 100;
+
+	  updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate);
+	}
+
+  </script>
+  
+</body>
+</html>
