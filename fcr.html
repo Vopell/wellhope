@@ -6,160 +6,212 @@
   <title>料肉比计算器</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    body {
-      background: linear-gradient(135deg, #f5f5f5, #e1e1e1);
-      color: #333;
-      font-family: Arial, sans-serif;
-      padding: 20px;
+    * {
+      box-sizing: border-box;
       margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: #333;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      box-sizing: border-box;
     }
-
+    
+    .container {
+      background: white;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 30px;
+      width: 100%;
+      max-width: 500px;
+      margin: 20px;
+    }
+    
     h1 {
-      font-size: 24px;
-      color: #007bff;
-      margin-bottom: 20px;
+      color: #2c3e50;
       text-align: center;
+      margin-bottom: 10px;
+      font-size: 24px;
     }
-
+    
+    .subtitle {
+      text-align: center;
+      color: #7f8c8d;
+      margin-bottom: 25px;
+      font-size: 14px;
+    }
+    
     .input-group {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
       display: flex;
       flex-wrap: wrap;
+      gap: 10px;
       justify-content: space-between;
       width: 100%;
-      max-width: 600px;
     }
-
+    
+    .input-group > div {
+      flex: 1;
+      min-width: calc(50% - 5px);
+    }
+    
     .input-group label {
-      font-size: 16px;
+      display: block;
       margin-bottom: 8px;
-      font-weight: bold;
-      color: #333;
-      width: 150px;
-      text-align: left;
+      font-weight: 600;
+      color: #2c3e50;
+      font-size: 14px;
     }
-
+    
     .input-group input {
-      padding: 10px 15px;
-      width: 48%;
-      font-size: 16px;
-      border: 1px solid #ccc;
+      width: 100%;
+      padding: 12px 15px;
+      border: 2px solid #e1e8ed;
       border-radius: 8px;
-      outline: none;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+      font-size: 16px;
       transition: all 0.3s ease;
-      margin-bottom: 15px;
+      box-sizing: border-box;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-
+    
     .input-group input:focus {
-      border-color: #007bff;
-      box-shadow: 0 0 8px rgba(0, 123, 255, 0.5);
+      border-color: #3498db;
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      outline: none;
     }
-
+    
     .input-group input.error {
-      border-color: red;
+      border-color: #e74c3c;
     }
-
+    
     .input-group input::placeholder {
       color: #999;
       font-style: italic;
     }
-
-    .btn, .reset-btn {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 25px;
-      font-size: 16px;
-      cursor: pointer;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      transition: all 0.3s ease;
+    
+    .input-group input.error::placeholder {
+      color: #e74c3c;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 15px;
       margin-top: 20px;
-      width: 100%;
-      max-width: 250px;
+    }
+    
+    .btn {
+      flex: 1;
+      padding: 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
       color: white;
     }
-
-    .btn {
-      background: linear-gradient(45deg, #007bff, #0056b3);
+    
+    .btn.calculate {
+      background: linear-gradient(135deg, #3498db, #2980b9);
     }
-
-    .reset-btn {
-      background: linear-gradient(45deg, #e74c3c, #f1948a);
-      padding: 12px 30px;
-      margin-top: 10px;
+    
+    .btn.reset {
+      background: #e1e8ed;
+      color: #2c3e50;
     }
-
-    .btn:hover, .reset-btn:hover {
+    
+    .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-
-    .btn:active, .reset-btn:active {
+    
+    .btn:active {
       transform: translateY(0);
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
     }
-
-    .btn i, .reset-btn i {
+    
+    .btn i {
       margin-right: 8px;
     }
-
-    .output-group {
-      margin-top: 20px;
-      font-size: 18px;
+    
+    .result-container {
+      margin-top: 25px;
       text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 10px;
       animation: fadeIn 0.5s ease-out;
       width: 100%;
-      max-width: 600px;
     }
-
-    .output-group h2 {
-      color: #333;
+    
+    .result-container h2 {
+      color: #2c3e50;
+      margin-bottom: 10px;
     }
-
+    
     .result-row {
       display: flex;
       justify-content: space-between;
       margin-bottom: 10px;
     }
-
+    
     .result-item {
       width: 48%;
       text-align: left;
     }
-
+    
     #result {
-      color: green;
+      color: #27ae60;
       font-weight: bold;
       font-size: 20px;
     }
-
+    
     @keyframes fadeIn {
-      0% { opacity: 0; }
-      100% { opacity: 1; }
+      0% { opacity: 0; transform: translateY(10px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
-
+    
     @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+      
+      .btn-group {
+        flex-direction: column;
+      }
+      
+      .input-group {
+        gap: 15px;
+      }
+      
+      .input-group > div {
+        min-width: calc(50% - 7.5px);
+      }
+      
       .input-group input {
         font-size: 14px;
+        padding: 10px 12px;
       }
-
-      .btn, .reset-btn {
+      
+      .btn {
         font-size: 14px;
       }
-
-      .output-group {
+      
+      .result-container {
         font-size: 16px;
       }
-
+      
       #result {
         font-size: 18px;
       }
@@ -167,75 +219,78 @@
   </style>
 </head>
 <body>
+  <div class="container">
+    <h1>料肉比计算器</h1>
 
-  <h1>料肉比计算器</h1>
-
-  <div class="input-group">
-    <div>
-      <label for="totalFeed">饲料总量: </label>
-      <input type="number" id="totalFeed" placeholder="请输入饲料总量" onfocus="clearError('totalFeed')" />
-    </div>
-    <div>
-      <label for="entryWeight">入栏总重: </label>
-      <input type="number" id="entryWeight" placeholder="请输入入栏总重" onfocus="clearError('entryWeight')" />
-    </div>
-  </div>
-
-  <div class="input-group">
-    <div>
-      <label for="entryHead">入栏头数: </label>
-      <input type="number" id="entryHead" placeholder="请输入入栏头数" onfocus="clearError('entryHead')" />
-    </div>
-    <div>
-      <label for="exitWeight">出栏总重: </label>
-      <input type="number" id="exitWeight" placeholder="请输入出栏总重" onfocus="clearError('exitWeight')" />
-    </div>
-  </div>
-
-  <div class="input-group">
-    <div>
-      <label for="exitHead">出栏头数: </label>
-      <input type="number" id="exitHead" placeholder="请输入出栏头数" onfocus="clearError('exitHead')" />
-    </div>
-    <div>
-      <label for="totalMedicine">药费总额: </label>
-      <input type="number" id="totalMedicine" placeholder="请输入药费总额" onfocus="clearError('totalMedicine')" />
-    </div>
-  </div>
-
-  <button class="btn" onclick="calculateResult()">
-    <i class="fas fa-calculator"></i> 计算料肉比
-  </button>
-
-  <button class="reset-btn" onclick="resetForm()">
-    <i class="fas fa-redo"></i> 重置
-  </button>
-
-  <div class="output-group">
-    <h2>计算结果:</h2>
-    <div id="result">
-      <div class="result-row">
-        <div class="result-item">
-          <span>入栏均重:</span> <span id="entryAvgWeight">0.000</span> kg
-        </div>
-        <div class="result-item">
-          <span>出栏均重:</span> <span id="exitAvgWeight">0.000</span> kg
-        </div>
+    <div class="input-group">
+      <div>
+        <label for="totalFeed">饲料总量: </label>
+        <input type="number" id="totalFeed" placeholder="请输入饲料总量" onfocus="clearError('totalFeed')" />
       </div>
-      <div class="result-row">
-        <div class="result-item">
-          <span>头均耗料:</span> <span id="feedPerHead">0.000</span> kg
-        </div>
-        <div class="result-item">
-          <span>头均药费:</span> <span id="medicinePerHead">0.000</span> 元
-        </div>
+      <div>
+        <label for="entryWeight">入栏总重: </label>
+        <input type="number" id="entryWeight" placeholder="请输入入栏总重" onfocus="clearError('entryWeight')" />
       </div>
-      <div class="result-row">
-        <div class="result-item">
-          <span>料肉比:</span> <span id="feedMeatRatio">0.000</span>
+    </div>
+
+    <div class="input-group">
+      <div>
+        <label for="entryHead">入栏头数: </label>
+        <input type="number" id="entryHead" placeholder="请输入入栏头数" onfocus="clearError('entryHead')" />
+      </div>
+      <div>
+        <label for="exitWeight">出栏总重: </label>
+        <input type="number" id="exitWeight" placeholder="请输入出栏总重" onfocus="clearError('exitWeight')" />
+      </div>
+    </div>
+
+    <div class="input-group">
+      <div>
+        <label for="exitHead">出栏头数: </label>
+        <input type="number" id="exitHead" placeholder="请输入出栏头数" onfocus="clearError('exitHead')" />
+      </div>
+      <div>
+        <label for="totalMedicine">药费总额: </label>
+        <input type="number" id="totalMedicine" placeholder="请输入药费总额" onfocus="clearError('totalMedicine')" />
+      </div>
+    </div>
+
+    <div class="btn-group">
+      <button class="btn calculate" onclick="calculateResult()">
+        <i class="fas fa-calculator"></i> 计算料肉比
+      </button>
+
+      <button class="btn reset" onclick="resetForm()">
+        <i class="fas fa-redo"></i> 重置
+      </button>
+    </div>
+
+    <div class="result-container">
+      <h2>计算结果:</h2>
+      <div id="result">
+        <div class="result-row">
+          <div class="result-item">
+            <span>入栏均重:</span> <span id="entryAvgWeight">0.000</span> kg
+          </div>
+          <div class="result-item">
+            <span>出栏均重:</span> <span id="exitAvgWeight">0.000</span> kg
+          </div>
         </div>
-        <div class="result-item">
-          <span>成活率:</span> <span id="survivalRate">0.000%</span>
+        <div class="result-row">
+          <div class="result-item">
+            <span>头均耗料:</span> <span id="feedPerHead">0.000</span> kg
+          </div>
+          <div class="result-item">
+            <span>头均药费:</span> <span id="medicinePerHead">0.000</span> 元
+          </div>
+        </div>
+        <div class="result-row">
+          <div class="result-item">
+            <span>料肉比:</span> <span id="feedMeatRatio">0.000</span>
+          </div>
+          <div class="result-item">
+            <span>成活率:</span> <span id="survivalRate">0.000%</span>
+          </div>
         </div>
       </div>
     </div>
@@ -255,116 +310,4 @@
     };
 
     const elements = {
-      ...Object.fromEntries(Object.entries(inputs).map(([key, { id }]) => [key, document.getElementById(id)])),
-      entryAvgWeight: document.getElementById('entryAvgWeight'),
-      exitAvgWeight: document.getElementById('exitAvgWeight'),
-      feedPerHead: document.getElementById('feedPerHead'),
-      medicinePerHead: document.getElementById('medicinePerHead'),
-      feedMeatRatio: document.getElementById('feedMeatRatio'),
-      survivalRate: document.getElementById('survivalRate')
-    };
-
-    // 通用错误清除（仅移除高亮，恢复placeholder）
-    function clearError(inputId) {
-      const input = elements[inputId];
-      input.classList.remove('error');
-      input.placeholder = inputs[inputId].placeholder;
-    }
-
-    // 设置输入高亮（不改placeholder）
-    function setInputError(inputId) {
-      elements[inputId].classList.add('error');
-    }
-
-    // 更新结果显示
-    function updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate) {
-      elements.entryAvgWeight.textContent = entryAvgWeight.toFixed(2);
-      elements.exitAvgWeight.textContent = exitAvgWeight.toFixed(2);
-      elements.feedPerHead.textContent = feedPerHead.toFixed(2);
-      elements.medicinePerHead.textContent = medicinePerHead.toFixed(2);
-      elements.feedMeatRatio.textContent = feedMeatRatio;
-      elements.survivalRate.textContent = survivalRate.toFixed(2) + '%';
-    }
-
-    // 重置输入
-    function resetInputs() {
-      Object.entries(inputs).forEach(([key]) => {
-        elements[key].value = '';
-        clearError(key);
-      });
-    }
-
-    // 重置表单
-    function resetForm() {
-      resetInputs();
-      elements.entryAvgWeight.textContent = '0.000';
-      elements.exitAvgWeight.textContent = '0.000';
-      elements.feedPerHead.textContent = '0.000';
-      elements.medicinePerHead.textContent = '0.000';
-      elements.feedMeatRatio.textContent = '0.000';
-      elements.survivalRate.textContent = '0.000%';
-    }
-
-    // 计算结果
-    function calculateResult() {
-      const values = Object.fromEntries(Object.entries(inputs).map(([key]) => [key, parseFloat(elements[key].value)]));
-
-      const errors = [];
-      let hasError = false;
-
-      // 基础NaN/空值检查
-      Object.entries(values).forEach(([key, value]) => {
-        if (isNaN(value) || value === '') {
-          errors.push(`${inputs[key].name}：此字段不能为空`);
-          setInputError(key);
-          hasError = true;
-        }
-      });
-
-      // 业务逻辑检查（仅针对非NaN值）
-      if (!isNaN(values.totalFeed) && values.totalFeed <= 0) {
-        errors.push('饲料总量：必须大于0');
-        setInputError('totalFeed');
-        hasError = true;
-      }
-      if (!isNaN(values.entryHead) && values.entryHead <= 0) {
-        errors.push('入栏头数：必须大于0');
-        setInputError('entryHead');
-        hasError = true;
-      }
-      if (!isNaN(values.entryWeight) && values.entryWeight <= 0) {
-        errors.push('入栏总重：必须大于0');
-        setInputError('entryWeight');
-        hasError = true;
-      }
-      if (!isNaN(values.exitHead) && !isNaN(values.entryHead) && values.exitHead > values.entryHead) {
-        errors.push('出栏头数：必须小于等于入栏头数');
-        setInputError('exitHead');
-        hasError = true;
-      }
-      if (!isNaN(values.exitWeight) && !isNaN(values.entryWeight) && values.exitWeight < values.entryWeight) {
-        errors.push('出栏总重：必须大于等于入栏总重');
-        setInputError('exitWeight');
-        hasError = true;
-      }
-
-      if (hasError) {
-        alert(errors.join('\n'));
-        return;
-      }
-
-      const { entryWeight, entryHead, exitWeight, exitHead, totalFeed, totalMedicine } = values;
-      const entryAvgWeight = entryWeight / entryHead;
-      const exitAvgWeight = exitWeight / exitHead;
-      const feedPerHead = totalFeed / exitHead;
-      const medicinePerHead = totalMedicine / exitHead;
-      const weightGainPerHead = exitAvgWeight - entryAvgWeight;
-      const feedMeatRatio = (weightGainPerHead > 0) ? (feedPerHead / weightGainPerHead).toFixed(3) : 'N/A';
-      const survivalRate = (exitHead / entryHead) * 100;
-
-      updateResultText(entryAvgWeight, exitAvgWeight, feedPerHead, medicinePerHead, feedMeatRatio, survivalRate);
-    }
-  </script>
-
-</body>
-</html>
+      ...Object.fromEntries(Object.entries(inputs).map(([key
