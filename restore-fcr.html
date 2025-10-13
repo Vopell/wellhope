@@ -310,6 +310,19 @@
     elements.finalWeight.addEventListener('input', () =>
       updateCoefficientDisplay('final', parseFloat(elements.finalWeight.value))
     );
+	
+	// ✅ 当用户点击或聚焦输入框时，清除红色错误提示
+	Object.entries({
+	  feedConsumption: '请输入头均耗料',
+	  initialWeight: '请输入入栏均重 (4-30kg)',
+	  finalWeight: '请输入出栏均重'
+	}).forEach(([id, placeholder]) => {
+	  const input = elements[id];
+	  input.addEventListener('focus', () => {
+		clearInputError(input, placeholder);
+	  });
+	});
+
   </script>
 </body>
 </html>
