@@ -3,17 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>还原料肉比计算器</title>
+  <title>ReFCR</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
+    :root {
+      --primary: #3498db;
+      --primary-dark: #2980b9;
+      --success: #27ae60;
+      --danger: #e74c3c;
+      --gray-light: #f8f9fa;
+      --gray-border: #e1e8ed;
+      --text-main: #2c3e50;
     }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-      color: #333;
+      color: var(--text-main);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       padding: 20px;
       display: flex;
@@ -32,7 +37,7 @@
       margin: 20px;
     }
     h1 {
-      color: #2c3e50;
+      color: var(--text-main);
       text-align: center;
       margin-bottom: 10px;
       font-size: 24px;
@@ -43,44 +48,40 @@
       margin-bottom: 25px;
       font-size: 14px;
     }
-    .input-group {
-      margin-bottom: 20px;
-    }
+    .input-group { margin-bottom: 20px; }
     .input-group label {
       display: block;
       margin-bottom: 8px;
       font-weight: 600;
-      color: #2c3e50;
+      color: var(--text-main);
     }
     .input-group input {
       width: 100%;
       padding: 12px 15px;
-      border: 2px solid #e1e8ed;
+      border: 2px solid var(--gray-border);
       border-radius: 8px;
       font-size: 16px;
       transition: all 0.3s ease;
     }
     .input-group input:focus {
-      border-color: #3498db;
+      border-color: var(--primary);
       box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
       outline: none;
     }
-
-    /* ✅ 仅修改 placeholder 颜色为红色，不改边框 */
     .input-group input.error::placeholder {
-      color: #e74c3c;
+      color: var(--danger);
       opacity: 1;
     }
 
     .coefficient-info {
-      background: #f8f9fa;
+      background: var(--gray-light);
       border-radius: 8px;
       padding: 15px;
       margin: 20px 0;
       font-size: 14px;
     }
     .coefficient-info h3 {
-      color: #2c3e50;
+      color: var(--text-main);
       margin-bottom: 10px;
       font-size: 16px;
     }
@@ -89,10 +90,14 @@
       display: flex;
       justify-content: space-between;
     }
+
     .btn-group {
       display: flex;
       gap: 15px;
       margin-top: 20px;
+    }
+    .btn, .input-group input {
+      transition: all 0.3s ease;
     }
     .btn {
       flex: 1;
@@ -102,47 +107,41 @@
       font-size: 16px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s ease;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .btn.calculate {
-      background: linear-gradient(135deg, #3498db, #2980b9);
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
       color: white;
     }
     .btn.reset {
-      background: #e1e8ed;
-      color: #2c3e50;
+      background: var(--gray-border);
+      color: var(--text-main);
     }
     .btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-    .btn:active {
-      transform: translateY(0);
-    }
-    .btn i {
-      margin-right: 8px;
-    }
+    .btn:active { transform: translateY(0); }
+    .btn i { margin-right: 8px; }
 
-    /* ✅ 保留原结果显示样式 */
     .result-container {
       margin-top: 25px;
       text-align: center;
       padding: 20px;
-      background: #f8f9fa;
+      background: var(--gray-light);
       border-radius: 10px;
       animation: fadeIn 0.5s ease-out;
     }
     .result-container h2 {
-      color: #2c3e50;
+      color: var(--text-main);
       margin-bottom: 10px;
     }
     #result {
       font-size: 32px;
       font-weight: 700;
-      color: #27ae60;
+      color: var(--success);
     }
     .formula {
       background: #f1f2f6;
@@ -165,20 +164,20 @@
 <body>
   <div class="container">
     <h1>还原料肉比计算器</h1>
-    
+
     <div class="input-group">
       <label for="feedConsumption">头均耗料 (kg)</label>
-      <input type="number" id="feedConsumption" placeholder="请输入头均耗料" min="0" step="0.1">
+      <input type="number" id="feedConsumption" aria-label="头均耗料" placeholder="请输入头均耗料" min="0" step="0.1">
     </div>
 
     <div class="input-group">
       <label for="initialWeight">入栏均重 (kg)</label>
-      <input type="number" id="initialWeight" placeholder="请输入入栏均重 (4-30kg)" min="4" max="30" step="0.1">
+      <input type="number" id="initialWeight" aria-label="入栏均重" placeholder="请输入入栏均重 (4-30kg)" min="4" max="30" step="0.1">
     </div>
 
     <div class="input-group">
       <label for="finalWeight">出栏均重 (kg)</label>
-      <input type="number" id="finalWeight" placeholder="请输入出栏均重" min="4" step="0.1">
+      <input type="number" id="finalWeight" aria-label="出栏均重" placeholder="请输入出栏均重" min="4" step="0.1">
     </div>
 
     <div class="coefficient-info">
@@ -202,124 +201,110 @@
     </div>
   </div>
 
-  <script>
-    'use strict';
-    const elements = {
-      feedConsumption: document.getElementById('feedConsumption'),
-      initialWeight: document.getElementById('initialWeight'),
-      finalWeight: document.getElementById('finalWeight'),
-      initialCoefficient: document.getElementById('initialCoefficient'),
-      finalCoefficient: document.getElementById('finalCoefficient'),
-      result: document.getElementById('result')
-    };
+	<script>
+	'use strict';
+	const elements = {
+	  feedConsumption: document.getElementById('feedConsumption'),
+	  initialWeight: document.getElementById('initialWeight'),
+	  finalWeight: document.getElementById('finalWeight'),
+	  initialCoefficient: document.getElementById('initialCoefficient'),
+	  finalCoefficient: document.getElementById('finalCoefficient'),
+	  result: document.getElementById('result')
+	};
 
-    function getInitialCoefficient(weight) {
-      if (weight <= 10) return { value: 1.3, range: ' (4-10kg)' };
-      if (weight < 20) return { value: 1.5, range: ' (10-20kg)' };
-      return { value: 1.7, range: ' (20-30kg)' };
-    }
-
-    function getFinalCoefficient(weight) {
-      if (weight <= 90) return { value: 3.0, range: ' (≤90kg-异常猪)' };
-      if (weight <= 100) return { value: 2.9, range: ' (90-100kg)' };
-      if (weight <= 110) return { value: 3.1, range: ' (100-110kg)' };
-      if (weight <= 120) return { value: 3.3, range: ' (110-120kg)' };
-      if (weight <= 130) return { value: 3.5, range: ' (120-130kg)' };
-      return { value: 3.7, range: ' (130kg以上)' };
-    }
-
-    function updateCoefficientDisplay(type, value) {
-      const span = type === 'initial' ? elements.initialCoefficient : elements.finalCoefficient;
-      if (!isNaN(value)) {
-        const coeff = type === 'initial' ? getInitialCoefficient(value) : getFinalCoefficient(value);
-        span.textContent = `${coeff.value}${coeff.range}`;
-      } else {
-        span.textContent = '-';
-      }
-    }
-
-    // ✅ 错误提示函数
-    function showInputError(input, message) {
-      input.classList.add('error');
-      input.value = '';
-      input.placeholder = message;
-    }
-    function clearInputError(input, defaultPlaceholder) {
-      input.classList.remove('error');
-      input.placeholder = defaultPlaceholder;
-    }
-
-    function calculateResult() {
-      const feedConsumption = parseFloat(elements.feedConsumption.value);
-      const initialWeight = parseFloat(elements.initialWeight.value);
-      const finalWeight = parseFloat(elements.finalWeight.value);
-      let hasError = false;
-
-      if (isNaN(feedConsumption) || feedConsumption <= 0) {
-        showInputError(elements.feedConsumption, '请输入有效的头均耗料 (>0)');
-        hasError = true;
-      } else {
-        clearInputError(elements.feedConsumption, '请输入头均耗料');
-      }
-
-      if (isNaN(initialWeight) || initialWeight < 4 || initialWeight > 30) {
-        showInputError(elements.initialWeight, '请输入4-30kg的入栏均重');
-        hasError = true;
-      } else {
-        clearInputError(elements.initialWeight, '请输入入栏均重 (4-30kg)');
-      }
-
-      if (isNaN(finalWeight) || finalWeight <= initialWeight) {
-        showInputError(elements.finalWeight, '出栏均重必须大于入栏均重');
-        hasError = true;
-      } else {
-        clearInputError(elements.finalWeight, '请输入出栏均重');
-      }
-
-      if (hasError) return;
-
-      const initialCoeff = getInitialCoefficient(initialWeight).value;
-      const finalCoeff = getFinalCoefficient(finalWeight).value;
-      const result = (
-        feedConsumption +
-        (initialWeight - 7) * initialCoeff -
-        (finalWeight - 120) * finalCoeff
-      ) / 113;
-
-      elements.result.textContent = result.toFixed(3);
-    }
-
-    function resetForm() {
-      elements.feedConsumption.value = '';
-      elements.initialWeight.value = '';
-      elements.finalWeight.value = '';
-      clearInputError(elements.feedConsumption, '请输入头均耗料');
-      clearInputError(elements.initialWeight, '请输入入栏均重 (4-30kg)');
-      clearInputError(elements.finalWeight, '请输入出栏均重');
-      elements.initialCoefficient.textContent = '-';
-      elements.finalCoefficient.textContent = '-';
-      elements.result.textContent = '0.000';
-    }
-
-    elements.initialWeight.addEventListener('input', () =>
-      updateCoefficientDisplay('initial', parseFloat(elements.initialWeight.value))
-    );
-    elements.finalWeight.addEventListener('input', () =>
-      updateCoefficientDisplay('final', parseFloat(elements.finalWeight.value))
-    );
-	
-	// ✅ 当用户点击或聚焦输入框时，清除红色错误提示
-	Object.entries({
+	const defaultPlaceholders = {
 	  feedConsumption: '请输入头均耗料',
 	  initialWeight: '请输入入栏均重 (4-30kg)',
 	  finalWeight: '请输入出栏均重'
-	}).forEach(([id, placeholder]) => {
-	  const input = elements[id];
-	  input.addEventListener('focus', () => {
-		clearInputError(input, placeholder);
-	  });
-	});
+	};
 
-  </script>
+	const denominator = 113;
+
+	function getInitialCoefficient(weight) {
+	  if (weight <= 10) return { value: 1.3, range: ' (4-10kg)' };
+	  if (weight < 20) return { value: 1.5, range: ' (10-20kg)' };
+	  return { value: 1.7, range: ' (20-30kg)' };
+	}
+
+	function getFinalCoefficient(weight) {
+	  if (weight <= 90) return { value: 3.0, range: ' (≤90kg-异常猪)' };
+	  if (weight <= 100) return { value: 2.9, range: ' (90-100kg)' };
+	  if (weight <= 110) return { value: 3.1, range: ' (100-110kg)' };
+	  if (weight <= 120) return { value: 3.3, range: ' (110-120kg)' };
+	  if (weight <= 130) return { value: 3.5, range: ' (120-130kg)' };
+	  return { value: 3.7, range: ' (130kg以上)' };
+	}
+
+	function updateCoefficientDisplay(type, value) {
+	  const span = elements[type === 'initial' ? 'initialCoefficient' : 'finalCoefficient'];
+	  if (isNaN(value)) return (span.textContent = '-');
+	  const { value: coeff, range } = type === 'initial'
+		? getInitialCoefficient(value)
+		: getFinalCoefficient(value);
+	  span.textContent = `${coeff}${range}`;
+	}
+
+	function showInputError(input, message) {
+	  input.classList.add('error');
+	  input.value = '';
+	  input.placeholder = message;
+	}
+
+	function clearInputError(input, placeholder) {
+	  input.classList.remove('error');
+	  input.placeholder = placeholder;
+	}
+
+	function validateInput(input, condition, errorMsg, defaultPlaceholder) {
+	  if (condition) {
+		showInputError(input, errorMsg);
+		return false;
+	  }
+	  clearInputError(input, defaultPlaceholder);
+	  return true;
+	}
+
+	function calculateResult() {
+	  const feedConsumption = parseFloat(elements.feedConsumption.value);
+	  const initialWeight = parseFloat(elements.initialWeight.value);
+	  const finalWeight = parseFloat(elements.finalWeight.value);
+
+	  const valid =
+		validateInput(elements.feedConsumption, isNaN(feedConsumption) || feedConsumption <= 0, '请输入有效的头均耗料 (>0)', defaultPlaceholders.feedConsumption) &
+		validateInput(elements.initialWeight, isNaN(initialWeight) || initialWeight < 4 || initialWeight > 30, '请输入4-30kg的入栏均重', defaultPlaceholders.initialWeight) &
+		validateInput(elements.finalWeight, isNaN(finalWeight) || finalWeight <= initialWeight, '出栏均重必须大于入栏均重', defaultPlaceholders.finalWeight);
+
+	  if (!valid) return;
+
+	  const initialCoeff = getInitialCoefficient(initialWeight).value;
+	  const finalCoeff = getFinalCoefficient(finalWeight).value;
+	  const result =
+		(feedConsumption + (initialWeight - 7) * initialCoeff - (finalWeight - 120) * finalCoeff) / denominator;
+
+	  elements.result.textContent = result.toFixed(3);
+	}
+
+	function resetForm() {
+	  ['feedConsumption', 'initialWeight', 'finalWeight'].forEach(id => {
+		const input = elements[id];
+		input.value = '';
+		clearInputError(input, defaultPlaceholders[id]);
+	  });
+	  elements.initialCoefficient.textContent = '-';
+	  elements.finalCoefficient.textContent = '-';
+	  elements.result.textContent = '0.000';
+	}
+
+	[
+	  { id: 'initialWeight', handler: v => updateCoefficientDisplay('initial', v) },
+	  { id: 'finalWeight', handler: v => updateCoefficientDisplay('final', v) },
+	  { id: 'feedConsumption', handler: () => {} }
+	].forEach(({ id, handler }) => {
+	  const input = elements[id];
+	  input.addEventListener('input', () => handler(parseFloat(input.value)));
+	  input.addEventListener('focus', () => clearInputError(input, defaultPlaceholders[id]));
+	});
+	</script>
+
 </body>
 </html>
