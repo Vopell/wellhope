@@ -6,11 +6,7 @@
 <title>出栏奖金计算</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
@@ -48,9 +44,7 @@ h1 {
   font-size: 14px;
 }
 
-.input-group {
-  margin-bottom: 20px;
-}
+.input-group { margin-bottom: 20px; }
 
 .input-group label {
   display: block;
@@ -74,7 +68,7 @@ h1 {
   outline: none;
 }
 
-/* ✅ placeholder 变红，不改边框 */
+/* placeholder 变红，不改边框 */
 .error::placeholder {
   color: #e74c3c !important;
   opacity: 1;
@@ -93,13 +87,8 @@ h1 {
   text-align: right;
 }
 
-.reward-value.positive {
-  color: #27ae60;
-}
-
-.reward-value.negative {
-  color: #e74c3c;
-}
+.reward-value.positive { color: #27ae60; }
+.reward-value.negative { color: #e74c3c; }
 
 .btn-group {
   display: flex;
@@ -137,13 +126,8 @@ h1 {
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
-.btn:active {
-  transform: translateY(0);
-}
-
-.btn i {
-  margin-right: 8px;
-}
+.btn:active { transform: translateY(0); }
+.btn i { margin-right: 8px; }
 
 .result-container {
   margin-top: 25px;
@@ -258,14 +242,18 @@ const utils = {
     elem.placeholder = placeholder;
     elem.classList.remove('error');
   },
+  setError(elem, msg = '请输入有效数值') {
+    elem.value = '';
+    elem.placeholder = msg;
+    elem.classList.add('error');
+  },
+  clearRewards() {
+    elements.finalBonus.textContent = '-';
+    Object.values(elements.rewards).forEach(r => r.textContent = '');
+  },
   displayReward(elem, value) {
-    if (value >= 0) {
-      elem.textContent = `+${value.toFixed(2)}`;
-      elem.className = 'reward-value positive';
-    } else {
-      elem.textContent = `${value.toFixed(2)}`;
-      elem.className = 'reward-value negative';
-    }
+    elem.textContent = `${value >= 0 ? '+' : ''}${value.toFixed(2)}`;
+    elem.className = `reward-value ${value >= 0 ? 'positive' : 'negative'}`;
   },
   bindFocusRestore(input) {
     input.addEventListener('focus', () => {
@@ -280,44 +268,42 @@ const bonusCalculator = {
     const values = Object.fromEntries(inputFields.map(f => [f.id, parseFloat(elements.inputs[f.id].value)]));
     let valid = true;
 
+    // 通用校验
     inputFields.forEach(f => {
       const val = values[f.id];
       const el = elements.inputs[f.id];
       if (!utils.isValidNumber(val)) {
-        el.value = '';
-        el.placeholder = '请输入有效数值';
-        el.classList.add('error');
+        utils.setError(el);
         valid = false;
       } else {
         utils.restorePlaceholder(el, f.placeholder);
       }
     });
 
+    // 一级猪数不能大于出栏头数
     if (valid && values.firstGradeCount > values.outputCount) {
-      const el = elements.inputs.firstGradeCount;
-      el.value = '';
-      el.placeholder = '不可大于出栏头数';
-      el.classList.add('error');
+      utils.setError(elements.inputs.firstGradeCount, '不可大于出栏头数');
       valid = false;
     }
 
     if (!valid) {
-      elements.finalBonus.textContent = '-';
-      Object.values(elements.rewards).forEach(r => r.textContent = '');
+      utils.clearRewards();
       return;
     }
 
-    const base = constants.BASE_REWARD;
-    const feedR = (constants.FEED_RATIO - values.feedRatio) / 0.1 * constants.FEED_REWARD_UNIT;
-    const medR = (constants.MEDICINE_COST - values.medicineCost) / 2 * constants.MEDICINE_REWARD_UNIT;
-    const qualR = (values.firstGradeCount / values.outputCount - constants.QUALITY_THRESHOLD) * values.outputCount * constants.QUALITY_REWARD_UNIT;
+    const { FEED_RATIO, MEDICINE_COST, QUALITY_THRESHOLD, FEED_REWARD_UNIT, MEDICINE_REWARD_UNIT, QUALITY_REWARD_UNIT, BASE_REWARD } = constants;
+    const { outputCount, feedRatio, medicineCost, firstGradeCount } = values;
 
-    utils.displayReward(elements.rewards.outputCount, base);
+    const feedR = (FEED_RATIO - feedRatio) / 0.1 * FEED_REWARD_UNIT;
+    const medR  = (MEDICINE_COST - medicineCost) / 2 * MEDICINE_REWARD_UNIT;
+    const qualR = (firstGradeCount / outputCount - QUALITY_THRESHOLD) * outputCount * QUALITY_REWARD_UNIT;
+
+    utils.displayReward(elements.rewards.outputCount, BASE_REWARD);
     utils.displayReward(elements.rewards.feedRatio, feedR);
     utils.displayReward(elements.rewards.medicineCost, medR);
     utils.displayReward(elements.rewards.firstGradeCount, qualR);
 
-    const total = values.outputCount * (base + feedR + medR) + qualR;
+    const total = outputCount * (BASE_REWARD + feedR + medR) + qualR;
     elements.finalBonus.textContent = `¥${total.toFixed(2)}`;
   },
 
@@ -327,14 +313,13 @@ const bonusCalculator = {
       el.value = '';
       utils.restorePlaceholder(el, f.placeholder);
     });
-    elements.finalBonus.textContent = '-';
-    Object.values(elements.rewards).forEach(r => r.textContent = '');
+    utils.clearRewards();
   },
 
   init() {
-    elements.calculateButton.addEventListener('click', this.calculateBonus.bind(this));
-    elements.resetButton.addEventListener('click', this.resetForm.bind(this));
-    inputFields.forEach(f => utils.bindFocusRestore(elements.inputs[f.id]));
+    elements.calculateButton.addEventListener('click', () => this.calculateBonus());
+    elements.resetButton.addEventListener('click', () => this.resetForm());
+    Object.values(elements.inputs).forEach(utils.bindFocusRestore);
   }
 };
 
