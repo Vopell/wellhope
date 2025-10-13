@@ -1,397 +1,344 @@
 <!DOCTYPE html>
 <html lang="zh">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>出栏奖金计算</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>出栏奖金计算</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <style>
-        * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-        }
-        
-        body {
-          background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-          color: #333;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 100vh;
-        }
-        
-        .container {
-          background: white;
-          border-radius: 15px;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-          padding: 30px;
-          width: 100%;
-          max-width: 500px;
-          margin: 20px;
-        }
-        
-        h1 {
-          color: #2c3e50;
-          text-align: center;
-          margin-bottom: 10px;
-          font-size: 24px;
-        }
-        
-        .subtitle {
-          text-align: center;
-          color: #7f8c8d;
-          margin-bottom: 25px;
-          font-size: 14px;
-        }
-        
-        .input-group {
-          margin-bottom: 20px;
-        }
-        
-        .input-group label {
-          display: block;
-          margin-bottom: 8px;
-          font-weight: 600;
-          color: #2c3e50;
-        }
-        
-        .input-group input {
-          width: 100%;
-          padding: 12px 15px;
-          border: 2px solid #e1e8ed;
-          border-radius: 8px;
-          font-size: 16px;
-          transition: all 0.3s ease;
-        }
-        
-        .input-group input:focus {
-          border-color: #3498db;
-          box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
-          outline: none;
-        }
-        
-        .input-group input.error {
-          border-color: #e74c3c;
-        }
-        
-        .input-container {
-          display: flex;
-          align-items: center;
-          width: 100%;
-        }
-        
-        .reward-value {
-          margin-left: 10px;
-          font-weight: bold;
-          min-width: 60px;
-          text-align: right;
-        }
-        
-        .reward-value.positive {
-          color: #27ae60;
-        }
-        
-        .reward-value.negative {
-          color: #e74c3c;
-        }
-        
-        .btn-group {
-          display: flex;
-          gap: 15px;
-          margin-top: 20px;
-        }
-        
-        .btn {
-          flex: 1;
-          padding: 14px;
-          border: none;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          text-decoration: none;
-        }
-        
-        .btn.calculate, .btn.home {
-          background: linear-gradient(135deg, #3498db, #2980b9);
-          color: white;
-        }
-        
-        .btn.reset {
-          background: #e1e8ed;
-          color: #2c3e50;
-        }
-        
-        .btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-        
-        .btn:active {
-          transform: translateY(0);
-        }
-        
-        .btn i {
-          margin-right: 8px;
-        }
-        
-        .btn.home {
-          flex: none;
-          padding: 8px 12px;
-          font-size: 14px;
-          max-width: 150px;
-          margin: 0 auto 20px;
-          width: auto;
-        }
-        
-        .btn.home:hover {
-          box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        }
-        
-        .result-container {
-          margin-top: 25px;
-          text-align: center;
-          padding: 20px;
-          background: #f8f9fa;
-          border-radius: 10px;
-          animation: fadeIn 0.5s ease-out;
-        }
-        
-        .result-container h2 {
-          color: #2c3e50;
-          margin-bottom: 10px;
-        }
-        
-        #finalBonus {
-          font-size: 32px;
-          font-weight: 700;
-          color: #27ae60;
-        }
-        
-        @keyframes fadeIn {
-          0% { opacity: 0; transform: translateY(10px); }
-          100% { opacity: 1; transform: translateY(0); }
-        }
-        
-        @media (max-width: 600px) {
-          .container {
-            padding: 20px;
-          }
-          
-          .btn-group {
-            flex-direction: column;
-          }
-        }
-    </style>
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  color: #333;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  padding: 30px;
+  width: 100%;
+  max-width: 500px;
+  margin: 20px;
+}
+
+h1 {
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 10px;
+  font-size: 24px;
+}
+
+.subtitle {
+  text-align: center;
+  color: #7f8c8d;
+  margin-bottom: 25px;
+  font-size: 14px;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 600;
+  color: #2c3e50;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #e1e8ed;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  outline: none;
+}
+
+/* ✅ placeholder 变红，不改边框 */
+.error::placeholder {
+  color: #e74c3c !important;
+  opacity: 1;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.reward-value {
+  margin-left: 10px;
+  font-weight: bold;
+  min-width: 60px;
+  text-align: right;
+}
+
+.reward-value.positive {
+  color: #27ae60;
+}
+
+.reward-value.negative {
+  color: #e74c3c;
+}
+
+.btn-group {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.btn {
+  flex: 1;
+  padding: 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.btn.calculate, .btn.home {
+  background: linear-gradient(135deg, #3498db, #2980b9);
+  color: white;
+}
+
+.btn.reset {
+  background: #e1e8ed;
+  color: #2c3e50;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn i {
+  margin-right: 8px;
+}
+
+.result-container {
+  margin-top: 25px;
+  text-align: center;
+  padding: 20px;
+  background: #f8f9fa;
+  border-radius: 10px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.result-container h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+#finalBonus {
+  font-size: 32px;
+  font-weight: 700;
+  color: #27ae60;
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; transform: translateY(10px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+  .container { padding: 20px; }
+  .btn-group { flex-direction: column; }
+}
+</style>
 </head>
 <body>
-  <div class="container">
-    <h1>出栏奖金计算器</h1>
-      
-    <div class="input-group">
-        <label for="outputCount">出栏头数：</label>
-        <div class="input-container">
-            <input type="number" id="outputCount" placeholder="请输入出栏头数">
-            <span class="reward-value" id="outputCountReward"></span>
-        </div>
-    </div>
-    
-    <div class="input-group">
-        <label for="feedRatio">还原FCR：</label>
-        <div class="input-container">
-            <input type="number" step="0.01" id="feedRatio" placeholder="请输入还原料肉比">
-            <span class="reward-value" id="feedRatioReward"></span>
-        </div>
-    </div>
-    
-    <div class="input-group">
-        <label for="medicineCost">头均药费：</label>
-        <div class="input-container">
-            <input type="number" step="0.01" id="medicineCost" placeholder="请输入头均药费">
-            <span class="reward-value" id="medicineCostReward"></span>
-        </div>
-    </div>
-    
-    <div class="input-group">
-        <label for="firstGradeCount">一级猪数：</label>
-        <div class="input-container">
-            <input type="number" id="firstGradeCount" placeholder="请输入一级猪数">
-            <span class="reward-value" id="firstGradeCountReward"></span>
-        </div>
-    </div>
-    
-    <div class="btn-group">
-      <button id="calculateButton" class="btn calculate">
-        <i class="fa fa-calculator"></i> 计算出栏奖金
-      </button>
-      <button id="resetButton" class="btn reset">
-        <i class="fa fa-refresh"></i> 重置
-      </button>
-    </div>
-    
-    <div class="result-container">
-      <h2>出栏奖金</h2>
-      <div id="finalBonus">-</div>
-    </div>
+<div class="container">
+  <h1>出栏奖金计算器</h1>
+  <div class="input-group">
+      <label for="outputCount">出栏头数：</label>
+      <div class="input-container">
+          <input type="number" id="outputCount" placeholder="请输入出栏头数">
+          <span class="reward-value" id="outputCountReward"></span>
+      </div>
   </div>
-    
-    <script>
-        'use strict';
+  <div class="input-group">
+      <label for="feedRatio">还原FCR：</label>
+      <div class="input-container">
+          <input type="number" step="0.01" id="feedRatio" placeholder="请输入还原料肉比">
+          <span class="reward-value" id="feedRatioReward"></span>
+      </div>
+  </div>
+  <div class="input-group">
+      <label for="medicineCost">头均药费：</label>
+      <div class="input-container">
+          <input type="number" step="0.01" id="medicineCost" placeholder="请输入头均药费">
+          <span class="reward-value" id="medicineCostReward"></span>
+      </div>
+  </div>
+  <div class="input-group">
+      <label for="firstGradeCount">一级猪数：</label>
+      <div class="input-container">
+          <input type="number" id="firstGradeCount" placeholder="请输入一级猪数">
+          <span class="reward-value" id="firstGradeCountReward"></span>
+      </div>
+  </div>
 
-        // 常量定义
-        const constants = {
-            BASE_REWARD: 3,
-            FEED_RATIO: 2.6,
-            MEDICINE_COST: 55,
-            QUALITY_THRESHOLD: 0.985, // 正品率阈值 98.5%
-            FEED_REWARD_UNIT: 2,
-            MEDICINE_REWARD_UNIT: 0.05,
-            QUALITY_REWARD_UNIT: 100, // 正品率奖励单位
-        };
+  <div class="btn-group">
+    <button id="calculateButton" class="btn calculate"><i class="fa fa-calculator"></i> 计算出栏奖金</button>
+    <button id="resetButton" class="btn reset"><i class="fa fa-refresh"></i> 重置</button>
+  </div>
 
-        // 配置输入字段
-        const inputFields = [
-            { id: 'outputCount', placeholder: '请输入出栏头数' },
-            { id: 'feedRatio', placeholder: '请输入还原料肉比', step: '0.01' },
-            { id: 'medicineCost', placeholder: '请输入头均药费', step: '0.01' },
-            { id: 'firstGradeCount', placeholder: '请输入一级猪数' }
-        ];
+  <div class="result-container">
+    <h2>出栏奖金</h2>
+    <div id="finalBonus">-</div>
+  </div>
+</div>
 
-        // 缓存DOM元素
-        const elements = {
-            inputs: Object.fromEntries(inputFields.map(field => [field.id, document.getElementById(field.id)])),
-            rewards: {
-                outputCount: document.getElementById('outputCountReward'),
-                feedRatio: document.getElementById('feedRatioReward'),
-                medicineCost: document.getElementById('medicineCostReward'),
-                firstGradeCount: document.getElementById('firstGradeCountReward')
-            },
-            finalBonus: document.getElementById('finalBonus'),
-            calculateButton: document.getElementById('calculateButton'),
-            resetButton: document.getElementById('resetButton')
-        };
+<script>
+'use strict';
 
-        // 工具函数
-        const utils = {
-            // 检查输入是否合法
-            isValidNumber(value) {
-                return !isNaN(value) && value > 0;
-            },
+const constants = {
+  BASE_REWARD: 3,
+  FEED_RATIO: 2.6,
+  MEDICINE_COST: 55,
+  QUALITY_THRESHOLD: 0.985,
+  FEED_REWARD_UNIT: 2,
+  MEDICINE_REWARD_UNIT: 0.05,
+  QUALITY_REWARD_UNIT: 100,
+};
 
-            // 恢复初始提示文本
-            restorePlaceholder(elem, placeholder) {
-                elem.placeholder = placeholder;
-                elem.classList.remove('error');
-            },
+const inputFields = [
+  { id: 'outputCount', placeholder: '请输入出栏头数' },
+  { id: 'feedRatio', placeholder: '请输入还原料肉比', step: '0.01' },
+  { id: 'medicineCost', placeholder: '请输入头均药费', step: '0.01' },
+  { id: 'firstGradeCount', placeholder: '请输入一级猪数' }
+];
 
-            // 显示奖励数值
-            displayReward(elem, value) {
-                if (value >= 0) {
-                    elem.textContent = `+${value.toFixed(2)}`;
-                    elem.className = 'reward-value positive';
-                } else {
-                    elem.textContent = `${value.toFixed(2)}`;
-                    elem.className = 'reward-value negative';
-                }
-            },
+const elements = {
+  inputs: Object.fromEntries(inputFields.map(f => [f.id, document.getElementById(f.id)])),
+  rewards: {
+    outputCount: document.getElementById('outputCountReward'),
+    feedRatio: document.getElementById('feedRatioReward'),
+    medicineCost: document.getElementById('medicineCostReward'),
+    firstGradeCount: document.getElementById('firstGradeCountReward')
+  },
+  finalBonus: document.getElementById('finalBonus'),
+  calculateButton: document.getElementById('calculateButton'),
+  resetButton: document.getElementById('resetButton')
+};
 
-            // 统一焦点事件恢复
-            bindFocusRestore(input) {
-                input.addEventListener('focus', () => {
-                    const field = inputFields.find(f => f.id === input.id);
-                    utils.restorePlaceholder(input, field.placeholder);
-                });
-            }
-        };
+const utils = {
+  isValidNumber(v) { return !isNaN(v) && v > 0; },
+  restorePlaceholder(elem, placeholder) {
+    elem.placeholder = placeholder;
+    elem.classList.remove('error');
+  },
+  displayReward(elem, value) {
+    if (value >= 0) {
+      elem.textContent = `+${value.toFixed(2)}`;
+      elem.className = 'reward-value positive';
+    } else {
+      elem.textContent = `${value.toFixed(2)}`;
+      elem.className = 'reward-value negative';
+    }
+  },
+  bindFocusRestore(input) {
+    input.addEventListener('focus', () => {
+      const field = inputFields.find(f => f.id === input.id);
+      utils.restorePlaceholder(input, field.placeholder);
+    });
+  }
+};
 
-        // 主逻辑
-        const bonusCalculator = {
-            // 计算奖金
-            calculateBonus() {
-                const values = Object.fromEntries(
-                    inputFields.map(field => [field.id, parseFloat(elements.inputs[field.id].value)])
-                );
+const bonusCalculator = {
+  calculateBonus() {
+    const values = Object.fromEntries(inputFields.map(f => [f.id, parseFloat(elements.inputs[f.id].value)]));
+    let valid = true;
 
-                let isValid = true;
+    inputFields.forEach(f => {
+      const val = values[f.id];
+      const el = elements.inputs[f.id];
+      if (!utils.isValidNumber(val)) {
+        el.value = '';
+        el.placeholder = '请输入有效数值';
+        el.classList.add('error');
+        valid = false;
+      } else {
+        utils.restorePlaceholder(el, f.placeholder);
+      }
+    });
 
-                // 输入校验
-                inputFields.forEach(field => {
-                    const value = values[field.id];
-                    const elem = elements.inputs[field.id];
-                    if (!utils.isValidNumber(value)) {
-                        elem.value = '';
-                        elem.placeholder = '无效输入';
-                        elem.classList.add('error');
-                        isValid = false;
-                    } else {
-                        utils.restorePlaceholder(elem, field.placeholder);
-                    }
-                });
+    if (valid && values.firstGradeCount > values.outputCount) {
+      const el = elements.inputs.firstGradeCount;
+      el.value = '';
+      el.placeholder = '不可大于出栏头数';
+      el.classList.add('error');
+      valid = false;
+    }
 
-                // 校验一级猪数是否小于出栏头数
-                if (isValid && values.firstGradeCount > values.outputCount) {
-                    const elem = elements.inputs.firstGradeCount;
-                    elem.value = '';
-                    elem.placeholder = '不可大于出栏头数';
-                    elem.classList.add('error');
-                    isValid = false;
-                }
+    if (!valid) {
+      elements.finalBonus.textContent = '-';
+      Object.values(elements.rewards).forEach(r => r.textContent = '');
+      return;
+    }
 
-                // 如果输入不合法，直接返回
-                if (!isValid) {
-                    elements.finalBonus.textContent = '-';
-                    Object.values(elements.rewards).forEach(el => el.textContent = '');
-                    return;
-                }
+    const base = constants.BASE_REWARD;
+    const feedR = (constants.FEED_RATIO - values.feedRatio) / 0.1 * constants.FEED_REWARD_UNIT;
+    const medR = (constants.MEDICINE_COST - values.medicineCost) / 2 * constants.MEDICINE_REWARD_UNIT;
+    const qualR = (values.firstGradeCount / values.outputCount - constants.QUALITY_THRESHOLD) * values.outputCount * constants.QUALITY_REWARD_UNIT;
 
-                // 计算各项奖励
-                const baseReward = constants.BASE_REWARD;
-                const feedReward = (constants.FEED_RATIO - values.feedRatio) / 0.1 * constants.FEED_REWARD_UNIT;
-                const medicineReward = (constants.MEDICINE_COST - values.medicineCost) / 2 * constants.MEDICINE_REWARD_UNIT;
-                const qualityReward = (values.firstGradeCount / values.outputCount - constants.QUALITY_THRESHOLD) * values.outputCount * constants.QUALITY_REWARD_UNIT;
+    utils.displayReward(elements.rewards.outputCount, base);
+    utils.displayReward(elements.rewards.feedRatio, feedR);
+    utils.displayReward(elements.rewards.medicineCost, medR);
+    utils.displayReward(elements.rewards.firstGradeCount, qualR);
 
-                // 显示各项奖励
-                utils.displayReward(elements.rewards.outputCount, baseReward);
-                utils.displayReward(elements.rewards.feedRatio, feedReward);
-                utils.displayReward(elements.rewards.medicineCost, medicineReward);
-                utils.displayReward(elements.rewards.firstGradeCount, qualityReward);
+    const total = values.outputCount * (base + feedR + medR) + qualR;
+    elements.finalBonus.textContent = `¥${total.toFixed(2)}`;
+  },
 
-                // 计算最终奖金
-                const totalBonus = values.outputCount * (baseReward + feedReward + medicineReward) + qualityReward;
-                elements.finalBonus.textContent = `¥${totalBonus.toFixed(2)}`;
-            },
+  resetForm() {
+    inputFields.forEach(f => {
+      const el = elements.inputs[f.id];
+      el.value = '';
+      utils.restorePlaceholder(el, f.placeholder);
+    });
+    elements.finalBonus.textContent = '-';
+    Object.values(elements.rewards).forEach(r => r.textContent = '');
+  },
 
-            // 重置表单
-            resetForm() {
-                inputFields.forEach(field => {
-                    const elem = elements.inputs[field.id];
-                    elem.value = '';
-                    utils.restorePlaceholder(elem, field.placeholder);
-                });
-                elements.finalBonus.textContent = '-';
-                Object.values(elements.rewards).forEach(el => el.textContent = '');
-            },
+  init() {
+    elements.calculateButton.addEventListener('click', this.calculateBonus.bind(this));
+    elements.resetButton.addEventListener('click', this.resetForm.bind(this));
+    inputFields.forEach(f => utils.bindFocusRestore(elements.inputs[f.id]));
+  }
+};
 
-            // 初始化事件绑定
-            init() {
-                elements.calculateButton.addEventListener('click', this.calculateBonus.bind(this));
-                elements.resetButton.addEventListener('click', this.resetForm.bind(this));
-
-                // 绑定焦点事件
-                inputFields.forEach(field => utils.bindFocusRestore(elements.inputs[field.id]));
-            },
-        };
-
-        // 初始化
-        bonusCalculator.init();
-    </script>
+bonusCalculator.init();
+</script>
 </body>
 </html>
