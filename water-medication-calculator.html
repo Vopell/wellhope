@@ -300,7 +300,7 @@
     }
     .mobile-form-btn {
         flex: 1;
-        height: 80px;
+        height: 60px;
         border: none;
         border-radius: 10px;
         font-size: 16px;
@@ -563,236 +563,193 @@
 <script>
     const $ = id => document.getElementById(id);
 
-    // ==================== 桌面端逻辑 ====================
+    // ==================== 统一配置：区分桌面/移动 ====================
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) 
+                     || window.innerWidth <= 768;
+
+    // 输入元素（桌面 vs 移动）
     const inputs = {
-        num: $('num'),
-        weight: $('weight'),
-        water: $('water'),
-        temp: $('temp'),
-        waste: $('waste'),
-        dispenser: $('dispenser'),
-        conc: $('conc'),
-        dosage: $('dosage')
-    };
-    const outputs = {
-        product: $('product'),
-        stock: $('stock'),
-        result: $('result'),
-        bucketLabel: $('bucket-label')
+        num:        isMobile ? $('mobile-num')       : $('num'),
+        weight:     isMobile ? $('mobile-weight')    : $('weight'),
+        water:      isMobile ? $('mobile-water')     : $('water'),
+        temp:       isMobile ? $('mobile-temp')      : $('temp'),
+        waste:      isMobile ? $('mobile-waste')     : $('waste'),
+        dispenser:  isMobile ? $('mobile-dispenser') : $('dispenser'),
+        conc:       isMobile ? $('mobile-conc')      : $('conc'),
+        dosage:     isMobile ? $('mobile-dosage')    : $('dosage')
     };
 
+    // 输出元素
+    const outputs = {
+        product:    isMobile ? $('mobile-product')   : $('product'),
+        stock:      isMobile ? $('mobile-stock')     : $('stock'),
+        resultText: isMobile ? $('mobile-result-text') : $('result'),
+        bucketContainer: isMobile ? $('mobile-result-bucket') : $('bucket-label'),
+        resultPanel: isMobile ? $('mobile-result-panel') : null  // 桌面无此容器
+    };
+
+    // 其他 UI 元素（仅移动端有按钮，桌面有环境组和清零按钮）
+    const ui = {
+        envGroup:   $('env-group'),
+        resetBtn:   isMobile ? $('mobile-reset-btn') : $('reset-btn'),
+        calcBtn:    isMobile ? $('mobile-calculate-btn') : null
+    };
+
+    // ==================== 共享工具函数 ====================
     function setEnabled(el, enabled) {
+        if (!el) return;
         el.disabled = !enabled;
         if (enabled) {
             el.classList.remove('disabled');
             el.classList.add('enabled');
+            if (isMobile) el.style.backgroundColor = '#ffff99';
         } else {
             el.classList.remove('enabled');
             el.classList.add('disabled');
+            if (isMobile) el.style.backgroundColor = '#ffd6d6';
         }
+    }
+
+    function clearInputs() {
+        Object.values(inputs).forEach(el => {
+            if (el && el.tagName === 'SELECT') el.selectedIndex = 0;
+            else if (el) el.value = '';
+        });
     }
 
     function resetAll() {
-        Object.values(inputs).forEach(el => {
-            if (el.tagName === 'SELECT') el.selectedIndex = 0;
-            else el.value = '';
-            setEnabled(el, false);
-        });
+        clearInputs();
+        Object.values(inputs).forEach(el => el && setEnabled(el, false));
         setEnabled(inputs.num, true);
-        $('env-group').style.display = 'none';
-        outputs.product.textContent = '';
-        outputs.stock.textContent = '';
-        if (outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
-        outputs.result.textContent = '请按顺序输入参数';
+
+        if (outputs.product) outputs.product.textContent = '';
+        if (outputs.stock) outputs.stock.textContent = '';
+        if (outputs.resultText) outputs.resultText.textContent = isMobile ? '请完整填写所有参数' : '请按顺序输入参数';
+        if (outputs.bucketContainer) outputs.bucketContainer.style.display = 'none';
+        if (outputs.bucketContainer && !isMobile) outputs.bucketContainer.classList.remove('visible');
+        if (ui.envGroup) ui.envGroup.style.display = 'none';
+        if (outputs.resultPanel) outputs.resultPanel.style.display = 'none';
     }
 
-    ['num', 'weight', 'water', 'dispenser', 'conc', 'dosage'].forEach(key => {
-        inputs[key].addEventListener('input', function () {
+    // 输入只能是数字和小数点
+    function addNumericFilter(el) {
+        if (!el) return;
+        el.addEventListener('input', function () {
             this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\./g, '$1');
         });
-    });
+    }
 
-    inputs.num.addEventListener('input', () => {
-        setEnabled(inputs.weight, inputs.num.value > 0);
-        if (inputs.weight.value > 0) estimateWater();
-    });
-    inputs.weight.addEventListener('input', () => {
-        if (inputs.weight.value > 0) {
-            [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el => setEnabled(el, true));
-            $('env-group').style.display = 'block';
-            setEnabled(inputs.temp, true);
-            setEnabled(inputs.waste, true);
-            inputs.temp.selectedIndex = 0;
-            inputs.waste.selectedIndex = 0;
-            estimateWater();
-        }
-    });
-    inputs.temp.addEventListener('change', () => { estimateWater(); calculate(); });
-    inputs.waste.addEventListener('change', () => { estimateWater(); calculate(); });
-    [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el => el.addEventListener('input', calculate));
-
+    // 估算每日饮水量（L）
     function estimateWater() {
         if (!inputs.num.value || !inputs.weight.value) return;
-        let base = inputs.num.value * inputs.weight.value * 0.1;
+
+        let base = inputs.num.value * inputs.weight.value * 0.1; // 标准：体重 kg 的 10%
         if (inputs.temp.value === 'hot') base *= 1.5;
+
         switch (inputs.waste.value) {
-            case 'low': base *= 1.1; break;
-            case 'mid': base *= 1.2; break;
+            case 'low':  base *= 1.1; break;
+            case 'mid':  base *= 1.2; break;
             case 'high': base *= 1.4; break;
         }
+
         inputs.water.value = Math.round(base);
         calculate();
     }
 
+    // 核心计算
     let calcTimeout;
     function calculate() {
         clearTimeout(calcTimeout);
         calcTimeout = setTimeout(() => {
             const v = {
-                num: +inputs.num.value || 0,
-                weight: +inputs.weight.value || 0,
-                dosage: +inputs.dosage.value || 0,
-                conc: +inputs.conc.value || 0,
-                water: +inputs.water.value || 0,
+                num:       +inputs.num.value       || 0,
+                weight:    +inputs.weight.value    || 0,
+                dosage:    +inputs.dosage.value    || 0,
+                conc:      +inputs.conc.value      || 0,
+                water:     +inputs.water.value     || 0,
                 dispenser: +inputs.dispenser.value || 0
             };
-            if (v.num <= 0 || v.weight <= 0 || v.dosage <= 0 || v.conc <= 0 || v.water <= 0 || v.dispenser <= 0) {
-                outputs.result.textContent = '请完整填写所有必要参数';
-                if (outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
+
+            const allFilled = v.num > 0 && v.weight > 0 && v.dosage > 0 && 
+                              v.conc > 0 && v.water > 0 && v.dispenser > 0;
+
+            if (!allFilled) {
+                if (outputs.resultText) {
+                    outputs.resultText.textContent = isMobile ? '请完整填写所有必要参数' : '请完整填写所有必要参数';
+                }
+                if (outputs.bucketContainer) outputs.bucketContainer.style.display = 'none';
+                if (!isMobile && outputs.bucketContainer) outputs.bucketContainer.classList.remove('visible');
                 return;
             }
+
             const productGr = Math.round(v.num * v.weight * v.dosage / (v.conc * 10));
             const stockL = v.water * v.dispenser / 100;
             const stockDisplay = stockL % 1 === 0 ? stockL.toFixed(0) : stockL.toFixed(1);
-            outputs.product.textContent = productGr + ' g';
-            outputs.stock.textContent = stockDisplay + ' l';
-            outputs.result.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
-            if (outputs.bucketLabel) outputs.bucketLabel.classList.add('visible');
+
+            if (outputs.product) outputs.product.textContent = productGr + ' g';
+            if (outputs.stock) outputs.stock.textContent = stockDisplay + (isMobile ? ' l' : ' l');
+
+            if (outputs.resultText) {
+                outputs.resultText.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
+            }
+
+            // 显示结果容器
+            if (outputs.bucketContainer) {
+                outputs.bucketContainer.style.display = isMobile ? 'flex' : 'block';
+                if (!isMobile) outputs.bucketContainer.classList.add('visible');
+            }
+            if (outputs.resultPanel) outputs.resultPanel.style.display = 'block';
         }, 300);
     }
 
-    // ==================== 移动端嵌入式逻辑 ====================
-    const mobileInputs = {
-        num: $('mobile-num'),
-        weight: $('mobile-weight'),
-        water: $('mobile-water'),
-        temp: $('mobile-temp'),
-        waste: $('mobile-waste'),
-        dispenser: $('mobile-dispenser'),
-        conc: $('mobile-conc'),
-        dosage: $('mobile-dosage')
-    };
-    const mobileOutputs = {
-        product: $('mobile-product'),
-        stock: $('mobile-stock'),
-        resultText: $('mobile-result-text'),
-        resultPanel: $('mobile-result-panel'),
-        resultBucket: $('mobile-result-bucket')
-    };
-    const mobileUI = {
-        resetBtn: $('mobile-reset-btn'),
-        calculateBtn: $('mobile-calculate-btn')
-    };
+    // ==================== 初始化与事件绑定 ====================
+    function initApp() {
+        // 重置按钮
+        if (ui.resetBtn) ui.resetBtn.addEventListener('click', resetAll);
 
-    function mobileReset() {
-        Object.values(mobileInputs).forEach(el => {
-            if (el.tagName === 'SELECT') el.selectedIndex = 0;
-            else el.value = '';
-            el.disabled = true;
-            el.style.backgroundColor = '#ffd6d6';
+        // 数字输入过滤
+        ['num', 'weight', 'water', 'dispenser', 'conc', 'dosage'].forEach(key => {
+            addNumericFilter(inputs[key]);
         });
-        mobileInputs.num.disabled = false;
-        mobileInputs.num.style.backgroundColor = '#ffff99';
 
-        mobileOutputs.resultPanel.style.display = 'none';
-        mobileOutputs.resultBucket.style.display = 'none';
-        mobileOutputs.resultText.textContent = '请完整填写所有参数';
+        // 牲畜数量 → 启用平均体重
+        inputs.num.addEventListener('input', () => {
+            const hasValue = inputs.num.value > 0;
+            setEnabled(inputs.weight, hasValue);
+            if (hasValue && inputs.weight.value > 0) estimateWater();
+        });
+
+        // 平均体重 → 启用后续所有输入 + 显示环境组（桌面）
+        inputs.weight.addEventListener('input', () => {
+            const hasValue = inputs.weight.value > 0;
+            setEnabled(inputs.dosage, hasValue);
+            setEnabled(inputs.conc, hasValue);
+            setEnabled(inputs.dispenser, hasValue);
+            setEnabled(inputs.temp, hasValue);
+            setEnabled(inputs.waste, hasValue);
+
+            if (hasValue && ui.envGroup) ui.envGroup.style.display = 'block';
+
+            if (hasValue) estimateWater();
+        });
+
+        // 环境因素改变 → 重新估算饮水量
+        inputs.temp.addEventListener('change', estimateWater);
+        inputs.waste.addEventListener('change', estimateWater);
+
+        // 关键参数输入 → 实时计算
+        [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el => {
+            if (el) el.addEventListener('input', calculate);
+        });
+
+        // 移动端专有：点击“计算”按钮
+        if (ui.calcBtn) ui.calcBtn.addEventListener('click', calculate);
+
+        // 初始状态
+        resetAll();
     }
 
-    function mobileEstimateWater() {
-        if (!mobileInputs.num.value || !mobileInputs.weight.value) return;
-        let base = mobileInputs.num.value * mobileInputs.weight.value * 0.1;
-        if (mobileInputs.temp.value === 'hot') base *= 1.5;
-        switch (mobileInputs.waste.value) {
-            case 'low': base *= 1.1; break;
-            case 'mid': base *= 1.2; break;
-            case 'high': base *= 1.4; break;
-        }
-        mobileInputs.water.value = Math.round(base);
-        mobileCalculate();
-    }
-
-    function mobileCalculate() {
-        const v = {
-            num: +mobileInputs.num.value || 0,
-            weight: +mobileInputs.weight.value || 0,
-            dosage: +mobileInputs.dosage.value || 0,
-            conc: +mobileInputs.conc.value || 0,
-            water: +mobileInputs.water.value || 0,
-            dispenser: +mobileInputs.dispenser.value || 0
-        };
-        if (v.num <= 0 || v.weight <= 0 || v.dosage <= 0 || v.conc <= 0 || v.water <= 0 || v.dispenser <= 0) {
-            mobileOutputs.resultText.textContent = '请完整填写所有必要参数';
-            mobileOutputs.resultBucket.style.display = 'none';
-            mobileOutputs.resultPanel.style.display = 'block';
-            return;
-        }
-        const productGr = Math.round(v.num * v.weight * v.dosage / (v.conc * 10));
-        const stockL = v.water * v.dispenser / 100;
-        const stockDisplay = stockL % 1 === 0 ? stockL.toFixed(0) : stockL.toFixed(1);
-        mobileOutputs.product.textContent = productGr + ' g';
-        mobileOutputs.stock.textContent = stockDisplay + ' l';
-        mobileOutputs.resultText.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
-        mobileOutputs.resultBucket.style.display = 'flex';
-        mobileOutputs.resultPanel.style.display = 'block';
-    }
-
-    function initMobile() {
-        // 输入验证
-        Object.keys(mobileInputs).forEach(key => {
-            if (mobileInputs[key].tagName === 'INPUT') {
-                mobileInputs[key].addEventListener('input', function() {
-                    this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\./g, '$1');
-                });
-            }
-        });
-
-        // 逐步启用
-        mobileInputs.num.addEventListener('input', function() {
-            const hasValue = this.value > 0;
-            mobileInputs.weight.disabled = !hasValue;
-            mobileInputs.weight.style.backgroundColor = hasValue ? '#ffff99' : '#ffd6d6';
-            if (hasValue && mobileInputs.weight.value > 0) mobileEstimateWater();
-        });
-
-        mobileInputs.weight.addEventListener('input', function() {
-            const hasValue = this.value > 0;
-            [mobileInputs.dosage, mobileInputs.conc, mobileInputs.dispenser, mobileInputs.temp, mobileInputs.waste].forEach(el => {
-                el.disabled = !hasValue;
-                el.style.backgroundColor = hasValue ? '#ffff99' : '#ffd6d6';
-            });
-            if (hasValue) {
-                mobileInputs.temp.selectedIndex = 0;
-                mobileInputs.waste.selectedIndex = 0;
-                mobileEstimateWater();
-            }
-        });
-
-        mobileInputs.temp.addEventListener('change', mobileEstimateWater);
-        mobileInputs.waste.addEventListener('change', mobileEstimateWater);
-
-        mobileUI.calculateBtn.addEventListener('click', mobileCalculate);
-        mobileUI.resetBtn.addEventListener('click', mobileReset);
-
-        [mobileInputs.dosage, mobileInputs.conc, mobileInputs.dispenser].forEach(el => {
-            el.addEventListener('input', mobileCalculate);
-        });
-
-        // 初始化状态
-        mobileReset();
-    }
-
-    // 标签页切换
+    // 标签页切换（保持原样）
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
             document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
@@ -800,16 +757,6 @@
             $(tab.dataset.tab).classList.add('active');
         };
     });
-
-    // 初始化
-    function initApp() {
-        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-        if (isMobile) {
-            initMobile();
-        } else {
-            resetAll();
-        }
-    }
 
     document.addEventListener('DOMContentLoaded', initApp);
 </script>
