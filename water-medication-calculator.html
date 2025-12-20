@@ -4,330 +4,289 @@
 <meta charset="UTF-8">
 <title>饮水加药计算器</title>
 <style>
-    :root {
-        --pos-water-top: 20%;
-        --pos-water-left: 6%;
-        --pos-dispenser-top: 5%;
-        --pos-dispenser-left: 38%;
-        --pos-conc-top: 22%;
-        --pos-conc-left: 35%;
-        --pos-dosage-top: 35%;
-        --pos-dosage-left: 35%;
-        --pos-num-top: 48%;
-        --pos-num-right: 12%;
-        --pos-weight-top: 56%;
-        --pos-weight-right: 12%;
-        --pos-env-top: 33%;
-        --pos-env-left: 8%;
+:root {
+    --pos-water-top: 20%;
+    --pos-water-left: 6%;
+    --pos-dispenser-top: 5%;
+    --pos-dispenser-left: 38%;
+    --pos-conc-top: 22%;
+    --pos-conc-left: 35%;
+    --pos-dosage-top: 35%;
+    --pos-dosage-left: 35%;
+    --pos-num-top: 48%;
+    --pos-num-right: 12%;
+    --pos-weight-top: 56%;
+    --pos-weight-right: 12%;
+    --pos-env-top: 33%;
+    --pos-env-left: 8%;
 
-        /* 默认宽度 */
-        --default-label-width: 80px;
-        --default-input-width: 80px;
+    --default-label-width: 80px;
+    --default-input-width: 80px;
+    --vertical-label-font-size: 14px;
+}
+body {
+    margin: 0;
+    padding: 20px;
+    background: #f0f8ff;
+    font-family: Arial, Helvetica, sans-serif;
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+.tabs {
+    display: flex;
+    border-bottom: 2px solid #0066cc;
+    margin-bottom: 15px;
+}
+.tab {
+    padding: 12px 28px;
+    cursor: pointer;
+    font-weight: bold;
+    color: #0066cc;
+    background: #e6f0ff;
+    border: 1px solid #0066cc;
+    border-bottom: none;
+    margin-right: 4px;
+}
+.tab.active {
+    background: #0066cc;
+    color: #fff;
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
+.diagram {
+    position: relative;
+    height: 700px;
+    background: url('https://raw.githubusercontent.com/Vopell/wellhope/main/image.jpg') no-repeat center center;
+    background-size: contain;
+}
+.input-group {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+}
+.input-group label {
+    font-weight: bold;
+    white-space: nowrap;
+    width: var(--label-width, var(--default-label-width));
+}
+.input-group input,
+.input-group select {
+    width: var(--input-width, var(--default-input-width));
+    height: 30px;
+    padding: 4px 8px;
+    font-size: 14px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.input-group .unit {
+    font-weight: bold;
+    color: #333;
+    min-width: 40px;
+}
+.input-group-vertical {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.input-group-vertical label {
+    font-weight: bold;
+    width: 100%;
+    font-size: var(--vertical-label-font-size);
+    margin-left: var(--vertical-label-offset, 0px);
+}
+.input-group-vertical .input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    justify-content: center;
+}
+.input-group-vertical .input-wrapper input {
+    width: var(--input-width, var(--default-input-width));
+    height: 30px;
+    padding: 4px 8px;
+    font-size: 14px;
+    border: 1px solid #999;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+.input-group-vertical .input-wrapper .unit {
+    font-weight: bold;
+    color: #333;
+    min-width: 40px;
+}
+input.enabled, select.enabled { background: #ffff99; }
+input.disabled, select.disabled {
+    background: #ffd6d6 !important;
+    color: #666;
+    pointer-events: none;
+}
+.env-group {
+    position: absolute;
+    top: var(--pos-env-top);
+    left: var(--pos-env-left);
+    width: 160px;
+    padding: 12px;
+    background: #f9f9f9;
+    border: 2px solid #aaa;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    display: none;
+    flex-direction: column;
+    gap: 18px;
+}
+.env-group .input-group {
+    position: static;
+    margin: 0;
+}
+.env-group select {
+    width: 120px;
+}
+#box-water { --label-width: 100px; --input-width: 80px; top: 20%; left: 10%;--vertical-label-offset: 15px; }
+#box-dispenser { --label-width: 100px; --input-width: 60px; top: var(--pos-dispenser-top); left: var(--pos-dispenser-left); --vertical-label-offset: -6px}
+#box-conc { --label-width: 110px; --input-width: 50px; top: 18%; right:56%;--vertical-label-offset: -8px; }
+#box-dosage { --label-width: 90px; --input-width: 60px; top: 6%; right: 20%; }
+#box-num { --label-width: 60px; --input-width: 80px; top: 45%; right: 13%; }
+#box-weight { --label-width: 60px; --input-width: 80px; top: 52%; right: 13%; }
+.reset-btn {
+    position: absolute;
+    top: 2%;
+    left: 7%;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #ffa500, #ff8c00);
+    color: #fff;
+    border: none;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    z-index: 20;
+    box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4);
+}
+.bucket-label {
+    position: absolute;
+    top: 60%;
+    left: 30%;
+    transform: translateY(-50%);
+    text-align: center;
+    font-weight: bold;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease, visibility 0.5s;
+}
+.bucket-label.visible {
+    visibility: visible;
+    opacity: 1;
+}
+#product {
+    font-size: 30px;
+    color: #d00;
+    margin-bottom: 50px;
+}
+#stock {
+    font-size: 30px;
+    color: #0066cc;
+}
+.result {
+    width: calc(100% - 40px);
+    max-width: 1046px;
+    margin: 0 auto;
+    padding: 24px;
+    background: rgba(0, 102, 204, 0.9);
+    color: #fff;
+    font-size: 24px;
+    text-align: center;
+    border-radius: 8px;
+    box-sizing: border-box;
+    position: absolute;
+    left: 50%;
+    bottom: 3px;
+    transform: translateX(-50%);
+    z-index: 15;
+}
+.instructions {
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 30px;
+    line-height: 1.8;
+    border-radius: 8px;
+    font-size: 16px;
+}
 
-        /* 垂直标签字体大小自定义 */
-        --vertical-label-font-size: 14px;
-    }
+/* 移动端美观布局 */
+@media (max-width: 768px) {
     body {
-        margin: 0;
-        padding: 20px;
-        background: #f0f8ff;
-        font-family: Arial, Helvetica, sans-serif;
-        min-height: 100vh;
-        box-sizing: border-box;
-    }
-    .tabs {
-        display: flex;
-        border-bottom: 2px solid #0066cc;
-        margin-bottom: 15px;
-    }
-	.tab {
-		padding: 8px 25px;
-		cursor: pointer;
-		font-weight: bold;
-		color: #0066cc;
-		background: #e6f0ff;
-		border: 2px solid #0066cc;
-		border-radius: 20px;
-		margin-right: 10px;
-		transition: all 0.3s ease;
-	}
-	.tab.active {
-		background: #0066cc;
-		color: #fff;
-		border-radius: 20px;
-	}
-	.tab:hover {
-		background: #d0e4ff;
-		transform: translateY(-2px);
-		box-shadow: 0 4px 10px rgba(0,102,204,0.2);
-	}
-	.tab.active:hover {
-		background: #0055aa;
-	}
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        position: relative;
+        padding: 12px;
     }
     .diagram {
-        position: relative;
-        height: 700px;
-        background: url('https://raw.githubusercontent.com/Vopell/wellhope/main/image.jpg') no-repeat center center;
-        background-size: contain;
-    }
-    .input-group {
-        position: absolute;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 14px;
-    }
-    .input-group label {
-        font-weight: bold;
-        white-space: nowrap;
-        width: var(--label-width, var(--default-label-width));
-    }
-    .input-group input,
-    .input-group select {
-        width: var(--input-width, var(--default-input-width));
-        height: 30px;
-        padding: 4px 8px;
-        font-size: 14px;
-        border: 1px solid #999;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    .input-group .unit {
-        font-weight: bold;
-        color: #333;
-        min-width: 40px;
-    }
-    .input-group-vertical {
-        position: absolute;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-    .input-group-vertical label {
-        font-weight: bold;
-        width: 100%;
-		font-size: var(--vertical-label-font-size);
-		margin-left: var(--vertical-label-offset, 0px);
-    }
-    .input-group-vertical .input-wrapper {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        justify-content: center;
-    }
-    .input-group-vertical .input-wrapper input {
-        width: var(--input-width, var(--default-input-width));
-        height: 30px;
-        padding: 4px 8px;
-        font-size: 14px;
-        border: 1px solid #999;
-        border-radius: 4px;
-        box-sizing: border-box;
-    }
-    .input-group-vertical .input-wrapper .unit {
-        font-weight: bold;
-        color: #333;
-        min-width: 40px;
-    }
-    input.enabled, select.enabled { background: #ffff99; }
-    input.disabled, select.disabled {
-        background: #ffd6d6 !important;
-        color: #666;
-        pointer-events: none;
-    }
-    .env-group {
-        position: absolute;
-        top: var(--pos-env-top);
-        left: var(--pos-env-left);
-        width: 160px;
-        padding: 12px;
-        background: #f9f9f9;
-        border: 2px solid #aaa;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        display: none;
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-    }
-    .env-group .input-group {
-        position: static;
-        margin: 0;
-    }
-	.env-group select {
-        width: 120px;
-    }
-    #box-water { --label-width: 100px; --input-width: 80px; top: 20%; left: 10%;--vertical-label-offset: 15px; }
-    #box-dispenser { --label-width: 100px; --input-width: 60px; top: var(--pos-dispenser-top); left: var(--pos-dispenser-left); --vertical-label-offset: -6px}
-    #box-conc { --label-width: 110px; --input-width: 50px; top: 18%; right:56%;--vertical-label-offset: -8px; }
-    #box-dosage { --label-width: 90px; --input-width: 60px; top: 6%; right: 20%; }
-    #box-num { --label-width: 60px; --input-width: 80px; top: 45%; right: 13%; }
-    #box-weight { --label-width: 60px; --input-width: 80px; top: 52%; right: 13%; }
-
-	.reset-btn {
-		position: absolute;
-		top: 2%;
-		left: 7%;
-		padding: 12px 28px;
-		background: linear-gradient(135deg, #ffa500, #ff8c00);                
-		color: #fff;
-		border: none;
-		border-radius: 30px;
-		cursor: pointer;
-		font-size: 16px;
-		font-weight: bold;
-		z-index: 20;
-		box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4);
-		transition: all 0.3s ease;
-		letter-spacing: 0.8px;
-		display: flex;
-		align-items: center;
-		gap: 8px;
-	}
-	.reset-btn::before {
-		content: "↻";
-		font-size: 18px;
-		display: inline-block;
-	}
-	.reset-btn:hover {
-		background: #e67e00;
-		transform: translateY(-3px);
-		box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6);
-	}
-	.reset-btn:active {
-		transform: translateY(-1px);
-	}
-    .bucket-label {
-        position: absolute;
-        top: 60%;
-        left: 30%;
-		transform: translateY(-50%);
-        text-align: center;
-        font-weight: bold;
-        visibility: hidden;
-        opacity: 0;
-        transition: opacity 0.5s ease, visibility 0.5s;
-    }
-    .bucket-label.visible {
-        visibility: visible;
-        opacity: 1;
-    }
-    #product {
-        font-size: 30px;
-        color: #d00;
-        margin-bottom: 50px;
-    }
-    #stock {
-        font-size: 30px;
-        color: #0066cc;
-    }
-
-	.result {
-		width: calc(100% - 40px);
-		max-width: 1046px;
-		margin: 0 auto;
-		padding: 24px;
-		background: rgba(0, 102, 204, 0.9);
-		color: #fff;
-		font-size: 24px;
-		text-align: center;
-		border-radius: 8px;
-		box-sizing: border-box;
-		position: absolute;
-		left: 50%;
-		bottom: 3px;
-		transform: translateX(-50%);
-		z-index: 15;
-	}
-
-    .instructions {
-        background: #fff;
-        border: 1px solid #ccc;
-        padding: 30px;
-        line-height: 1.8;
-        border-radius: 8px;
-        font-size: 16px;
-    }
-
-    /* =========================================
-       移动端专用布局，不影响桌面端
-       ========================================= */
-    body.mobile-layout {
-        background: #f5f7fa;
-    }
-    body.mobile-layout .diagram {
-        position: relative;
         height: auto;
-        min-height: unset;
-        background: none;
-        padding: 16px 12px 24px;
+        background-size: cover;
+        background-position: top center;
+        padding: 20px 12px 40px;
     }
-    body.mobile-layout .input-group,
-    body.mobile-layout .input-group-vertical,
-    body.mobile-layout .env-group {
+    .input-group,
+    .input-group-vertical,
+    .env-group {
         position: static;
-        transform: none;
         width: 100%;
-        margin: 0 0 14px 0;
-        box-sizing: border-box;
-    }
-    body.mobile-layout .input-group,
-    body.mobile-layout .input-group-vertical {
-        background: #ffffff;
-        padding: 12px 14px;
-        border-radius: 10px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-    body.mobile-layout .input-group-vertical label {
-        margin-bottom: 6px;
-        font-size: 15px;
-    }
-    body.mobile-layout .input-group {
+        margin-bottom: 12px;
+        padding: 12px 16px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         display: flex;
+        flex-direction: row;
         align-items: center;
         justify-content: space-between;
     }
-    body.mobile-layout input,
-    body.mobile-layout select {
-        width: 140px;
+    .input-group-vertical {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .input-group-vertical label {
+        margin-bottom: 6px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+    input, select {
+        width: 50%;
+        font-size: 16px;
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+    .unit {
+        font-size: 14px;
+        margin-left: 6px;
+    }
+    .reset-btn {
+        position: sticky;
+        top: 10px;
+        width: 100%;
+        margin-bottom: 12px;
+        border-radius: 12px;
         font-size: 16px;
     }
-    body.mobile-layout .unit {
-        min-width: auto;
-        font-size: 14px;
-    }
-    body.mobile-layout .env-group {
-        display: block;
-        background: #ffffff;
-        border: none;
-        border-radius: 10px;
-        padding: 12px 14px;
-    }
-    body.mobile-layout .reset-btn {
-        position: sticky;
-        top: 8px;
-        left: auto;
-        margin-bottom: 16px;
-        width: 100%;
-        border-radius: 10px;
-    }
-    body.mobile-layout .result {
+    .result {
         position: static;
-        margin: 20px 0 0;
+        margin-top: 16px;
         font-size: 18px;
-        padding: 16px;
-        border-radius: 10px;
+        padding: 14px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        text-align: center;
     }
-    body.mobile-layout .bucket-label {
+    .bucket-label {
         display: none !important;
     }
+}
 </style>
 </head>
 <body>
@@ -341,7 +300,6 @@
         <div class="diagram">
             <button class="reset-btn" onclick="resetAll()">清零</button>
 
-            <!-- 总耗水量 -->
             <div class="input-group-vertical" id="box-water">
                 <label for="water">总耗水量</label>
                 <div class="input-wrapper">
@@ -350,7 +308,6 @@
                 </div>
             </div>
 
-            <!-- 环境因素面板 -->
             <div class="env-group" id="env-group">
                 <div class="input-group">
                     <label for="temp">温度</label>
@@ -370,7 +327,6 @@
                 </div>
             </div>
 
-            <!-- 加药器设置 -->
             <div class="input-group-vertical" id="box-dispenser">
                 <label for="dispenser">加药器设置</label>
                 <div class="input-wrapper">
@@ -379,7 +335,6 @@
                 </div>
             </div>
 
-            <!-- 产品有效浓度 -->
             <div class="input-group-vertical" id="box-conc">
                 <label for="conc">产品有效浓度</label>
                 <div class="input-wrapper">
@@ -388,7 +343,6 @@
                 </div>
             </div>
 
-            <!-- 给药剂量 -->
             <div class="input-group-vertical" id="box-dosage">
                 <label for="dosage">给药剂量</label>
                 <div class="input-wrapper">
@@ -397,21 +351,18 @@
                 </div>
             </div>
 
-            <!-- 牲畜数量 -->
             <div class="input-group" id="box-num">
                 <label for="num">牲畜数量</label>
                 <input type="number" id="num" min="1">
                 <span class="unit">头</span>
             </div>
 
-            <!-- 平均体重 -->
             <div class="input-group" id="box-weight">
                 <label for="weight">平均体重</label>
                 <input type="number" id="weight" min="0" step="0.1" class="disabled">
                 <span class="unit">kg</span>
             </div>
 
-            <!-- 母液桶显示 -->
             <div class="bucket-label" id="bucket-label">
                 <div id="product"></div>
                 <div id="stock"></div>
@@ -432,147 +383,105 @@
 </div>
 
 <script>
-    // 自动判断移动端
-    (function () {
-        const isMobile =
-            /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
-            window.innerWidth <= 768;
-        if (isMobile) {
-            document.body.classList.add('mobile-layout');
+const $ = id => document.getElementById(id);
+const inputs = {
+    num: $('num'),
+    weight: $('weight'),
+    water: $('water'),
+    temp: $('temp'),
+    waste: $('waste'),
+    dispenser: $('dispenser'),
+    conc: $('conc'),
+    dosage: $('dosage')
+};
+const outputs = {
+    product: $('product'),
+    stock: $('stock'),
+    result: $('result'),
+    bucketLabel: $('bucket-label')
+};
+function setEnabled(el, enabled) {
+    el.disabled = !enabled;
+    if (enabled) { el.classList.remove('disabled'); el.classList.add('enabled'); }
+    else { el.classList.remove('enabled'); el.classList.add('disabled'); }
+}
+function resetAll() {
+    Object.values(inputs).forEach(el=>{
+        if(el.tagName==='SELECT') el.selectedIndex=0;
+        else el.value='';
+        setEnabled(el,false);
+    });
+    setEnabled(inputs.num,true);
+    $('env-group').style.display='none';
+    outputs.product.textContent='';
+    outputs.stock.textContent='';
+    if(outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
+    outputs.result.textContent='请按顺序输入参数';
+}
+['num','weight','water','dispenser','conc','dosage'].forEach(key=>{
+    inputs[key].addEventListener('input',function(){
+        this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*?)\./g,'$1');
+    });
+});
+inputs.num.addEventListener('input',()=>{
+    setEnabled(inputs.weight,inputs.num.value>0);
+    if(inputs.weight.value>0) estimateWater();
+});
+inputs.weight.addEventListener('input',()=>{
+    if(inputs.weight.value>0){
+        [inputs.water,inputs.dispenser,inputs.conc,inputs.dosage].forEach(el=>setEnabled(el,true));
+        $('env-group').style.display='block';
+        setEnabled(inputs.temp,true);
+        setEnabled(inputs.waste,true);
+        inputs.temp.selectedIndex=0;
+        inputs.waste.selectedIndex=0;
+        estimateWater();
+    }
+});
+function estimateWater(){
+    if(!inputs.num.value||!inputs.weight.value) return;
+    let base=inputs.num.value*inputs.weight.value*0.1;
+    if(inputs.temp.value==='hot') base*=1.5;
+    switch(inputs.waste.value){
+        case'low': base*=1.1;break;
+        case'mid': base*=1.2;break;
+        case'high': base*=1.4;break;
+    }
+    inputs.water.value=Math.round(base);
+}
+let calcTimeout;
+function calculate(){
+    clearTimeout(calcTimeout);
+    calcTimeout=setTimeout(()=>{
+        const v={num:+inputs.num.value||0,weight:+inputs.weight.value||0,dosage:+inputs.dosage.value||0,conc:+inputs.conc.value||0,water:+inputs.water.value||0,dispenser:+inputs.dispenser.value||0};
+        if(v.num<=0||v.weight<=0||v.dosage<=0||v.conc<=0||v.water<=0||v.dispenser<=0){
+            outputs.result.textContent='请完整填写所有必要参数';
+            if(outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
+            return;
         }
-    })();
-
-    const $ = id => document.getElementById(id);
-    const inputs = {
-        num: $('num'),
-        weight: $('weight'),
-        water: $('water'),
-        temp: $('temp'),
-        waste: $('waste'),
-        dispenser: $('dispenser'),
-        conc: $('conc'),
-        dosage: $('dosage')
+        const productGr=Math.round(v.num*v.weight*v.dosage/(v.conc*10));
+        const stockL=v.water*v.dispenser/100;
+        const stockDisplay=stockL%1===0?stockL.toFixed(0):stockL.toFixed(1);
+        outputs.product.textContent=productGr+' g';
+        outputs.stock.textContent=stockDisplay+' l';
+        outputs.result.textContent=`生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
+        if(outputs.bucketLabel) outputs.bucketLabel.classList.add('visible');
+    },200);
+}
+['num','weight','water','dispenser','conc','dosage','temp','waste'].forEach(key=>{
+    inputs[key].addEventListener('input',()=>{estimateWater();calculate();});
+    inputs[key].addEventListener('change',()=>{estimateWater();calculate();});
+});
+inputs.temp.addEventListener('change',()=>{estimateWater();calculate();});
+inputs.waste.addEventListener('change',()=>{estimateWater();calculate();});
+document.querySelectorAll('.tab').forEach(tab=>{
+    tab.onclick=()=>{
+        document.querySelectorAll('.tab, .tab-content').forEach(el=>el.classList.remove('active'));
+        tab.classList.add('active');
+        $(tab.dataset.tab).classList.add('active');
     };
-    const outputs = {
-        product: $('product'),
-        stock: $('stock'),
-        result: $('result'),
-        bucketLabel: $('bucket-label')
-    };
-
-    function setEnabled(el, enabled) {
-        el.disabled = !enabled;
-        if (enabled) {
-            el.classList.remove('disabled');
-            el.classList.add('enabled');
-        } else {
-            el.classList.remove('enabled');
-            el.classList.add('disabled');
-        }
-    }
-
-    function resetAll() {
-        Object.values(inputs).forEach(el => {
-            if (el.tagName === 'SELECT') {
-                el.selectedIndex = 0;
-            } else {
-                el.value = '';
-            }
-            setEnabled(el, false);
-        });
-        setEnabled(inputs.num, true);
-        $('env-group').style.display = 'none';
-        outputs.product.textContent = '';
-        outputs.stock.textContent = '';
-        if (outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
-        outputs.result.textContent = '请按顺序输入参数';
-    }
-
-    ['num', 'weight', 'water', 'dispenser', 'conc', 'dosage'].forEach(key => {
-        inputs[key].addEventListener('input', function () {
-            this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\./g, '$1');
-        });
-    });
-
-	inputs.num.addEventListener('input', () => {
-		setEnabled(inputs.weight, inputs.num.value > 0);
-		if (inputs.weight.value > 0) {
-			estimateWater();
-		}
-	});
-
-    inputs.weight.addEventListener('input', () => {
-        if (inputs.weight.value > 0) {
-            [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el => setEnabled(el, true));
-            $('env-group').style.display = 'block';
-            setEnabled(inputs.temp, true);
-            setEnabled(inputs.waste, true);
-            inputs.temp.selectedIndex = 0;
-            inputs.waste.selectedIndex = 0;
-            estimateWater();
-        }
-    });
-
-    inputs.temp.addEventListener('change', () => { estimateWater(); calculate(); });
-    inputs.waste.addEventListener('change', () => { estimateWater(); calculate(); });
-
-    [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el =>
-        el.addEventListener('input', calculate)
-    );
-
-    function estimateWater() {
-        if (!inputs.num.value || !inputs.weight.value) return;
-        let base = inputs.num.value * inputs.weight.value * 0.1;
-        if (inputs.temp.value === 'hot') base *= 1.5;
-        switch (inputs.waste.value) {
-            case 'low': base *= 1.1; break;
-            case 'mid': base *= 1.2; break;
-            case 'high': base *= 1.4; break;
-        }
-        inputs.water.value = Math.round(base);
-        calculate();
-    }
-
-    let calcTimeout;
-    function calculate() {
-        clearTimeout(calcTimeout);
-        calcTimeout = setTimeout(() => {
-            const v = {
-                num: +inputs.num.value || 0,
-                weight: +inputs.weight.value || 0,
-                dosage: +inputs.dosage.value || 0,
-                conc: +inputs.conc.value || 0,
-                water: +inputs.water.value || 0,
-                dispenser: +inputs.dispenser.value || 0
-            };
-
-            if (v.num <= 0 || v.weight <= 0 || v.dosage <= 0 || v.conc <= 0 || v.water <= 0 || v.dispenser <= 0) {
-                outputs.result.textContent = '请完整填写所有必要参数';
-                if (outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
-                return;
-            }
-
-            const productGr = Math.round(v.num * v.weight * v.dosage / (v.conc * 10));
-            const stockL = v.water * v.dispenser / 100;
-            const stockDisplay = stockL % 1 === 0 ? stockL.toFixed(0) : stockL.toFixed(1);
-
-            outputs.product.textContent = productGr + ' g';
-            outputs.stock.textContent = stockDisplay + ' l';
-            outputs.result.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
-
-            if (outputs.bucketLabel) outputs.bucketLabel.classList.add('visible');
-        }, 300);
-    }
-
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.onclick = () => {
-            document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
-            tab.classList.add('active');
-            $(tab.dataset.tab).classList.add('active');
-        };
-    });
-
-    resetAll();
+});
+resetAll();
 </script>
 </body>
 </html>
