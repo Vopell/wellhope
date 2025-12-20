@@ -41,31 +41,28 @@
         margin-bottom: 15px;
     }
 	.tab {
-		padding: 8px 25px;           /* 略增大内边距，让按钮更大气 */
+		padding: 8px 25px;
 		cursor: pointer;
 		font-weight: bold;
 		color: #0066cc;
 		background: #e6f0ff;
-		border: 2px solid #0066cc;    /* 加粗边框，更突出 */
-		border-radius: 20px;          /* === 关键：大圆角，实现圆润胶囊效果 === */
-		margin-right: 10px;           /* 按钮间距稍大 */
-		transition: all 0.3s ease;    /* 添加平滑过渡动画 */
+		border: 2px solid #0066cc;
+		border-radius: 20px;
+		margin-right: 10px;
+		transition: all 0.3s ease;
 	}
-
 	.tab.active {
 		background: #0066cc;
 		color: #fff;
-		border-radius: 20px;          /* 激活状态也保持圆润 */
+		border-radius: 20px;
 	}
-
 	.tab:hover {
-		background: #d0e4ff;          /* 悬停时浅色反馈 */
-		transform: translateY(-2px);  /* 轻微上浮，更有立体感 */
+		background: #d0e4ff;
+		transform: translateY(-2px);
 		box-shadow: 0 4px 10px rgba(0,102,204,0.2);
 	}
-
 	.tab.active:hover {
-		background: #0055aa;          /* 激活状态悬停稍深色 */
+		background: #0055aa;
 	}
     .tab-content { display: none; }
     .tab-content.active { display: block; }
@@ -80,8 +77,6 @@
         background: url('https://raw.githubusercontent.com/Vopell/wellhope/main/image.jpg') no-repeat center center;
         background-size: contain;
     }
-
-    /* 横向输入组（通用，包括环境因素） */
     .input-group {
         position: absolute;
         display: flex;
@@ -109,8 +104,6 @@
         color: #333;
         min-width: 40px;
     }
-
-    /* 垂直输入组（总耗水量、加药器、浓度、剂量） */
     .input-group-vertical {
         position: absolute;
         display: flex;
@@ -121,7 +114,7 @@
         font-weight: bold;
         width: 100%;
 		font-size: var(--vertical-label-font-size);
-		margin-left: var(--vertical-label-offset, 0px);  /* 单独微调标签 */
+		margin-left: var(--vertical-label-offset, 0px);
     }
     .input-group-vertical .input-wrapper {
         display: flex;
@@ -143,27 +136,24 @@
         color: #333;
         min-width: 40px;
     }
-
     input.enabled, select.enabled { background: #ffff99; }
     input.disabled, select.disabled {
         background: #ffd6d6 !important;
         color: #666;
         pointer-events: none;
     }
-
-    /* 环境因素面板 - 使用横向布局 */
     .env-group {
         position: absolute;
         top: var(--pos-env-top);
         left: var(--pos-env-left);
-        width: 160px;                 /* 适当加宽以容纳横向布局 */
+        width: 160px;
         padding: 12px;
         background: #f9f9f9;
         border: 2px solid #aaa;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         display: none;
-        display: flex;                 /* 改为 flex 横向排列两个选项 */
+        display: flex;
         flex-direction: column;
         gap: 18px;
     }
@@ -172,9 +162,8 @@
         margin: 0;
     }
 	.env-group select {
-        width: 120px; /* 下拉框宽度固定，更美观 */
+        width: 120px;
     }
-    /* 输入框位置 */
     #box-water { --label-width: 100px; --input-width: 80px; top: 20%; left: 10%;--vertical-label-offset: 15px; }
     #box-dispenser { --label-width: 100px; --input-width: 60px; top: var(--pos-dispenser-top); left: var(--pos-dispenser-left); --vertical-label-offset: -6px}
     #box-conc { --label-width: 110px; --input-width: 50px; top: 18%; right:56%;--vertical-label-offset: -8px; }
@@ -186,35 +175,32 @@
 		position: absolute;
 		top: 2%;
 		left: 7%;
-		padding: 12px 28px;                    /* 舒适内边距 */
+		padding: 12px 28px;
 		background: linear-gradient(135deg, #ffa500, #ff8c00);                
-		color: #fff;                           /* 白色文字，高对比 */
+		color: #fff;
 		border: none;
-		border-radius: 30px;                   /* 胶囊圆角 */
+		border-radius: 30px;
 		cursor: pointer;
 		font-size: 16px;
 		font-weight: bold;
 		z-index: 20;
-		box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4); /* 橙色阴影，立体突出 */
+		box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4);
 		transition: all 0.3s ease;
 		letter-spacing: 0.8px;
-		display: flex;                         /* 新增：flex布局容纳图标 */
+		display: flex;
 		align-items: center;
-		gap: 8px;                              /* 图标与文字间距 */
+		gap: 8px;
 	}
-
 	.reset-btn::before {
-		content: "↻";                          /* 刷新图标 */
-		font-size: 18px;                       /* 图标稍大 */
+		content: "↻";
+		font-size: 18px;
 		display: inline-block;
 	}
-
 	.reset-btn:hover {
-		background: #e67e00;                   /* 悬停稍深橙 */
+		background: #e67e00;
 		transform: translateY(-3px);
 		box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6);
 	}
-
 	.reset-btn:active {
 		transform: translateY(-1px);
 	}
@@ -244,9 +230,9 @@
     }
 
 	.result {
-		width: calc(100% - 40px);     /* 与 body padding 一致，左右各留20px间隙 */
-		max-width: 1046px;            /* 与 .container 一致，确保不超过背景图最大宽度 */
-		margin: 0 auto;               /* 水平居中 */
+		width: calc(100% - 40px);
+		max-width: 1046px;
+		margin: 0 auto;
 		padding: 24px;
 		background: rgba(0, 102, 204, 0.9);
 		color: #fff;
@@ -254,14 +240,11 @@
 		text-align: center;
 		border-radius: 8px;
 		box-sizing: border-box;
-		box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-
-		/* 关键：浮动在图片上方 */
 		position: absolute;
-		left: 50%;                    /* 从中心开始 */
-		bottom: 3px;                 /* 距离图片底部20px（可调整为30px、40px等） */
-		transform: translateX(-50%);  /* 精确水平居中 */
-		z-index: 15;                  /* 高于图片 */
+		left: 50%;
+		bottom: 3px;
+		transform: translateX(-50%);
+		z-index: 15;
 	}
 
     .instructions {
@@ -273,67 +256,78 @@
         font-size: 16px;
     }
 
-/* === 仅在移动端修正绝对定位偏移 === */
-@media (max-width: 768px) {
-
-    /* 1. 保持背景图坐标稳定，避免裁剪引发错位 */
-    .diagram {
-        height: 520px;
-        background-size: contain;
+    /* =========================================
+       移动端专用布局，不影响桌面端
+       ========================================= */
+    body.mobile-layout {
+        background: #f5f7fa;
     }
-
-    /* 2. 取消整体缩放，避免 transform 放大误差 */
-    .input-group,
-    .input-group-vertical,
-    .env-group {
+    body.mobile-layout .diagram {
+        position: relative;
+        height: auto;
+        min-height: unset;
+        background: none;
+        padding: 16px 12px 24px;
+    }
+    body.mobile-layout .input-group,
+    body.mobile-layout .input-group-vertical,
+    body.mobile-layout .env-group {
+        position: static;
         transform: none;
+        width: 100%;
+        margin: 0 0 14px 0;
+        box-sizing: border-box;
     }
-
-    /* 3. 中央垂直模块：统一向左靠，减少漂移感 */
-    #box-water {
-        top: 30%;
-        left: 5%;
+    body.mobile-layout .input-group,
+    body.mobile-layout .input-group-vertical {
+        background: #ffffff;
+        padding: 12px 14px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     }
-
-    #box-dispenser {
-        top: 8%;
-        left: 42%;
+    body.mobile-layout .input-group-vertical label {
+        margin-bottom: 6px;
+        font-size: 15px;
     }
-
-    #box-conc {
-        top: 22%;
-        left: 42%;
-        right: auto;
+    body.mobile-layout .input-group {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-
-    #box-dosage {
-        top: 36%;
-        left: 42%;
-        right: auto;
+    body.mobile-layout input,
+    body.mobile-layout select {
+        width: 140px;
+        font-size: 16px;
     }
-
-    /* 4. 清零按钮：下移，避开浏览器顶部干扰 */
-    .reset-btn {
-        top: 15%;
-        left: 2%;
-        transform: none;
+    body.mobile-layout .unit {
+        min-width: auto;
+        font-size: 14px;
     }
-
-    /* 5. 环境因素面板：靠边固定，避免压图 */
-    .env-group {
-        top: 50%;
-        left: 5%;
-        width: 180px;
+    body.mobile-layout .env-group {
+        display: block;
+        background: #ffffff;
+        border: none;
+        border-radius: 10px;
+        padding: 12px 14px;
     }
-
-    /* 6. 结果栏：固定宽度感更强，避免“溢出感” */
-    .result {
-        font-size: 20px;
+    body.mobile-layout .reset-btn {
+        position: sticky;
+        top: 8px;
+        left: auto;
+        margin-bottom: 16px;
+        width: 100%;
+        border-radius: 10px;
+    }
+    body.mobile-layout .result {
+        position: static;
+        margin: 20px 0 0;
+        font-size: 18px;
         padding: 16px;
-        bottom: -5px;
+        border-radius: 10px;
     }
-}
-
+    body.mobile-layout .bucket-label {
+        display: none !important;
+    }
 </style>
 </head>
 <body>
@@ -356,7 +350,7 @@
                 </div>
             </div>
 
-            <!-- 环境因素面板：标签与下拉框平行显示 -->
+            <!-- 环境因素面板 -->
             <div class="env-group" id="env-group">
                 <div class="input-group">
                     <label for="temp">温度</label>
@@ -438,6 +432,16 @@
 </div>
 
 <script>
+    // 自动判断移动端
+    (function () {
+        const isMobile =
+            /Android|iPhone|iPad|iPod/i.test(navigator.userAgent) ||
+            window.innerWidth <= 768;
+        if (isMobile) {
+            document.body.classList.add('mobile-layout');
+        }
+    })();
+
     const $ = id => document.getElementById(id);
     const inputs = {
         num: $('num'),
@@ -530,37 +534,35 @@
     }
 
     let calcTimeout;
-	function calculate() {
-		clearTimeout(calcTimeout);
-		calcTimeout = setTimeout(() => {
-			const v = {
-				num: +inputs.num.value || 0,
-				weight: +inputs.weight.value || 0,
-				dosage: +inputs.dosage.value || 0,
-				conc: +inputs.conc.value || 0,
-				water: +inputs.water.value || 0,
-				dispenser: +inputs.dispenser.value || 0
-			};
+    function calculate() {
+        clearTimeout(calcTimeout);
+        calcTimeout = setTimeout(() => {
+            const v = {
+                num: +inputs.num.value || 0,
+                weight: +inputs.weight.value || 0,
+                dosage: +inputs.dosage.value || 0,
+                conc: +inputs.conc.value || 0,
+                water: +inputs.water.value || 0,
+                dispenser: +inputs.dispenser.value || 0
+            };
 
-			// 严格判断：所有参数都必须大于0才能显示完整结果
-			if (v.num <= 0 || v.weight <= 0 || v.dosage <= 0 || v.conc <= 0 || v.water <= 0 || v.dispenser <= 0) {
-				outputs.result.textContent = '请完整填写所有必要参数';
-				if (outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
-				return;
-			}
+            if (v.num <= 0 || v.weight <= 0 || v.dosage <= 0 || v.conc <= 0 || v.water <= 0 || v.dispenser <= 0) {
+                outputs.result.textContent = '请完整填写所有必要参数';
+                if (outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
+                return;
+            }
 
-			// 所有参数齐全：计算并实时更新结果框和母液桶
-			const productGr = Math.round(v.num * v.weight * v.dosage / (v.conc * 10));
-			const stockL = v.water * v.dispenser / 100;
-			const stockDisplay = stockL % 1 === 0 ? stockL.toFixed(0) : stockL.toFixed(1);
+            const productGr = Math.round(v.num * v.weight * v.dosage / (v.conc * 10));
+            const stockL = v.water * v.dispenser / 100;
+            const stockDisplay = stockL % 1 === 0 ? stockL.toFixed(0) : stockL.toFixed(1);
 
-			outputs.product.textContent = productGr + ' g';
-			outputs.stock.textContent = stockDisplay + ' l';
-			outputs.result.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
+            outputs.product.textContent = productGr + ' g';
+            outputs.stock.textContent = stockDisplay + ' l';
+            outputs.result.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
 
-			if (outputs.bucketLabel) outputs.bucketLabel.classList.add('visible');
-		}, 300);
-	}
+            if (outputs.bucketLabel) outputs.bucketLabel.classList.add('visible');
+        }, 300);
+    }
 
     document.querySelectorAll('.tab').forEach(tab => {
         tab.onclick = () => {
