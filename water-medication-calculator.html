@@ -20,10 +20,8 @@
         --pos-weight-right: 12%;
         --pos-env-top: 33%;
         --pos-env-left: 8%;
-        /* 默认宽度 */
         --default-label-width: 80px;
         --default-input-width: 80px;
-        /* 垂直标签字体大小自定义 */
         --vertical-label-font-size: 14px;
     }
     body {
@@ -76,7 +74,6 @@
         background: url('https://raw.githubusercontent.com/Vopell/wellhope/main/image.jpg') no-repeat center center;
         background-size: contain;
     }
-    /* 横向输入组（通用，包括环境因素） */
     .input-group {
         position: absolute;
         display: flex;
@@ -104,7 +101,6 @@
         color: #333;
         min-width: 40px;
     }
-    /* 垂直输入组（总耗水量、加药器、浓度、剂量） */
     .input-group-vertical {
         position: absolute;
         display: flex;
@@ -143,7 +139,6 @@
         color: #666;
         pointer-events: none;
     }
-    /* 环境因素面板 */
     .env-group {
         position: absolute;
         top: var(--pos-env-top);
@@ -165,47 +160,12 @@
     .env-group select {
         width: 120px;
     }
-   
-    /* 输入框位置 */
-    #box-water {
-        --label-width: 100px;
-        --input-width: 80px;
-        top: 20%; 
-		left: 10%;
-        --vertical-label-offset: 15px;
-    }
-    #box-dispenser {
-        --label-width: 100px;
-        --input-width: 60px;
-        top: var(--pos-dispenser-top);
-        left: var(--pos-dispenser-left);
-        --vertical-label-offset: -6px;
-    }
-    #box-conc {
-        --label-width: 110px;
-        --input-width: 50px;
-        top: 18%; 
-		right:56%;
-        --vertical-label-offset: -8px;
-    }
-    #box-dosage {
-        --label-width: 90px;
-        --input-width: 60px;
-        top: 6%; 
-		right: 20%;
-    }
-    #box-num {
-        --label-width: 60px;
-        --input-width: 80px;
-        top: var(--pos-num-top);
-        right: var(--pos-num-right);
-    }
-    #box-weight {
-        --label-width: 60px;
-        --input-width: 80px;
-        top: var(--pos-weight-top);
-        right: var(--pos-weight-right);
-    }
+    #box-water { --label-width: 100px; --input-width: 80px; top: 20%; left: 10%; --vertical-label-offset: 15px; }
+    #box-dispenser { --label-width: 100px; --input-width: 60px; top: var(--pos-dispenser-top); left: var(--pos-dispenser-left); --vertical-label-offset: -6px; }
+    #box-conc { --label-width: 110px; --input-width: 50px; top: 18%; right:56%; --vertical-label-offset: -8px; }
+    #box-dosage { --label-width: 90px; --input-width: 60px; top: 6%; right: 20%; }
+    #box-num { --label-width: 60px; --input-width: 80px; top: 45%; right: 13%; }
+    #box-weight { --label-width: 60px; --input-width: 80px; top: 52%; right: 13%; }
     .reset-btn {
         position: absolute;
         top: 2%;
@@ -226,19 +186,8 @@
         align-items: center;
         gap: 8px;
     }
-    .reset-btn::before {
-        content: "↻";
-        font-size: 18px;
-        display: inline-block;
-    }
-    .reset-btn:hover {
-        background: #e67e00;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6);
-    }
-    .reset-btn:active {
-        transform: translateY(-1px);
-    }
+    .reset-btn::before { content: "↻"; font-size: 18px; }
+    .reset-btn:hover { background: #e67e00; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6); }
     .bucket-label {
         position: absolute;
         top: 60%;
@@ -250,19 +199,9 @@
         opacity: 0;
         transition: opacity 0.5s ease, visibility 0.5s;
     }
-    .bucket-label.visible {
-        visibility: visible;
-        opacity: 1;
-    }
-    #product {
-        font-size: 30px;
-        color: #d00;
-        margin-bottom: 50px;
-    }
-    #stock {
-        font-size: 30px;
-        color: #0066cc;
-    }
+    .bucket-label.visible { visibility: visible; opacity: 1; }
+    #product { font-size: 30px; color: #d00; margin-bottom: 50px; }
+    #stock { font-size: 30px; color: #0066cc; }
     .result {
         width: calc(100% - 40px);
         max-width: 1046px;
@@ -289,61 +228,36 @@
         border-radius: 8px;
         font-size: 16px;
     }
-    /* ==================== 移动端优化方案 ==================== */
-    /* 注意：我们不会修改桌面端布局，而是在移动端提供全新的界面 */
-   
-    /* 移动端遮罩层和表单容器 */
-    .mobile-overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.7);
-        z-index: 1000;
-        justify-content: center;
-        align-items: center;
-        padding: 20px;
-        box-sizing: border-box;
-    }
-   
-    .mobile-form-container {
-        display: none;
-        width: 100%;
+
+    /* ==================== 移动端嵌入式表单样式 ==================== */
+    .mobile-embedded-form {
+        display: none; /* 桌面端隐藏 */
         max-width: 500px;
+        margin: 0 auto;
         background: white;
         border-radius: 15px;
         padding: 25px;
         box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        max-height: 85vh;
-        overflow-y: auto;
-        position: relative;
     }
-   
     .mobile-form-header {
         text-align: center;
         margin-bottom: 25px;
         padding-bottom: 15px;
         border-bottom: 2px solid #0066cc;
     }
-   
     .mobile-form-header h2 {
         color: #0066cc;
         margin: 0 0 10px 0;
         font-size: 22px;
     }
-   
     .mobile-form-header p {
         color: #666;
         font-size: 14px;
         margin: 0;
     }
-   
     .mobile-form-group {
         margin-bottom: 20px;
     }
-   
     .mobile-form-group label {
         display: block;
         margin-bottom: 8px;
@@ -351,13 +265,11 @@
         color: #333;
         font-size: 16px;
     }
-   
     .mobile-form-row {
         display: flex;
         align-items: center;
         gap: 10px;
     }
-   
     .mobile-form-row input,
     .mobile-form-row select {
         flex: 1;
@@ -369,27 +281,23 @@
         box-sizing: border-box;
         transition: all 0.3s;
     }
-   
     .mobile-form-row input:focus,
     .mobile-form-row select:focus {
         border-color: #0066cc;
         outline: none;
         box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.1);
     }
-   
     .mobile-form-row .unit {
         font-weight: bold;
         color: #333;
         min-width: 50px;
         font-size: 16px;
     }
-   
     .mobile-form-actions {
         display: flex;
         gap: 15px;
         margin-top: 30px;
     }
-   
     .mobile-form-btn {
         flex: 1;
         height: 50px;
@@ -404,25 +312,20 @@
         justify-content: center;
         gap: 8px;
     }
-   
     .mobile-form-btn.primary {
         background: linear-gradient(135deg, #0066cc, #0055aa);
         color: white;
     }
-   
     .mobile-form-btn.secondary {
         background: #f0f0f0;
         color: #333;
         border: 2px solid #ddd;
     }
-   
     .mobile-form-btn:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     }
-   
     .mobile-result-panel {
-        display: none;
         background: #0066cc;
         color: white;
         padding: 20px;
@@ -432,7 +335,6 @@
         font-size: 18px;
         line-height: 1.5;
     }
-   
     .mobile-result-bucket {
         background: white;
         color: #333;
@@ -443,190 +345,37 @@
         justify-content: space-around;
         align-items: center;
     }
-   
     .mobile-bucket-item {
         text-align: center;
     }
-   
     .mobile-bucket-value {
         font-size: 24px;
         font-weight: bold;
         margin-bottom: 5px;
     }
-   
     .mobile-bucket-label {
         font-size: 14px;
         color: #666;
     }
-   
-    .mobile-bucket-value.product {
-        color: #d00;
-    }
-   
-    .mobile-bucket-value.stock {
-        color: #0066cc;
-    }
-   
-    .mobile-open-form {
-        display: none;
-        position: fixed;
-        bottom: 30px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: linear-gradient(135deg, #0066cc, #0055aa);
-        color: white;
-        border: none;
-        border-radius: 50px;
-        padding: 18px 35px;
-        font-size: 18px;
-        font-weight: bold;
-        cursor: pointer;
-        box-shadow: 0 8px 25px rgba(0, 102, 204, 0.4);
-        z-index: 999;
-        transition: all 0.3s;
-        white-space: nowrap;
-    }
-   
-    .mobile-open-form:hover {
-        transform: translateX(-50%) translateY(-3px);
-        box-shadow: 0 12px 30px rgba(0, 102, 204, 0.6);
-    }
-   
-    .mobile-close-form {
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        background: #f0f0f0;
-        border: none;
-        font-size: 24px;
-        color: #333;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s;
-    }
-   
-    .mobile-close-form:hover {
-        background: #e0e0e0;
-        transform: rotate(90deg);
-    }
-   
-    /* 移动端响应式设计 */
+    .mobile-bucket-value.product { color: #d00; }
+    .mobile-bucket-value.stock { color: #0066cc; }
+
+    /* ==================== 移动端响应式 ==================== */
     @media (max-width: 768px) {
-        body {
-            padding: 10px;
-        }
-       
-        /* 在移动端隐藏桌面界面 */
-        .diagram {
-            display: none;
-        }
-       
-        .result {
-            display: none;
-        }
-       
-        /* 显示移动端专属界面元素 */
-        .mobile-open-form {
-            display: block;
-        }
-       
-        .mobile-overlay.active {
-            display: flex;
-        }
-       
-        .mobile-form-container.active {
-            display: block;
-        }
-       
-        .mobile-result-panel.active {
-            display: block;
-        }
-       
-        /* 移动端标签页优化 */
-        .tabs {
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-       
-        .tab {
-            padding: 10px 20px;
-            margin: 0 5px 10px 5px;
-            font-size: 15px;
-        }
-       
-        /* 说明页面优化 */
-        .instructions {
-            padding: 20px;
-            font-size: 15px;
-            line-height: 1.6;
-        }
+        body { padding: 10px; }
+        .diagram, .result { display: none; }
+        .mobile-embedded-form { display: block; }
+        .tabs { justify-content: center; flex-wrap: wrap; }
+        .tab { padding: 10px 20px; margin: 0 5px 10px 5px; font-size: 15px; }
+        .instructions { padding: 20px; font-size: 15px; line-height: 1.6; }
     }
-   
-    /* 小屏幕手机优化 */
     @media (max-width: 480px) {
-        .mobile-form-container {
-            padding: 20px;
-            max-height: 90vh;
-        }
-       
-        .mobile-form-header h2 {
-            font-size: 20px;
-        }
-       
-        .mobile-form-group label {
-            font-size: 15px;
-        }
-       
-        .mobile-form-row input,
-        .mobile-form-row select {
-            height: 42px;
-            font-size: 15px;
-        }
-       
-        .mobile-form-actions {
-            flex-direction: column;
-        }
-       
-        .mobile-form-btn {
-            height: 45px;
-        }
-       
-        .mobile-open-form {
-            font-size: 16px;
-            padding: 15px 25px;
-            bottom: 20px;
-        }
-    }
-   
-    /* 横屏优化 */
-    @media (max-height: 500px) and (orientation: landscape) {
-        .mobile-form-container {
-            max-height: 95vh;
-            padding: 15px;
-        }
-       
-        .mobile-form-group {
-            margin-bottom: 15px;
-        }
-       
-        .mobile-form-row input,
-        .mobile-form-row select {
-            height: 40px;
-        }
-       
-        .mobile-form-actions {
-            margin-top: 20px;
-        }
-       
-        .mobile-form-btn {
-            height: 40px;
-            font-size: 14px;
-        }
+        .mobile-embedded-form { padding: 20px; }
+        .mobile-form-header h2 { font-size: 20px; }
+        .mobile-form-group label { font-size: 15px; }
+        .mobile-form-row input, .mobile-form-row select { height: 42px; font-size: 15px; }
+        .mobile-form-actions { flex-direction: column; }
+        .mobile-form-btn { height: 45px; }
     }
 </style>
 </head>
@@ -635,12 +384,12 @@
     <div class="tab active" data-tab="sim">模拟</div>
     <div class="tab" data-tab="info">说明</div>
 </div>
-<!-- 桌面端界面（在移动端隐藏） -->
+
+<!-- 桌面端界面 -->
 <div class="tab-content active" id="sim">
     <div class="container">
         <div class="diagram">
             <button class="reset-btn" onclick="resetAll()">清零</button>
-            <!-- 总耗水量 -->
             <div class="input-group-vertical" id="box-water">
                 <label for="water">总耗水量</label>
                 <div class="input-wrapper">
@@ -648,7 +397,6 @@
                     <span class="unit">升/天</span>
                 </div>
             </div>
-            <!-- 环境因素面板：标签与下拉框平行显示 -->
             <div class="env-group" id="env-group">
                 <div class="input-group">
                     <label for="temp">温度</label>
@@ -667,7 +415,6 @@
                     </select>
                 </div>
             </div>
-            <!-- 加药器设置 -->
             <div class="input-group-vertical" id="box-dispenser">
                 <label for="dispenser">加药器设置</label>
                 <div class="input-wrapper">
@@ -675,7 +422,6 @@
                     <span class="unit">%</span>
                 </div>
             </div>
-            <!-- 产品有效浓度 -->
             <div class="input-group-vertical" id="box-conc">
                 <label for="conc">产品有效浓度</label>
                 <div class="input-wrapper">
@@ -683,7 +429,6 @@
                     <span class="unit">%</span>
                 </div>
             </div>
-            <!-- 给药剂量 -->
             <div class="input-group-vertical" id="box-dosage">
                 <label for="dosage">给药剂量</label>
                 <div class="input-wrapper">
@@ -691,19 +436,16 @@
                     <span class="unit">mg/kg</span>
                 </div>
             </div>
-            <!-- 牲畜数量 -->
             <div class="input-group" id="box-num">
                 <label for="num">牲畜数量</label>
                 <input type="number" id="num" min="1" inputmode="numeric">
                 <span class="unit">头</span>
             </div>
-            <!-- 平均体重 -->
             <div class="input-group" id="box-weight">
                 <label for="weight">平均体重</label>
                 <input type="number" id="weight" min="0" step="0.1" class="disabled" inputmode="decimal">
                 <span class="unit">kg</span>
             </div>
-            <!-- 母液桶显示 -->
             <div class="bucket-label" id="bucket-label">
                 <div id="product"></div>
                 <div id="stock"></div>
@@ -711,29 +453,14 @@
         </div>
         <div class="result" id="result">请按顺序输入参数</div>
     </div>
-</div>
-<div class="tab-content" id="info">
-    <div class="instructions">
-        该计算器用于计算通过加药器向饮水中加药时所需加入的药量。<br><br>
-        计算原液使用量时，在相应的方格中输入数据，黄色背景表示可输入。<br><br>
-        如果您不清楚畜群具体的饮水消耗量，可以只填写牲畜数量和平均活体重，系统会根据标准估算饮水量（可进一步通过"温度"和"浪费水量"选项调整估算值）。<br><br>
-        根据第一天实际原液消耗量，即可反推真实饮水量并优化后续配药。
-    </div>
-</div>
-<!-- ==================== 移动端专属界面 ==================== -->
-<!-- 移动端打开表单按钮 -->
-<button class="mobile-open-form" id="mobile-open-form">打开计算器</button>
-<!-- 移动端表单遮罩层 -->
-<div class="mobile-overlay" id="mobile-overlay">
-    <div class="mobile-form-container" id="mobile-form-container">
-        <button class="mobile-close-form" id="mobile-close-form">×</button>
-       
+
+    <!-- 移动端嵌入式表单 -->
+    <div class="mobile-embedded-form">
         <div class="mobile-form-header">
             <h2>饮水加药计算器</h2>
             <p>填写以下参数计算加药量</p>
         </div>
-       
-        <!-- 移动端表单 -->
+
         <div class="mobile-form-group">
             <label for="mobile-num">牲畜数量</label>
             <div class="mobile-form-row">
@@ -741,7 +468,7 @@
                 <span class="unit">头</span>
             </div>
         </div>
-       
+
         <div class="mobile-form-group">
             <label for="mobile-weight">平均体重</label>
             <div class="mobile-form-row">
@@ -749,7 +476,7 @@
                 <span class="unit">kg</span>
             </div>
         </div>
-       
+
         <div class="mobile-form-group">
             <label for="mobile-dosage">给药剂量</label>
             <div class="mobile-form-row">
@@ -757,7 +484,7 @@
                 <span class="unit">mg/kg</span>
             </div>
         </div>
-       
+
         <div class="mobile-form-group">
             <label for="mobile-conc">产品有效浓度</label>
             <div class="mobile-form-row">
@@ -765,7 +492,7 @@
                 <span class="unit">%</span>
             </div>
         </div>
-       
+
         <div class="mobile-form-group">
             <label for="mobile-dispenser">加药器设置</label>
             <div class="mobile-form-row">
@@ -773,7 +500,7 @@
                 <span class="unit">%</span>
             </div>
         </div>
-       
+
         <div class="mobile-form-group">
             <label for="mobile-water">总耗水量</label>
             <div class="mobile-form-row">
@@ -781,7 +508,7 @@
                 <span class="unit">升/天</span>
             </div>
         </div>
-       
+
         <div class="mobile-form-group">
             <label for="mobile-temp">温度</label>
             <div class="mobile-form-row">
@@ -791,7 +518,7 @@
                 </select>
             </div>
         </div>
-       
+
         <div class="mobile-form-group">
             <label for="mobile-waste">浪费水量</label>
             <div class="mobile-form-row">
@@ -803,11 +530,10 @@
                 </select>
             </div>
         </div>
-       
-        <!-- 计算结果面板 -->
+
         <div class="mobile-result-panel" id="mobile-result-panel">
             <div id="mobile-result-text">请完整填写所有参数</div>
-            <div class="mobile-result-bucket" id="mobile-result-bucket">
+            <div class="mobile-result-bucket" id="mobile-result-bucket" style="display: none;">
                 <div class="mobile-bucket-item">
                     <div class="mobile-bucket-value product" id="mobile-product">0 g</div>
                     <div class="mobile-bucket-label">商业药品</div>
@@ -818,7 +544,7 @@
                 </div>
             </div>
         </div>
-       
+
         <div class="mobile-form-actions">
             <button class="mobile-form-btn secondary" id="mobile-reset-btn">
                 <span>↻</span> 重置
@@ -829,11 +555,20 @@
         </div>
     </div>
 </div>
+
+<div class="tab-content" id="info">
+    <div class="instructions">
+        该计算器用于计算通过加药器向饮水中加药时所需加入的药量。<br><br>
+        计算原液使用量时，在相应的方格中输入数据，黄色背景表示可输入。<br><br>
+        如果您不清楚畜群具体的饮水消耗量，可以只填写牲畜数量和平均活体重，系统会根据标准估算饮水量（可进一步通过"温度"和"浪费水量"选项调整估算值）。<br><br>
+        根据第一天实际原液消耗量，即可反推真实饮水量并优化后续配药。
+    </div>
+</div>
+
 <script>
-    // ==================== 桌面端逻辑（保持不变） ====================
     const $ = id => document.getElementById(id);
-   
-    // 桌面端输入元素
+
+    // ==================== 桌面端逻辑 ====================
     const inputs = {
         num: $('num'),
         weight: $('weight'),
@@ -844,14 +579,13 @@
         conc: $('conc'),
         dosage: $('dosage')
     };
-   
-    // 桌面端输出元素
     const outputs = {
         product: $('product'),
         stock: $('stock'),
         result: $('result'),
         bucketLabel: $('bucket-label')
     };
+
     function setEnabled(el, enabled) {
         el.disabled = !enabled;
         if (enabled) {
@@ -862,13 +596,11 @@
             el.classList.add('disabled');
         }
     }
+
     function resetAll() {
         Object.values(inputs).forEach(el => {
-            if (el.tagName === 'SELECT') {
-                el.selectedIndex = 0;
-            } else {
-                el.value = '';
-            }
+            if (el.tagName === 'SELECT') el.selectedIndex = 0;
+            else el.value = '';
             setEnabled(el, false);
         });
         setEnabled(inputs.num, true);
@@ -878,16 +610,16 @@
         if (outputs.bucketLabel) outputs.bucketLabel.classList.remove('visible');
         outputs.result.textContent = '请按顺序输入参数';
     }
+
     ['num', 'weight', 'water', 'dispenser', 'conc', 'dosage'].forEach(key => {
         inputs[key].addEventListener('input', function () {
             this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\./g, '$1');
         });
     });
+
     inputs.num.addEventListener('input', () => {
         setEnabled(inputs.weight, inputs.num.value > 0);
-        if (inputs.weight.value > 0) {
-            estimateWater();
-        }
+        if (inputs.weight.value > 0) estimateWater();
     });
     inputs.weight.addEventListener('input', () => {
         if (inputs.weight.value > 0) {
@@ -902,9 +634,8 @@
     });
     inputs.temp.addEventListener('change', () => { estimateWater(); calculate(); });
     inputs.waste.addEventListener('change', () => { estimateWater(); calculate(); });
-    [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el =>
-        el.addEventListener('input', calculate)
-    );
+    [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el => el.addEventListener('input', calculate));
+
     function estimateWater() {
         if (!inputs.num.value || !inputs.weight.value) return;
         let base = inputs.num.value * inputs.weight.value * 0.1;
@@ -917,6 +648,7 @@
         inputs.water.value = Math.round(base);
         calculate();
     }
+
     let calcTimeout;
     function calculate() {
         clearTimeout(calcTimeout);
@@ -943,16 +675,8 @@
             if (outputs.bucketLabel) outputs.bucketLabel.classList.add('visible');
         }, 300);
     }
-    // 标签页切换逻辑
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.onclick = () => {
-            document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
-            tab.classList.add('active');
-            $(tab.dataset.tab).classList.add('active');
-        };
-    });
-    // ==================== 移动端逻辑 ====================
-    // 移动端输入元素
+
+    // ==================== 移动端嵌入式逻辑 ====================
     const mobileInputs = {
         num: $('mobile-num'),
         weight: $('mobile-weight'),
@@ -963,8 +687,6 @@
         conc: $('mobile-conc'),
         dosage: $('mobile-dosage')
     };
-   
-    // 移动端输出元素
     const mobileOutputs = {
         product: $('mobile-product'),
         stock: $('mobile-stock'),
@@ -972,117 +694,26 @@
         resultPanel: $('mobile-result-panel'),
         resultBucket: $('mobile-result-bucket')
     };
-   
-    // 移动端界面控制元素
     const mobileUI = {
-        openFormBtn: $('mobile-open-form'),
-        closeFormBtn: $('mobile-close-form'),
-        overlay: $('mobile-overlay'),
-        formContainer: $('mobile-form-container'),
         resetBtn: $('mobile-reset-btn'),
         calculateBtn: $('mobile-calculate-btn')
     };
-   
-    // 初始化移动端
-    function initMobile() {
-        // 打开移动端表单
-        mobileUI.openFormBtn.addEventListener('click', () => {
-            mobileUI.overlay.classList.add('active');
-            mobileUI.formContainer.classList.add('active');
+
+    function mobileReset() {
+        Object.values(mobileInputs).forEach(el => {
+            if (el.tagName === 'SELECT') el.selectedIndex = 0;
+            else el.value = '';
+            el.disabled = true;
+            el.style.backgroundColor = '#ffd6d6';
         });
-       
-        // 关闭移动端表单
-        mobileUI.closeFormBtn.addEventListener('click', closeMobileForm);
-        mobileUI.overlay.addEventListener('click', (e) => {
-            if (e.target === mobileUI.overlay) {
-                closeMobileForm();
-            }
-        });
-       
-        // 移动端输入验证
-        Object.keys(mobileInputs).forEach(key => {
-            if (mobileInputs[key].tagName === 'INPUT') {
-                mobileInputs[key].addEventListener('input', function() {
-                    this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\./g, '$1');
-                });
-            }
-        });
-       
-        // 移动端输入顺序控制
-        mobileInputs.num.addEventListener('input', function() {
-            const hasValue = this.value > 0;
-            mobileInputs.weight.disabled = !hasValue;
-            mobileInputs.weight.style.backgroundColor = hasValue ? '#ffff99' : '#ffd6d6';
-           
-            if (hasValue && mobileInputs.weight.value > 0) {
-                mobileEstimateWater();
-            }
-        });
-       
-        mobileInputs.weight.addEventListener('input', function() {
-            const hasValue = this.value > 0;
-           
-            // 启用后续输入框
-            [mobileInputs.dosage, mobileInputs.conc, mobileInputs.dispenser, mobileInputs.temp, mobileInputs.waste].forEach(el => {
-                el.disabled = !hasValue;
-                if (el.tagName === 'SELECT') {
-                    el.style.backgroundColor = hasValue ? '#ffff99' : '#ffd6d6';
-                }
-            });
-           
-            // 设置默认值
-            if (hasValue) {
-                mobileInputs.temp.selectedIndex = 0;
-                mobileInputs.waste.selectedIndex = 0;
-                mobileEstimateWater();
-            }
-        });
-       
-        mobileInputs.temp.addEventListener('change', () => { mobileEstimateWater(); });
-        mobileInputs.waste.addEventListener('change', () => { mobileEstimateWater(); });
-       
-        // 移动端计算按钮
-        mobileUI.calculateBtn.addEventListener('click', mobileCalculate);
-       
-        // 移动端重置按钮
-        mobileUI.resetBtn.addEventListener('click', () => {
-            Object.values(mobileInputs).forEach(el => {
-                if (el.tagName === 'SELECT') {
-                    el.selectedIndex = 0;
-                } else {
-                    el.value = '';
-                }
-                el.disabled = true;
-                el.style.backgroundColor = '#ffd6d6';
-            });
-           
-            // 第一个输入框启用
-            mobileInputs.num.disabled = false;
-            mobileInputs.num.style.backgroundColor = '#ffff99';
-           
-            mobileOutputs.resultPanel.classList.remove('active');
-            mobileOutputs.resultBucket.style.display = 'none';
-            mobileOutputs.resultText.textContent = '请完整填写所有参数';
-        });
-       
-        // 移动端输入框输入时也计算
-        [mobileInputs.dosage, mobileInputs.conc, mobileInputs.dispenser].forEach(el => {
-            el.addEventListener('input', mobileCalculate);
-        });
-       
-        // ESC键关闭表单
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && mobileUI.overlay.classList.contains('active')) {
-                closeMobileForm();
-            }
-        });
+        mobileInputs.num.disabled = false;
+        mobileInputs.num.style.backgroundColor = '#ffff99';
+
+        mobileOutputs.resultPanel.style.display = 'none';
+        mobileOutputs.resultBucket.style.display = 'none';
+        mobileOutputs.resultText.textContent = '请完整填写所有参数';
     }
-   
-    function closeMobileForm() {
-        mobileUI.overlay.classList.remove('active');
-        mobileUI.formContainer.classList.remove('active');
-    }
-   
+
     function mobileEstimateWater() {
         if (!mobileInputs.num.value || !mobileInputs.weight.value) return;
         let base = mobileInputs.num.value * mobileInputs.weight.value * 0.1;
@@ -1093,8 +724,9 @@
             case 'high': base *= 1.4; break;
         }
         mobileInputs.water.value = Math.round(base);
+        mobileCalculate();
     }
-   
+
     function mobileCalculate() {
         const v = {
             num: +mobileInputs.num.value || 0,
@@ -1107,7 +739,7 @@
         if (v.num <= 0 || v.weight <= 0 || v.dosage <= 0 || v.conc <= 0 || v.water <= 0 || v.dispenser <= 0) {
             mobileOutputs.resultText.textContent = '请完整填写所有必要参数';
             mobileOutputs.resultBucket.style.display = 'none';
-            mobileOutputs.resultPanel.classList.add('active');
+            mobileOutputs.resultPanel.style.display = 'block';
             return;
         }
         const productGr = Math.round(v.num * v.weight * v.dosage / (v.conc * 10));
@@ -1117,24 +749,73 @@
         mobileOutputs.stock.textContent = stockDisplay + ' l';
         mobileOutputs.resultText.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
         mobileOutputs.resultBucket.style.display = 'flex';
-        mobileOutputs.resultPanel.classList.add('active');
+        mobileOutputs.resultPanel.style.display = 'block';
     }
-   
-    // 检测设备类型，初始化相应界面
+
+    function initMobile() {
+        // 输入验证
+        Object.keys(mobileInputs).forEach(key => {
+            if (mobileInputs[key].tagName === 'INPUT') {
+                mobileInputs[key].addEventListener('input', function() {
+                    this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\./g, '$1');
+                });
+            }
+        });
+
+        // 逐步启用
+        mobileInputs.num.addEventListener('input', function() {
+            const hasValue = this.value > 0;
+            mobileInputs.weight.disabled = !hasValue;
+            mobileInputs.weight.style.backgroundColor = hasValue ? '#ffff99' : '#ffd6d6';
+            if (hasValue && mobileInputs.weight.value > 0) mobileEstimateWater();
+        });
+
+        mobileInputs.weight.addEventListener('input', function() {
+            const hasValue = this.value > 0;
+            [mobileInputs.dosage, mobileInputs.conc, mobileInputs.dispenser, mobileInputs.temp, mobileInputs.waste].forEach(el => {
+                el.disabled = !hasValue;
+                el.style.backgroundColor = hasValue ? '#ffff99' : '#ffd6d6';
+            });
+            if (hasValue) {
+                mobileInputs.temp.selectedIndex = 0;
+                mobileInputs.waste.selectedIndex = 0;
+                mobileEstimateWater();
+            }
+        });
+
+        mobileInputs.temp.addEventListener('change', mobileEstimateWater);
+        mobileInputs.waste.addEventListener('change', mobileEstimateWater);
+
+        mobileUI.calculateBtn.addEventListener('click', mobileCalculate);
+        mobileUI.resetBtn.addEventListener('click', mobileReset);
+
+        [mobileInputs.dosage, mobileInputs.conc, mobileInputs.dispenser].forEach(el => {
+            el.addEventListener('input', mobileCalculate);
+        });
+
+        // 初始化状态
+        mobileReset();
+    }
+
+    // 标签页切换
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.onclick = () => {
+            document.querySelectorAll('.tab, .tab-content').forEach(el => el.classList.remove('active'));
+            tab.classList.add('active');
+            $(tab.dataset.tab).classList.add('active');
+        };
+    });
+
+    // 初始化
     function initApp() {
-        // 检测是否为移动设备
         const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || window.innerWidth <= 768;
-       
         if (isMobile) {
-            // 初始化移动端
             initMobile();
         } else {
-            // 初始化桌面端
             resetAll();
         }
     }
-   
-    // 启动应用
+
     document.addEventListener('DOMContentLoaded', initApp);
 </script>
 </body>
