@@ -275,63 +275,65 @@
 
 /* === 仅在移动端修正绝对定位偏移 === */
 @media (max-width: 768px) {
-    /* 手机端：取消绝对定位，改用 Flex 自动排列 */
+
+    /* 1. 保持背景图坐标稳定，避免裁剪引发错位 */
     .diagram {
-        display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
-        align-content: flex-start;
-        gap: 18px;
-        padding: 80px 15px 140px; /* 顶部留按钮，底部留结果框 */
-        height: auto;
+        height: 520px;
+        background-size: contain;
     }
 
-    /* 所有输入框在手机端变为相对定位 + 统一宽度 */
+    /* 2. 取消整体缩放，避免 transform 放大误差 */
     .input-group,
     .input-group-vertical,
     .env-group {
-        position: static !important;
-        width: 100%;
-        max-width: 320px;
-        transform: none !important;
+        transform: none;
     }
 
-    /* 隐藏桌面端的绝对位置样式（只在手机端） */
-    #box-water,
-    #box-dispenser,
-    #box-conc,
-    #box-dosage,
-    #box-num,
-    #box-weight,
-    .env-group {
-        top: auto !important;
-        left: auto !important;
-        right: auto !important;
+    /* 3. 中央垂直模块：统一向左靠，减少漂移感 */
+    #box-water {
+        top: 18%;
+        left: 6%;
     }
 
-    /* 清零按钮固定左上角 */
+    #box-dispenser {
+        top: 8%;
+        left: 42%;
+    }
+
+    #box-conc {
+        top: 22%;
+        left: 42%;
+        right: auto;
+    }
+
+    #box-dosage {
+        top: 36%;
+        left: 42%;
+        right: auto;
+    }
+
+    /* 4. 清零按钮：下移，避开浏览器顶部干扰 */
     .reset-btn {
-        top: 10px !important;
-        left: 10px !important;
-        padding: 10px 20px !important;
-        font-size: 14px !important;
+        top: 4%;
+        left: 5%;
+        transform: none;
     }
 
-    /* 结果框向上提，避免被键盘遮挡 */
+    /* 5. 环境因素面板：靠边固定，避免压图 */
+    .env-group {
+        top: 50%;
+        left: 5%;
+        width: 180px;
+    }
+
+    /* 6. 结果栏：固定宽度感更强，避免“溢出感” */
     .result {
-        bottom: 10px !important;
-        padding: 18px !important;
-        font-size: 20px !important;
-        max-width: calc(100% - 20px) !important;
-    }
-
-    /* 母液桶在手机端居中 */
-    .bucket-label {
-        top: 50% !important;
-        left: 50% !important;
-        transform: translate(-50%, -50%) !important;
+        font-size: 20px;
+        padding: 16px;
+        bottom: -5px;
     }
 }
+
 </style>
 </head>
 <body>
