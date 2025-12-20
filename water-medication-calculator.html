@@ -2,12 +2,12 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>饮水加药计算器</title>
 <style>
 :root {
-    --default-label-width: 80px;
-    --default-input-width: 80px;
+    --label-width: 120px;
+    --input-width: 120px;
 }
 
 /* -------------------- 公共样式 -------------------- */
@@ -19,6 +19,11 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
 }
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+}
 .tabs { display: flex; border-bottom: 2px solid #0066cc; margin-bottom: 15px; }
 .tab { padding: 8px 25px; cursor: pointer; font-weight: bold; color: #0066cc; background: #e6f0ff; border: 2px solid #0066cc; border-radius: 20px; margin-right: 10px; transition: all 0.3s ease; }
 .tab.active { background: #0066cc; color: #fff; border-radius: 20px; }
@@ -26,93 +31,46 @@ body {
 .tab.active:hover { background: #0055aa; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-.container { max-width: 1200px; margin: 0 auto; position: relative; }
 .diagram { position: relative; height: 700px; background: url('https://raw.githubusercontent.com/Vopell/wellhope/main/image.jpg') no-repeat center center; background-size: contain; }
+.input-group { margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+.input-group label { width: var(--label-width); font-weight: bold; }
+.input-group input, .input-group select { width: var(--input-width); height: 30px; padding: 4px 8px; border: 1px solid #999; border-radius: 4px; }
+.unit { font-weight: bold; }
 
-/* 输入组 */
-.input-group, .input-group-vertical { position: absolute; display: flex; flex-direction: column; gap: 4px; }
-.input-group label, .input-group-vertical label { font-weight: bold; white-space: nowrap; width: var(--label-width, var(--default-label-width)); }
-.input-group input, .input-group select, .input-group-vertical input { width: var(--input-width, var(--default-input-width)); height: 30px; padding: 4px 8px; font-size: 14px; border: 1px solid #999; border-radius: 4px; box-sizing: border-box; }
-.input-group .unit, .input-group-vertical .unit { font-weight: bold; color: #333; min-width: 40px; }
-
-input.enabled, select.enabled { background: #ffff99; }
-input.disabled, select.disabled { background: #ffd6d6 !important; color: #666; pointer-events: none; }
-
-.reset-btn {
-    position: absolute;
-    top: 2%; left: 7%;
-    padding: 12px 28px;
-    background: linear-gradient(135deg, #ffa500, #ff8c00);
-    color: #fff;
-    border: none;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 16px;
-    font-weight: bold;
-    z-index: 20;
-    box-shadow: 0 6px 18px rgba(255,140,0,0.4);
-    transition: all 0.3s ease;
-    display: flex; align-items: center; gap: 8px;
-}
+.reset-btn { position: absolute; top: 2%; left: 7%; padding: 12px 28px; background: linear-gradient(135deg,#ffa500,#ff8c00); color: #fff; border: none; border-radius: 30px; cursor: pointer; font-size: 16px; font-weight: bold; z-index: 20; box-shadow: 0 6px 18px rgba(255,140,0,0.4); transition: all 0.3s ease; }
 .reset-btn::before { content: "↻"; font-size: 18px; }
 .reset-btn:hover { background: #e67e00; transform: translateY(-3px); box-shadow: 0 10px 25px rgba(255,140,0,0.6); }
-.reset-btn:active { transform: translateY(-1px); }
-
-.bucket-label { position: absolute; top: 60%; left: 30%; transform: translateY(-50%); text-align: center; font-weight: bold; visibility: hidden; opacity: 0; transition: opacity 0.5s ease, visibility 0.5s; }
-.bucket-label.visible { visibility: visible; opacity: 1; }
-
-.result { width: calc(100% - 40px); max-width: 1046px; margin: 0 auto; padding: 24px; background: rgba(0,102,204,0.9); color: #fff; font-size: 24px; text-align: center; border-radius: 8px; box-sizing: border-box; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%); z-index: 15; }
-.instructions { background: #fff; border: 1px solid #ccc; padding: 30px; line-height: 1.8; border-radius: 8px; font-size: 16px; }
+.result { width: calc(100% - 40px); max-width: 1046px; margin: 0 auto; padding: 24px; background: rgba(0,102,204,0.9); color: #fff; font-size: 24px; text-align: center; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3); position: absolute; left: 50%; bottom: 3px; transform: translateX(-50%); z-index: 15; }
 
 /* -------------------- 移动端专属 -------------------- */
-.mobile-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 1000; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; opacity: 0; transition: opacity 0.4s ease; }
-.mobile-overlay.active { display: flex; opacity: 1; }
-
-.mobile-form-container { display: none; width: 100%; max-width: 500px; background: white; border-radius: 15px; padding: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 85vh; overflow-y: auto; position: relative; transform: translateY(50px); transition: all 0.4s ease; opacity: 0; }
-.mobile-form-container.active { display: block; transform: translateY(0); opacity: 1; }
-
-.mobile-form-header { text-align: center; margin-bottom: 25px; padding-bottom: 15px; border-bottom: 2px solid #0066cc; }
-.mobile-form-header h2 { color: #0066cc; margin: 0 0 10px 0; font-size: 22px; }
-.mobile-form-header p { color: #666; font-size: 14px; margin: 0; }
-
-.mobile-form-group { margin-bottom: 20px; }
-.mobile-form-group label { display: block; margin-bottom: 8px; font-weight: bold; color: #333; font-size: 16px; }
-.mobile-form-row { display: flex; align-items: center; gap: 10px; }
-.mobile-form-row input, .mobile-form-row select { flex: 1; height: 45px; padding: 0 12px; font-size: 16px; border: 2px solid #ddd; border-radius: 8px; box-sizing: border-box; transition: all 0.3s; }
-.mobile-form-row input:focus, .mobile-form-row select:focus { border-color: #0066cc; outline: none; box-shadow: 0 0 0 3px rgba(0,102,204,0.1); }
-.mobile-form-row .unit { font-weight: bold; color: #333; min-width: 50px; font-size: 16px; }
-
-.mobile-form-actions { display: flex; gap: 15px; margin-top: 30px; }
-.mobile-form-btn { flex: 1; height: 50px; border: none; border-radius: 10px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; gap: 8px; }
-.mobile-form-btn.primary { background: linear-gradient(135deg, #0066cc, #0055aa); color: white; }
-.mobile-form-btn.secondary { background: #f0f0f0; color: #333; border: 2px solid #ddd; }
-.mobile-form-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-
-.mobile-result-panel { display: none; background: #0066cc; color: white; padding: 20px; border-radius: 10px; margin-top: 20px; text-align: center; font-size: 18px; line-height: 1.5; }
-.mobile-result-panel.active { display: block; }
-.mobile-result-bucket { display: flex; justify-content: space-around; margin-top: 15px; }
-.mobile-bucket-item { text-align: center; }
-.mobile-bucket-value { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-.mobile-bucket-value.product { color: #d00; }
-.mobile-bucket-value.stock { color: #0066cc; }
-.mobile-bucket-label { font-size: 14px; color: #666; }
-.mobile-close-form { position: absolute; top: 15px; right: 15px; width: 40px; height: 40px; border-radius: 50%; background: #f0f0f0; border: none; font-size: 24px; color: #333; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s; }
-.mobile-close-form:hover { background: #e0e0e0; transform: rotate(90deg); }
-
-/* -------------------- 移动端响应 -------------------- */
 @media (max-width: 768px) {
-    .diagram { display: none; }
-    .result { display: none; }
+    body { padding: 15px; }
+    .tabs, .diagram, .reset-btn, .result { display: none; }
+
+    .mobile-calculator { display: block; max-width: 500px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+    .mobile-calculator h2 { text-align: center; color: #0066cc; margin-bottom: 20px; }
+    .mobile-group { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
+    .mobile-group label { flex: 1; font-weight: bold; color: #333; }
+    .mobile-group input, .mobile-group select { flex: 1; height: 40px; border: 1px solid #ccc; border-radius: 6px; padding: 0 10px; }
+    .unit { margin-left: 6px; font-weight: bold; }
+
+    .mobile-result { display: none; background: #0066cc; color: #fff; padding: 15px; border-radius: 8px; margin-top: 15px; text-align: center; }
+    .mobile-result.active { display: block; }
+    .mobile-buttons { display: flex; gap: 10px; margin-top: 15px; }
+    .mobile-buttons button { flex: 1; height: 45px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; }
+    .calculate-btn { background: #0066cc; color: #fff; }
+    .reset-btn-mobile { background: #f0f0f0; color: #333; border: 1px solid #ccc; }
 }
 </style>
 </head>
 <body>
+
+<!-- 桌面端 -->
 <div class="tabs">
     <div class="tab active" data-tab="sim">模拟</div>
     <div class="tab" data-tab="info">说明</div>
 </div>
 
-<!-- 桌面端 -->
 <div class="tab-content active" id="sim">
     <div class="container">
         <div class="diagram">
@@ -129,165 +87,119 @@ input.disabled, select.disabled { background: #ffd6d6 !important; color: #666; p
 </div>
 
 <!-- 移动端直接显示计算器 -->
-<div class="mobile-overlay active" id="mobile-overlay">
-    <div class="mobile-form-container active" id="mobile-form-container">
-        <button class="mobile-close-form" id="mobile-close-form">×</button>
-        <div class="mobile-form-header">
-            <h2>饮水加药计算器</h2>
-            <p>填写参数自动计算加药量</p>
-        </div>
-        <!-- 移动端输入 -->
-        <div class="mobile-form-group">
-            <label>牲畜数量</label>
-            <div class="mobile-form-row"><input type="number" id="mobile-num" min="1" inputmode="numeric"><span class="unit">头</span></div>
-        </div>
-        <div class="mobile-form-group">
-            <label>平均体重</label>
-            <div class="mobile-form-row"><input type="number" id="mobile-weight" min="0" step="0.1" inputmode="decimal" disabled><span class="unit">kg</span></div>
-        </div>
-        <div class="mobile-form-group">
-            <label>给药剂量</label>
-            <div class="mobile-form-row"><input type="number" id="mobile-dosage" min="0" step="0.1" inputmode="decimal" disabled><span class="unit">mg/kg</span></div>
-        </div>
-        <div class="mobile-form-group">
-            <label>产品有效浓度</label>
-            <div class="mobile-form-row"><input type="number" id="mobile-conc" min="0" max="100" step="0.1" inputmode="decimal" disabled><span class="unit">%</span></div>
-        </div>
-        <div class="mobile-form-group">
-            <label>加药器设置</label>
-            <div class="mobile-form-row"><input type="number" id="mobile-dispenser" min="0" max="100" step="0.1" inputmode="decimal" disabled><span class="unit">%</span></div>
-        </div>
-        <div class="mobile-form-group">
-            <label>总耗水量</label>
-            <div class="mobile-form-row"><input type="number" id="mobile-water" min="0" inputmode="decimal" disabled><span class="unit">升/天</span></div>
-        </div>
-        <div class="mobile-form-group">
-            <label>温度</label>
-            <div class="mobile-form-row"><select id="mobile-temp" disabled><option value="normal">温度适中</option><option value="hot">炎热</option></select></div>
-        </div>
-        <div class="mobile-form-group">
-            <label>浪费水量</label>
-            <div class="mobile-form-row"><select id="mobile-waste" disabled><option value="none">无浪费</option><option value="low">低</option><option value="mid">中</option><option value="high">高</option></select></div>
-        </div>
+<div class="mobile-calculator">
+    <h2>饮水加药计算器</h2>
+    <div class="mobile-group">
+        <label for="num">牲畜数量</label>
+        <input type="number" id="num" min="1">
+        <span class="unit">头</span>
+    </div>
+    <div class="mobile-group">
+        <label for="weight">平均体重</label>
+        <input type="number" id="weight" min="0" step="0.1">
+        <span class="unit">kg</span>
+    </div>
+    <div class="mobile-group">
+        <label for="dosage">给药剂量</label>
+        <input type="number" id="dosage" min="0" step="0.1">
+        <span class="unit">mg/kg</span>
+    </div>
+    <div class="mobile-group">
+        <label for="conc">产品有效浓度</label>
+        <input type="number" id="conc" min="0" step="0.1">
+        <span class="unit">%</span>
+    </div>
+    <div class="mobile-group">
+        <label for="water">总耗水量</label>
+        <input type="number" id="water" min="0">
+        <span class="unit">升/天</span>
+    </div>
+    <div class="mobile-group">
+        <label for="dispenser">加药器设置</label>
+        <input type="number" id="dispenser" min="0" max="100" step="0.1">
+        <span class="unit">%</span>
+    </div>
+    <div class="mobile-group">
+        <label for="temp">温度</label>
+        <select id="temp">
+            <option value="normal">温度适中</option>
+            <option value="hot">炎热</option>
+        </select>
+    </div>
+    <div class="mobile-group">
+        <label for="waste">浪费水量</label>
+        <select id="waste">
+            <option value="none">无浪费</option>
+            <option value="low">低</option>
+            <option value="mid">中</option>
+            <option value="high">高</option>
+        </select>
+    </div>
 
-        <!-- 结果 -->
-        <div class="mobile-result-panel" id="mobile-result-panel">
-            <div id="mobile-result-text">请完整填写所有参数</div>
-            <div class="mobile-result-bucket" id="mobile-result-bucket">
-                <div class="mobile-bucket-item"><div class="mobile-bucket-value product" id="mobile-product">0 g</div><div class="mobile-bucket-label">商业药品</div></div>
-                <div class="mobile-bucket-item"><div class="mobile-bucket-value stock" id="mobile-stock">0 l</div><div class="mobile-bucket-label">稀释用水</div></div>
-            </div>
-        </div>
+    <div class="mobile-buttons">
+        <button class="calculate-btn" id="calculate-btn">计算</button>
+        <button class="reset-btn-mobile" id="reset-btn-mobile">重置</button>
+    </div>
 
-        <div class="mobile-form-actions">
-            <button class="mobile-form-btn secondary" id="mobile-reset-btn">↻ 重置</button>
-        </div>
+    <div class="mobile-result" id="mobile-result">
+        <div id="result-text">请完整填写所有参数</div>
+        <div id="bucket-info" style="margin-top:10px;">商业药品：<span id="product">0 g</span>，稀释水：<span id="stock">0 l</span></div>
     </div>
 </div>
 
 <script>
-const $ = id => document.getElementById(id);
-
-// 移动端输入元素
-const mobileInputs = {
-    num: $('mobile-num'),
-    weight: $('mobile-weight'),
-    water: $('mobile-water'),
-    temp: $('mobile-temp'),
-    waste: $('mobile-waste'),
-    dispenser: $('mobile-dispenser'),
-    conc: $('mobile-conc'),
-    dosage: $('mobile-dosage')
-};
-const mobileOutputs = {
-    product: $('mobile-product'),
-    stock: $('mobile-stock'),
-    resultText: $('mobile-result-text'),
-    resultPanel: $('mobile-result-panel'),
-    resultBucket: $('mobile-result-bucket')
-};
-const mobileUI = {
-    closeBtn: $('mobile-close-form'),
-    overlay: $('mobile-overlay'),
-    resetBtn: $('mobile-reset-btn')
+const mobile = {
+    num: document.getElementById('num'),
+    weight: document.getElementById('weight'),
+    dosage: document.getElementById('dosage'),
+    conc: document.getElementById('conc'),
+    water: document.getElementById('water'),
+    dispenser: document.getElementById('dispenser'),
+    temp: document.getElementById('temp'),
+    waste: document.getElementById('waste'),
+    resultPanel: document.getElementById('mobile-result'),
+    resultText: document.getElementById('result-text'),
+    product: document.getElementById('product'),
+    stock: document.getElementById('stock')
 };
 
-function mobileEstimateWater() {
-    if (!mobileInputs.num.value || !mobileInputs.weight.value) return;
-    let base = mobileInputs.num.value * mobileInputs.weight.value * 0.1;
-    if (mobileInputs.temp.value === 'hot') base *= 1.5;
-    switch (mobileInputs.waste.value) {
-        case 'low': base *= 1.1; break;
-        case 'mid': base *= 1.2; break;
-        case 'high': base *= 1.4; break;
-    }
-    mobileInputs.water.value = Math.round(base);
-}
-
-function mobileCalculate() {
+document.getElementById('calculate-btn').addEventListener('click', ()=>{
     const v = {
-        num: +mobileInputs.num.value || 0,
-        weight: +mobileInputs.weight.value || 0,
-        dosage: +mobileInputs.dosage.value || 0,
-        conc: +mobileInputs.conc.value || 0,
-        water: +mobileInputs.water.value || 0,
-        dispenser: +mobileInputs.dispenser.value || 0
+        num: +mobile.num.value || 0,
+        weight: +mobile.weight.value || 0,
+        dosage: +mobile.dosage.value || 0,
+        conc: +mobile.conc.value || 0,
+        water: +mobile.water.value || 0,
+        dispenser: +mobile.dispenser.value || 0
     };
-    if (v.num <= 0 || v.weight <= 0 || v.dosage <= 0 || v.conc <= 0 || v.water <= 0 || v.dispenser <= 0) {
-        mobileOutputs.resultText.textContent = '请完整填写所有必要参数';
-        mobileOutputs.resultBucket.style.display = 'none';
-        mobileOutputs.resultPanel.classList.add('active');
+    if(v.num<=0||v.weight<=0||v.dosage<=0||v.conc<=0||v.water<=0||v.dispenser<=0){
+        mobile.resultText.textContent = '请完整填写所有必要参数';
+        mobile.resultPanel.classList.add('active');
         return;
     }
+    // 温度和浪费水量调整
+    let adjustedWater = v.water;
+    if(mobile.temp.value==='hot') adjustedWater*=1.5;
+    switch(mobile.waste.value){
+        case 'low': adjustedWater*=1.1; break;
+        case 'mid': adjustedWater*=1.2; break;
+        case 'high': adjustedWater*=1.4; break;
+    }
+
     const productGr = Math.round(v.num*v.weight*v.dosage/(v.conc*10));
-    const stockL = v.water*v.dispenser/100;
-    const stockDisplay = stockL%1===0?stockL.toFixed(0):stockL.toFixed(1);
-    mobileOutputs.product.textContent = productGr+' g';
-    mobileOutputs.stock.textContent = stockDisplay+' l';
-    mobileOutputs.resultText.textContent = `生产一天所需的原液我们需要将 ${productGr} g 或 ml 的商业药品加入到 ${stockDisplay} l 的稀释用水中。`;
-    mobileOutputs.resultBucket.style.display = 'flex';
-    mobileOutputs.resultPanel.classList.add('active');
-}
+    const stockL = adjustedWater*v.dispenser/100;
+    mobile.product.textContent = productGr+' g';
+    mobile.stock.textContent = stockL%1===0?stockL.toFixed(0)+' l':stockL.toFixed(1)+' l';
+    mobile.resultText.textContent = `生产一天所需的原液，我们需要将 ${productGr} g 的商业药品加入 ${stockL%1===0?stockL.toFixed(0):stockL.toFixed(1)} l 稀释用水中。`;
+    mobile.resultPanel.classList.add('active');
+});
 
-function initMobile() {
-    Object.keys(mobileInputs).forEach(key => {
-        if (mobileInputs[key].tagName==='INPUT') {
-            mobileInputs[key].addEventListener('input', function() {
-                this.value=this.value.replace(/[^0-9.]/g,'').replace(/(\..*?)\./g,'$1');
-            });
-        }
-    });
-    mobileInputs.num.addEventListener('input', function(){
-        const hasValue = this.value>0;
-        mobileInputs.weight.disabled = !hasValue;
-        mobileInputs.weight.style.backgroundColor = hasValue?'#ffff99':'#ffd6d6';
-        if(hasValue && mobileInputs.weight.value>0) mobileEstimateWater();
-    });
-    mobileInputs.weight.addEventListener('input', function(){
-        const hasValue = this.value>0;
-        [mobileInputs.dosage,mobileInputs.conc,mobileInputs.dispenser,mobileInputs.temp,mobileInputs.waste].forEach(el=>{el.disabled=!hasValue; el.style.backgroundColor=hasValue?'#ffff99':'#ffd6d6';});
-        if(hasValue) mobileEstimateWater();
-        mobileCalculate();
-    });
-    ['dosage','conc','dispenser','water'].forEach(id=>{
-        mobileInputs[id].addEventListener('input', mobileCalculate);
-    });
-    ['temp','waste'].forEach(id=>{
-        mobileInputs[id].addEventListener('change', ()=>{
-            mobileEstimateWater();
-            mobileCalculate();
-        });
-    });
-
-    mobileUI.closeBtn.addEventListener('click', ()=>{mobileUI.overlay.classList.remove('active'); $('mobile-form-container').classList.remove('active');});
-    mobileUI.overlay.addEventListener('click', e=>{if(e.target===mobileUI.overlay) mobileUI.closeBtn.click();});
-    mobileUI.resetBtn.addEventListener('click', ()=>{
-        Object.values(mobileInputs).forEach(input=>{input.value='';input.disabled=true;input.style.backgroundColor='#ffd6d6';});
-        mobileOutputs.resultPanel.classList.remove('active');
-        mobileOutputs.resultBucket.style.display='none';
-    });
-}
-document.addEventListener('DOMContentLoaded', initMobile);
+document.getElementById('reset-btn-mobile').addEventListener('click', ()=>{
+    [mobile.num, mobile.weight, mobile.dosage, mobile.conc, mobile.water, mobile.dispenser].forEach(i=>i.value='');
+    mobile.temp.value='normal';
+    mobile.waste.value='none';
+    mobile.resultPanel.classList.remove('active');
+});
 
 // 桌面端 tab 切换
 document.querySelectorAll('.tab').forEach(tab=>{
@@ -299,7 +211,8 @@ document.querySelectorAll('.tab').forEach(tab=>{
     });
 });
 
-function resetAll() {location.reload();}
+function resetAll(){location.reload();}
 </script>
+
 </body>
 </html>
