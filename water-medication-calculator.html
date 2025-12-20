@@ -19,8 +19,12 @@
         --pos-weight-right: 12%;
         --pos-env-top: 33%;
         --pos-env-left: 8%;
+
+        /* 默认宽度 */
         --default-label-width: 80px;
         --default-input-width: 80px;
+
+        /* 垂直标签字体大小自定义 */
         --vertical-label-font-size: 14px;
     }
     body {
@@ -33,31 +37,36 @@
     }
     .tabs {
         display: flex;
-        justify-content: center;
         border-bottom: 2px solid #0066cc;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-        gap: 10px;
+        margin-bottom: 15px;
     }
-    .tab {
-        padding: 8px 25px;
-        cursor: pointer;
-        font-weight: bold;
-        color: #0066cc;
-        background: #e6f0ff;
-        border: 2px solid #0066cc;
-        border-radius: 20px;
-        transition: all 0.3s ease;
-    }
-    .tab.active {
-        background: #0066cc;
-        color: #fff;
-    }
-    .tab:hover {
-        background: #d0e4ff;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(0,102,204,0.2);
-    }
+	.tab {
+		padding: 8px 25px;           /* 略增大内边距，让按钮更大气 */
+		cursor: pointer;
+		font-weight: bold;
+		color: #0066cc;
+		background: #e6f0ff;
+		border: 2px solid #0066cc;    /* 加粗边框，更突出 */
+		border-radius: 20px;          /* === 关键：大圆角，实现圆润胶囊效果 === */
+		margin-right: 10px;           /* 按钮间距稍大 */
+		transition: all 0.3s ease;    /* 添加平滑过渡动画 */
+	}
+
+	.tab.active {
+		background: #0066cc;
+		color: #fff;
+		border-radius: 20px;          /* 激活状态也保持圆润 */
+	}
+
+	.tab:hover {
+		background: #d0e4ff;          /* 悬停时浅色反馈 */
+		transform: translateY(-2px);  /* 轻微上浮，更有立体感 */
+		box-shadow: 0 4px 10px rgba(0,102,204,0.2);
+	}
+
+	.tab.active:hover {
+		background: #0055aa;          /* 激活状态悬停稍深色 */
+	}
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     .container {
@@ -67,18 +76,14 @@
     }
     .diagram {
         position: relative;
-        min-height: 700px;
+        height: 700px;
         background: url('https://raw.githubusercontent.com/Vopell/wellhope/main/image.jpg') no-repeat center center;
         background-size: contain;
     }
-    /* 输入组通用样式 */
-    .input-group, .input-group-vertical, .env-group {
-        background: rgba(255,255,255,0.9);
-        padding: 12px;
-        border-radius: 10px;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
+
+    /* 横向输入组（通用，包括环境因素） */
     .input-group {
+        position: absolute;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -87,10 +92,11 @@
     .input-group label {
         font-weight: bold;
         white-space: nowrap;
-        min-width: var(--default-label-width);
+        width: var(--label-width, var(--default-label-width));
     }
-    .input-group input, .input-group select {
-        flex: 1;
+    .input-group input,
+    .input-group select {
+        width: var(--input-width, var(--default-input-width));
         height: 30px;
         padding: 4px 8px;
         font-size: 14px;
@@ -103,15 +109,19 @@
         color: #333;
         min-width: 40px;
     }
+
+    /* 垂直输入组（总耗水量、加药器、浓度、剂量） */
     .input-group-vertical {
+        position: absolute;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 4px;
     }
     .input-group-vertical label {
         font-weight: bold;
-        text-align: center;
-        font-size: var(--vertical-label-font-size);
+        width: 100%;
+		font-size: var(--vertical-label-font-size);
+		margin-left: var(--vertical-label-offset, 0px);  /* 单独微调标签 */
     }
     .input-group-vertical .input-wrapper {
         display: flex;
@@ -120,87 +130,141 @@
         justify-content: center;
     }
     .input-group-vertical .input-wrapper input {
-        flex: 1;
+        width: var(--input-width, var(--default-input-width));
         height: 30px;
         padding: 4px 8px;
+        font-size: 14px;
+        border: 1px solid #999;
+        border-radius: 4px;
+        box-sizing: border-box;
     }
+    .input-group-vertical .input-wrapper .unit {
+        font-weight: bold;
+        color: #333;
+        min-width: 40px;
+    }
+
     input.enabled, select.enabled { background: #ffff99; }
-    input.disabled, select.disabled { background: #ffd6d6 !important; color: #666; pointer-events: none; }
+    input.disabled, select.disabled {
+        background: #ffd6d6 !important;
+        color: #666;
+        pointer-events: none;
+    }
+
+    /* 环境因素面板 - 使用横向布局 */
     .env-group {
+        position: absolute;
+        top: var(--pos-env-top);
+        left: var(--pos-env-left);
+        width: 160px;                 /* 适当加宽以容纳横向布局 */
+        padding: 12px;
+        background: #f9f9f9;
+        border: 2px solid #aaa;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         display: none;
+        display: flex;                 /* 改为 flex 横向排列两个选项 */
         flex-direction: column;
         gap: 18px;
     }
     .env-group .input-group {
-        justify-content: space-between;
+        position: static;
+        margin: 0;
     }
-    .env-group select { width: 120px; }
-    /* 桌面端绝对定位（保持您原来的完美布局） */
-    #box-water { position: absolute; top: var(--pos-water-top); left: var(--pos-water-left); width: 240px; }
-    #box-dispenser { position: absolute; top: var(--pos-dispenser-top); left: var(--pos-dispenser-left); width: 220px; }
-    #box-conc { position: absolute; top: var(--pos-conc-top); left: var(--pos-conc-left); width: 220px; }
-    #box-dosage { position: absolute; top: var(--pos-dosage-top); left: var(--pos-dosage-left); width: 220px; }
-    #box-num { position: absolute; top: var(--pos-num-top); right: var(--pos-num-right); width: 220px; }
-    #box-weight { position: absolute; top: var(--pos-weight-top); right: var(--pos-weight-right); width: 220px; }
-    .env-group { position: absolute; top: var(--pos-env-top); left: var(--pos-env-left); width: 260px; }
-    .reset-btn {
-        position: absolute;
-        top: 2%;
-        left: 7%;
-        padding: 12px 28px;
-        background: linear-gradient(135deg, #ffa500, #ff8c00);
-        color: #fff;
-        border: none;
-        border-radius: 30px;
-        cursor: pointer;
-        font-size: 16px;
-        font-weight: bold;
-        z-index: 20;
-        box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4);
-        transition: all 0.3s ease;
-        display: flex;
-        align-items: center;
-        gap: 8px;
+	.env-group select {
+        width: 120px; /* 下拉框宽度固定，更美观 */
     }
-    .reset-btn::before { content: "↻"; font-size: 18px; }
-    .reset-btn:hover {
-        background: #e67e00;
-        transform: translateY(-3px);
-        box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6);
-    }
+    /* 输入框位置 */
+    #box-water { --label-width: 100px; --input-width: 80px; top: 20%; left: 10%;--vertical-label-offset: 15px; }
+    #box-dispenser { --label-width: 100px; --input-width: 60px; top: var(--pos-dispenser-top); left: var(--pos-dispenser-left); --vertical-label-offset: -6px}
+    #box-conc { --label-width: 110px; --input-width: 50px; top: 18%; right:56%;--vertical-label-offset: -8px; }
+    #box-dosage { --label-width: 90px; --input-width: 60px; top: 6%; right: 20%; }
+    #box-num { --label-width: 60px; --input-width: 80px; top: 45%; right: 13%; }
+    #box-weight { --label-width: 60px; --input-width: 80px; top: 52%; right: 13%; }
+
+	.reset-btn {
+		position: absolute;
+		top: 2%;
+		left: 7%;
+		padding: 12px 28px;                    /* 舒适内边距 */
+		background: linear-gradient(135deg, #ffa500, #ff8c00);                
+		color: #fff;                           /* 白色文字，高对比 */
+		border: none;
+		border-radius: 30px;                   /* 胶囊圆角 */
+		cursor: pointer;
+		font-size: 16px;
+		font-weight: bold;
+		z-index: 20;
+		box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4); /* 橙色阴影，立体突出 */
+		transition: all 0.3s ease;
+		letter-spacing: 0.8px;
+		display: flex;                         /* 新增：flex布局容纳图标 */
+		align-items: center;
+		gap: 8px;                              /* 图标与文字间距 */
+	}
+
+	.reset-btn::before {
+		content: "↻";                          /* 刷新图标 */
+		font-size: 18px;                       /* 图标稍大 */
+		display: inline-block;
+	}
+
+	.reset-btn:hover {
+		background: #e67e00;                   /* 悬停稍深橙 */
+		transform: translateY(-3px);
+		box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6);
+	}
+
+	.reset-btn:active {
+		transform: translateY(-1px);
+	}
     .bucket-label {
         position: absolute;
         top: 60%;
         left: 30%;
+		transform: translateY(-50%);
         text-align: center;
         font-weight: bold;
         visibility: hidden;
         opacity: 0;
-        transition: opacity 0.5s ease;
+        transition: opacity 0.5s ease, visibility 0.5s;
     }
-    .bucket-label.visible { visibility: visible; opacity: 1; }
-    #product { font-size: 30px; color: #d00; margin-bottom: 50px; }
-    #stock { font-size: 30px; color: #0066cc; }
-    .result {
-        width: calc(100% - 40px);
-        max-width: 1046px;
-        margin: 0 auto;
-        padding: 24px;
-        background: rgba(0, 102, 204, 0.9);
-        color: #fff;
-        font-size: 24px;
-        text-align: center;
-        border-radius: 8px;
-        box-sizing: border-box;
-        position: absolute;
-        left: 50%;
-        bottom: 20px;
-        transform: translateX(-50%);
-        z-index: 15;
+    .bucket-label.visible {
+        visibility: visible;
+        opacity: 1;
     }
+    #product {
+        font-size: 30px;
+        color: #d00;
+        margin-bottom: 50px;
+    }
+    #stock {
+        font-size: 30px;
+        color: #0066cc;
+    }
+
+	.result {
+		width: calc(100% - 40px);     /* 与 body padding 一致，左右各留20px间隙 */
+		max-width: 1046px;            /* 与 .container 一致，确保不超过背景图最大宽度 */
+		margin: 0 auto;               /* 水平居中 */
+		padding: 24px;
+		background: rgba(0, 102, 204, 0.9);
+		color: #fff;
+		font-size: 24px;
+		text-align: center;
+		border-radius: 8px;
+		box-sizing: border-box;
+		box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+
+		/* 关键：浮动在图片上方 */
+		position: absolute;
+		left: 50%;                    /* 从中心开始 */
+		bottom: 3px;                 /* 距离图片底部20px（可调整为30px、40px等） */
+		transform: translateX(-50%);  /* 精确水平居中 */
+		z-index: 15;                  /* 高于图片 */
+	}
+
     .instructions {
-        max-width: 1000px;
-        margin: 0 auto;
         background: #fff;
         border: 1px solid #ccc;
         padding: 30px;
@@ -208,41 +272,14 @@
         border-radius: 8px;
         font-size: 16px;
     }
-    /* 移动端响应式布局 */
+
     @media (max-width: 768px) {
-        .diagram {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
-            padding: 100px 20px 160px;
-            min-height: auto;
-        }
-        .input-group, .input-group-vertical, .env-group {
-            position: static;
-            width: 100%;
-            max-width: 340px;
-        }
-        .env-group { display: flex; }
-        .reset-btn {
-            position: fixed;
-            top: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            padding: 10px 24px;
-            font-size: 15px;
-        }
-        .result {
-            bottom: 10px;
-            font-size: 20px;
-            padding: 18px;
-            width: calc(100% - 20px);
-        }
-        .bucket-label {
-            position: static;
-            transform: none;
-            margin: 20px 0;
-        }
+        .diagram { height: 500px; background-size: cover; }
+        .input-group, .env-group, .input-group-vertical { transform: scale(0.85); transform-origin: top left; }
+        .bucket-label { font-size: 22px; }
+        .result { font-size: 20px; padding: 18px; }
+        .reset-btn { top: 3%; left: 3%; padding: 10px 18px; font-size: 15px; }
+        .env-group { width: 220px; }
     }
 </style>
 </head>
@@ -257,6 +294,7 @@
         <div class="diagram">
             <button class="reset-btn" onclick="resetAll()">清零</button>
 
+            <!-- 总耗水量 -->
             <div class="input-group-vertical" id="box-water">
                 <label for="water">总耗水量</label>
                 <div class="input-wrapper">
@@ -265,6 +303,7 @@
                 </div>
             </div>
 
+            <!-- 环境因素面板：标签与下拉框平行显示 -->
             <div class="env-group" id="env-group">
                 <div class="input-group">
                     <label for="temp">温度</label>
@@ -284,6 +323,7 @@
                 </div>
             </div>
 
+            <!-- 加药器设置 -->
             <div class="input-group-vertical" id="box-dispenser">
                 <label for="dispenser">加药器设置</label>
                 <div class="input-wrapper">
@@ -292,6 +332,7 @@
                 </div>
             </div>
 
+            <!-- 产品有效浓度 -->
             <div class="input-group-vertical" id="box-conc">
                 <label for="conc">产品有效浓度</label>
                 <div class="input-wrapper">
@@ -300,6 +341,7 @@
                 </div>
             </div>
 
+            <!-- 给药剂量 -->
             <div class="input-group-vertical" id="box-dosage">
                 <label for="dosage">给药剂量</label>
                 <div class="input-wrapper">
@@ -308,18 +350,21 @@
                 </div>
             </div>
 
+            <!-- 牲畜数量 -->
             <div class="input-group" id="box-num">
                 <label for="num">牲畜数量</label>
                 <input type="number" id="num" min="1">
                 <span class="unit">头</span>
             </div>
 
+            <!-- 平均体重 -->
             <div class="input-group" id="box-weight">
                 <label for="weight">平均体重</label>
                 <input type="number" id="weight" min="0" step="0.1" class="disabled">
                 <span class="unit">kg</span>
             </div>
 
+            <!-- 母液桶显示 -->
             <div class="bucket-label" id="bucket-label">
                 <div id="product"></div>
                 <div id="stock"></div>
@@ -371,8 +416,11 @@
 
     function resetAll() {
         Object.values(inputs).forEach(el => {
-            if (el.tagName === 'SELECT') el.selectedIndex = 0;
-            else el.value = '';
+            if (el.tagName === 'SELECT') {
+                el.selectedIndex = 0;
+            } else {
+                el.value = '';
+            }
             setEnabled(el, false);
         });
         setEnabled(inputs.num, true);
@@ -389,15 +437,17 @@
         });
     });
 
-    inputs.num.addEventListener('input', () => {
-        setEnabled(inputs.weight, inputs.num.value > 0);
-        if (inputs.weight.value > 0) estimateWater();
-    });
+	inputs.num.addEventListener('input', () => {
+		setEnabled(inputs.weight, inputs.num.value > 0);
+		if (inputs.weight.value > 0) {
+			estimateWater();
+		}
+	});
 
     inputs.weight.addEventListener('input', () => {
         if (inputs.weight.value > 0) {
             [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el => setEnabled(el, true));
-            $('env-group').style.display = 'flex';
+            $('env-group').style.display = 'block';
             setEnabled(inputs.temp, true);
             setEnabled(inputs.waste, true);
             inputs.temp.selectedIndex = 0;
@@ -409,7 +459,9 @@
     inputs.temp.addEventListener('change', () => { estimateWater(); calculate(); });
     inputs.waste.addEventListener('change', () => { estimateWater(); calculate(); });
 
-    [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el => el.addEventListener('input', calculate));
+    [inputs.water, inputs.dispenser, inputs.conc, inputs.dosage].forEach(el =>
+        el.addEventListener('input', calculate)
+    );
 
     function estimateWater() {
         if (!inputs.num.value || !inputs.weight.value) return;
