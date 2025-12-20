@@ -2,6 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>饮水加药计算器</title>
 <style>
     :root {
@@ -34,39 +35,40 @@
         font-family: Arial, Helvetica, sans-serif;
         min-height: 100vh;
         box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
     }
     .tabs {
         display: flex;
         border-bottom: 2px solid #0066cc;
         margin-bottom: 15px;
+        flex-wrap: wrap;
     }
-	.tab {
-		padding: 8px 25px;           /* 略增大内边距，让按钮更大气 */
-		cursor: pointer;
-		font-weight: bold;
-		color: #0066cc;
-		background: #e6f0ff;
-		border: 2px solid #0066cc;    /* 加粗边框，更突出 */
-		border-radius: 20px;          /* === 关键：大圆角，实现圆润胶囊效果 === */
-		margin-right: 10px;           /* 按钮间距稍大 */
-		transition: all 0.3s ease;    /* 添加平滑过渡动画 */
-	}
-
-	.tab.active {
-		background: #0066cc;
-		color: #fff;
-		border-radius: 20px;          /* 激活状态也保持圆润 */
-	}
-
-	.tab:hover {
-		background: #d0e4ff;          /* 悬停时浅色反馈 */
-		transform: translateY(-2px);  /* 轻微上浮，更有立体感 */
-		box-shadow: 0 4px 10px rgba(0,102,204,0.2);
-	}
-
-	.tab.active:hover {
-		background: #0055aa;          /* 激活状态悬停稍深色 */
-	}
+    .tab {
+        padding: 8px 25px;
+        cursor: pointer;
+        font-weight: bold;
+        color: #0066cc;
+        background: #e6f0ff;
+        border: 2px solid #0066cc;
+        border-radius: 20px;
+        margin-right: 10px;
+        margin-bottom: 8px;
+        transition: all 0.3s ease;
+        font-size: 16px;
+    }
+    .tab.active {
+        background: #0066cc;
+        color: #fff;
+        border-radius: 20px;
+    }
+    .tab:hover {
+        background: #d0e4ff;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,102,204,0.2);
+    }
+    .tab.active:hover {
+        background: #0055aa;
+    }
     .tab-content { display: none; }
     .tab-content.active { display: block; }
     .container {
@@ -120,8 +122,8 @@
     .input-group-vertical label {
         font-weight: bold;
         width: 100%;
-		font-size: var(--vertical-label-font-size);
-		margin-left: var(--vertical-label-offset, 0px);  /* 单独微调标签 */
+        font-size: var(--vertical-label-font-size);
+        margin-left: var(--vertical-label-offset, 0px);
     }
     .input-group-vertical .input-wrapper {
         display: flex;
@@ -151,19 +153,18 @@
         pointer-events: none;
     }
 
-    /* 环境因素面板 - 使用横向布局 */
+    /* 环境因素面板 */
     .env-group {
         position: absolute;
         top: var(--pos-env-top);
         left: var(--pos-env-left);
-        width: 160px;                 /* 适当加宽以容纳横向布局 */
+        width: 160px;
         padding: 12px;
         background: #f9f9f9;
         border: 2px solid #aaa;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        display: none;
-        display: flex;                 /* 改为 flex 横向排列两个选项 */
+        display: flex;
         flex-direction: column;
         gap: 18px;
     }
@@ -171,58 +172,89 @@
         position: static;
         margin: 0;
     }
-	.env-group select {
-        width: 120px; /* 下拉框宽度固定，更美观 */
+    .env-group select {
+        width: 120px;
     }
+    
     /* 输入框位置 */
-    #box-water { --label-width: 100px; --input-width: 80px; top: 20%; left: 10%;--vertical-label-offset: 15px; }
-    #box-dispenser { --label-width: 100px; --input-width: 60px; top: var(--pos-dispenser-top); left: var(--pos-dispenser-left); --vertical-label-offset: -6px}
-    #box-conc { --label-width: 110px; --input-width: 50px; top: 18%; right:56%;--vertical-label-offset: -8px; }
-    #box-dosage { --label-width: 90px; --input-width: 60px; top: 6%; right: 20%; }
-    #box-num { --label-width: 60px; --input-width: 80px; top: 45%; right: 13%; }
-    #box-weight { --label-width: 60px; --input-width: 80px; top: 52%; right: 13%; }
+    #box-water { 
+        --label-width: 100px; 
+        --input-width: 80px; 
+        top: var(--pos-water-top); 
+        left: var(--pos-water-left); 
+        --vertical-label-offset: 15px; 
+    }
+    #box-dispenser { 
+        --label-width: 100px; 
+        --input-width: 60px; 
+        top: var(--pos-dispenser-top); 
+        left: var(--pos-dispenser-left); 
+        --vertical-label-offset: -6px;
+    }
+    #box-conc { 
+        --label-width: 110px; 
+        --input-width: 50px; 
+        top: var(--pos-conc-top); 
+        left: var(--pos-conc-left);
+        --vertical-label-offset: -8px; 
+    }
+    #box-dosage { 
+        --label-width: 90px; 
+        --input-width: 60px; 
+        top: var(--pos-dosage-top); 
+        left: var(--pos-dosage-left); 
+    }
+    #box-num { 
+        --label-width: 60px; 
+        --input-width: 80px; 
+        top: var(--pos-num-top); 
+        right: var(--pos-num-right); 
+    }
+    #box-weight { 
+        --label-width: 60px; 
+        --input-width: 80px; 
+        top: var(--pos-weight-top); 
+        right: var(--pos-weight-right); 
+    }
 
-	.reset-btn {
-		position: absolute;
-		top: 2%;
-		left: 7%;
-		padding: 12px 28px;                    /* 舒适内边距 */
-		background: linear-gradient(135deg, #ffa500, #ff8c00);                
-		color: #fff;                           /* 白色文字，高对比 */
-		border: none;
-		border-radius: 30px;                   /* 胶囊圆角 */
-		cursor: pointer;
-		font-size: 16px;
-		font-weight: bold;
-		z-index: 20;
-		box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4); /* 橙色阴影，立体突出 */
-		transition: all 0.3s ease;
-		letter-spacing: 0.8px;
-		display: flex;                         /* 新增：flex布局容纳图标 */
-		align-items: center;
-		gap: 8px;                              /* 图标与文字间距 */
-	}
-
-	.reset-btn::before {
-		content: "↻";                          /* 刷新图标 */
-		font-size: 18px;                       /* 图标稍大 */
-		display: inline-block;
-	}
-
-	.reset-btn:hover {
-		background: #e67e00;                   /* 悬停稍深橙 */
-		transform: translateY(-3px);
-		box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6);
-	}
-
-	.reset-btn:active {
-		transform: translateY(-1px);
-	}
+    .reset-btn {
+        position: absolute;
+        top: 2%;
+        left: 7%;
+        padding: 12px 28px;
+        background: linear-gradient(135deg, #ffa500, #ff8c00);
+        color: #fff;
+        border: none;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: bold;
+        z-index: 20;
+        box-shadow: 0 6px 18px rgba(255, 140, 0, 0.4);
+        transition: all 0.3s ease;
+        letter-spacing: 0.8px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .reset-btn::before {
+        content: "↻";
+        font-size: 18px;
+        display: inline-block;
+    }
+    .reset-btn:hover {
+        background: #e67e00;
+        transform: translateY(-3px);
+        box-shadow: 0 10px 25px rgba(255, 140, 0, 0.6);
+    }
+    .reset-btn:active {
+        transform: translateY(-1px);
+    }
     .bucket-label {
         position: absolute;
         top: 60%;
         left: 30%;
-		transform: translateY(-50%);
+        transform: translateY(-50%);
         text-align: center;
         font-weight: bold;
         visibility: hidden;
@@ -242,28 +274,24 @@
         font-size: 30px;
         color: #0066cc;
     }
-
-	.result {
-		width: calc(100% - 40px);     /* 与 body padding 一致，左右各留20px间隙 */
-		max-width: 1046px;            /* 与 .container 一致，确保不超过背景图最大宽度 */
-		margin: 0 auto;               /* 水平居中 */
-		padding: 24px;
-		background: rgba(0, 102, 204, 0.9);
-		color: #fff;
-		font-size: 24px;
-		text-align: center;
-		border-radius: 8px;
-		box-sizing: border-box;
-		box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-
-		/* 关键：浮动在图片上方 */
-		position: absolute;
-		left: 50%;                    /* 从中心开始 */
-		bottom: 3px;                 /* 距离图片底部20px（可调整为30px、40px等） */
-		transform: translateX(-50%);  /* 精确水平居中 */
-		z-index: 15;                  /* 高于图片 */
-	}
-
+    .result {
+        width: calc(100% - 40px);
+        max-width: 1046px;
+        margin: 0 auto;
+        padding: 24px;
+        background: rgba(0, 102, 204, 0.9);
+        color: #fff;
+        font-size: 24px;
+        text-align: center;
+        border-radius: 8px;
+        box-sizing: border-box;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+        position: absolute;
+        left: 50%;
+        bottom: 3px;
+        transform: translateX(-50%);
+        z-index: 15;
+    }
     .instructions {
         background: #fff;
         border: 1px solid #ccc;
@@ -273,13 +301,342 @@
         font-size: 16px;
     }
 
+    /* 平板设备优化 */
+    @media (max-width: 1024px) {
+        :root {
+            --vertical-label-font-size: 13px;
+            --default-label-width: 70px;
+            --default-input-width: 70px;
+        }
+        
+        .diagram { 
+            height: 600px;
+            background-size: contain;
+        }
+        
+        .reset-btn {
+            top: 1.5%;
+            left: 5%;
+            padding: 10px 22px;
+            font-size: 15px;
+        }
+        
+        .result {
+            font-size: 20px;
+            padding: 18px;
+            bottom: 2px;
+        }
+        
+        #product, #stock {
+            font-size: 26px;
+        }
+    }
+
+    /* 移动端优化 - 主要修改部分 */
     @media (max-width: 768px) {
-        .diagram { height: 500px; background-size: cover; }
-        .input-group, .env-group, .input-group-vertical { transform: scale(0.85); transform-origin: top left; }
-        .bucket-label { font-size: 22px; }
-        .result { font-size: 20px; padding: 18px; }
-        .reset-btn { top: 3%; left: 3%; padding: 10px 18px; font-size: 15px; }
-        .env-group { width: 220px; }
+        body {
+            padding: 10px;
+        }
+        
+        /* 重新调整位置变量 */
+        :root {
+            --pos-water-top: 16%;
+            --pos-water-left: 4%;
+            --pos-dispenser-top: 4%;
+            --pos-dispenser-left: 34%;
+            --pos-conc-top: 16%;
+            --pos-conc-left: 65%;
+            --pos-dosage-top: 4%;
+            --pos-dosage-left: 65%;
+            --pos-num-top: 45%;
+            --pos-num-right: 8%;
+            --pos-weight-top: 53%;
+            --pos-weight-right: 8%;
+            --pos-env-top: 28%;
+            --pos-env-left: 4%;
+            
+            /* 移动端字体调整 */
+            --vertical-label-font-size: 11px;
+            --default-label-width: 60px;
+            --default-input-width: 60px;
+        }
+        
+        .tabs {
+            justify-content: center;
+        }
+        
+        .tab {
+            padding: 8px 20px;
+            font-size: 15px;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        
+        .diagram { 
+            height: 500px; 
+            background-size: cover;
+            background-position: center top;
+        }
+        
+        /* 取消缩放，使用新位置 */
+        .input-group, .input-group-vertical, .env-group {
+            transform: none !important;
+            transform-origin: unset !important;
+        }
+        
+        /* 增大触摸区域 */
+        .input-group-vertical .input-wrapper input,
+        .input-group input,
+        .env-group select {
+            min-height: 40px;
+            font-size: 16px; /* iOS防缩放 */
+        }
+        
+        /* 每个输入框组单独微调 */
+        #box-water { 
+            top: var(--pos-water-top) !important; 
+            left: var(--pos-water-left) !important;
+            --input-width: 60px;
+            --vertical-label-offset: 0px;
+        }
+        
+        #box-dispenser { 
+            top: var(--pos-dispenser-top) !important; 
+            left: var(--pos-dispenser-left) !important;
+            --input-width: 50px;
+            --vertical-label-offset: 0px;
+        }
+        
+        #box-conc { 
+            top: var(--pos-conc-top) !important; 
+            left: var(--pos-conc-left) !important;
+            --input-width: 50px;
+            --vertical-label-offset: 0px;
+        }
+        
+        #box-dosage { 
+            top: var(--pos-dosage-top) !important; 
+            left: var(--pos-dosage-left) !important;
+            --input-width: 55px;
+        }
+        
+        #box-num { 
+            top: var(--pos-num-top) !important; 
+            right: var(--pos-num-right) !important;
+            --input-width: 60px;
+        }
+        
+        #box-weight { 
+            top: var(--pos-weight-top) !important; 
+            right: var(--pos-weight-right) !important;
+            --input-width: 60px;
+        }
+        
+        .env-group {
+            top: var(--pos-env-top) !important;
+            left: var(--pos-env-left) !important;
+            width: 150px;
+            padding: 10px;
+            gap: 12px;
+        }
+        
+        .env-group select {
+            width: 100px;
+        }
+        
+        .reset-btn {
+            top: 1% !important;
+            left: 50% !important;
+            transform: translateX(-50%);
+            padding: 10px 24px;
+            font-size: 15px;
+            z-index: 100;
+            min-height: 44px;
+            min-width: 120px;
+        }
+        
+        .bucket-label {
+            top: 65%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            text-align: center;
+        }
+        
+        #product, #stock {
+            font-size: 22px;
+        }
+        
+        .result {
+            width: 95%;
+            font-size: 18px;
+            padding: 16px;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            position: absolute;
+        }
+        
+        .instructions {
+            padding: 20px;
+            font-size: 15px;
+        }
+    }
+    
+    /* 小屏幕手机进一步优化 */
+    @media (max-width: 480px) {
+        :root {
+            --pos-water-top: 14%;
+            --pos-water-left: 3%;
+            --pos-dispenser-top: 3%;
+            --pos-dispenser-left: 32%;
+            --pos-conc-top: 14%;
+            --pos-conc-left: 63%;
+            --pos-dosage-top: 3%;
+            --pos-dosage-left: 63%;
+            --pos-num-top: 44%;
+            --pos-num-right: 5%;
+            --pos-weight-top: 52%;
+            --pos-weight-right: 5%;
+            --pos-env-top: 26%;
+            --pos-env-left: 3%;
+            
+            --default-input-width: 55px;
+            --vertical-label-font-size: 10px;
+        }
+        
+        .diagram {
+            height: 450px;
+        }
+        
+        .input-group-vertical .input-wrapper input,
+        .input-group input {
+            height: 35px;
+            font-size: 15px;
+            padding: 6px 8px;
+        }
+        
+        .input-group-vertical label {
+            line-height: 1.2;
+        }
+        
+        .reset-btn {
+            padding: 8px 20px;
+            font-size: 14px;
+        }
+        
+        .result {
+            font-size: 16px;
+            padding: 14px;
+            bottom: 8px;
+        }
+        
+        .bucket-label {
+            top: 68%;
+        }
+        
+        #product, #stock {
+            font-size: 20px;
+        }
+        
+        .env-group {
+            width: 140px;
+        }
+    }
+    
+    /* 横屏优化 */
+    @media (max-height: 500px) and (orientation: landscape) {
+        body {
+            padding: 5px;
+        }
+        
+        .diagram {
+            height: 300px;
+            background-size: contain;
+            background-repeat: no-repeat;
+        }
+        
+        :root {
+            --pos-water-top: 12%;
+            --pos-water-left: 8%;
+            --pos-dispenser-top: 3%;
+            --pos-dispenser-left: 40%;
+            --pos-conc-top: 12%;
+            --pos-conc-left: 70%;
+            --pos-dosage-top: 3%;
+            --pos-dosage-left: 70%;
+            --pos-num-top: 30%;
+            --pos-num-right: 15%;
+            --pos-weight-top: 38%;
+            --pos-weight-right: 15%;
+            --pos-env-top: 25%;
+            --pos-env-left: 8%;
+        }
+        
+        .result {
+            font-size: 14px;
+            padding: 10px;
+            bottom: 5px;
+        }
+        
+        .reset-btn {
+            top: 0.5%;
+            padding: 6px 14px;
+            font-size: 13px;
+        }
+        
+        .bucket-label {
+            top: 70%;
+        }
+    }
+    
+    /* 备用方案：如果背景图在移动端显示不佳，切换为纯表单布局 */
+    @media (max-width: 768px) {
+        .diagram.mobile-alt-layout {
+            background-image: none;
+            height: auto;
+            min-height: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-top: 20px;
+        }
+        
+        .diagram.mobile-alt-layout .input-group-vertical,
+        .diagram.mobile-alt-layout .input-group,
+        .diagram.mobile-alt-layout .env-group {
+            position: relative !important;
+            top: auto !important;
+            left: auto !important;
+            right: auto !important;
+            margin: 10px 0;
+            width: 90%;
+        }
+        
+        .diagram.mobile-alt-layout .reset-btn {
+            position: relative;
+            margin: 20px auto;
+            left: auto;
+            transform: none;
+        }
+        
+        .diagram.mobile-alt-layout .bucket-label {
+            position: relative;
+            margin: 30px auto;
+            top: auto;
+            left: auto;
+            transform: none;
+        }
+        
+        .diagram.mobile-alt-layout .result {
+            position: relative;
+            margin: 20px auto;
+            bottom: auto;
+            left: auto;
+            transform: none;
+            width: 90%;
+        }
     }
 </style>
 </head>
@@ -291,14 +648,14 @@
 
 <div class="tab-content active" id="sim">
     <div class="container">
-        <div class="diagram">
+        <div class="diagram" id="diagram">
             <button class="reset-btn" onclick="resetAll()">清零</button>
 
             <!-- 总耗水量 -->
             <div class="input-group-vertical" id="box-water">
                 <label for="water">总耗水量</label>
                 <div class="input-wrapper">
-                    <input type="number" id="water" min="0" class="disabled">
+                    <input type="number" id="water" min="0" class="disabled" inputmode="decimal">
                     <span class="unit">升/天</span>
                 </div>
             </div>
@@ -327,7 +684,7 @@
             <div class="input-group-vertical" id="box-dispenser">
                 <label for="dispenser">加药器设置</label>
                 <div class="input-wrapper">
-                    <input type="number" id="dispenser" min="0" max="100" step="0.1" class="disabled">
+                    <input type="number" id="dispenser" min="0" max="100" step="0.1" class="disabled" inputmode="decimal">
                     <span class="unit">%</span>
                 </div>
             </div>
@@ -336,7 +693,7 @@
             <div class="input-group-vertical" id="box-conc">
                 <label for="conc">产品有效浓度</label>
                 <div class="input-wrapper">
-                    <input type="number" id="conc" min="0" max="100" step="0.1" class="disabled">
+                    <input type="number" id="conc" min="0" max="100" step="0.1" class="disabled" inputmode="decimal">
                     <span class="unit">%</span>
                 </div>
             </div>
@@ -345,7 +702,7 @@
             <div class="input-group-vertical" id="box-dosage">
                 <label for="dosage">给药剂量</label>
                 <div class="input-wrapper">
-                    <input type="number" id="dosage" min="0" step="0.1" class="disabled">
+                    <input type="number" id="dosage" min="0" step="0.1" class="disabled" inputmode="decimal">
                     <span class="unit">mg/kg</span>
                 </div>
             </div>
@@ -353,14 +710,14 @@
             <!-- 牲畜数量 -->
             <div class="input-group" id="box-num">
                 <label for="num">牲畜数量</label>
-                <input type="number" id="num" min="1">
+                <input type="number" id="num" min="1" inputmode="numeric">
                 <span class="unit">头</span>
             </div>
 
             <!-- 平均体重 -->
             <div class="input-group" id="box-weight">
                 <label for="weight">平均体重</label>
-                <input type="number" id="weight" min="0" step="0.1" class="disabled">
+                <input type="number" id="weight" min="0" step="0.1" class="disabled" inputmode="decimal">
                 <span class="unit">kg</span>
             </div>
 
@@ -379,13 +736,14 @@
     <div class="instructions">
         该计算器用于计算通过加药器向饮水中加药时所需加入的药量。<br><br>
         计算原液使用量时，在相应的方格中输入数据，黄色背景表示可输入。<br><br>
-        如果您不清楚畜群具体的饮水消耗量，可以只填写牲畜数量和平均活体重，系统会根据标准估算饮水量（可进一步通过“温度”和“浪费水量”选项调整估算值）。<br><br>
+        如果您不清楚畜群具体的饮水消耗量，可以只填写牲畜数量和平均活体重，系统会根据标准估算饮水量（可进一步通过"温度"和"浪费水量"选项调整估算值）。<br><br>
         根据第一天实际原液消耗量，即可反推真实饮水量并优化后续配药。
     </div>
 </div>
 
 <script>
     const $ = id => document.getElementById(id);
+    const diagram = $('diagram');
     const inputs = {
         num: $('num'),
         weight: $('weight'),
@@ -402,6 +760,24 @@
         result: $('result'),
         bucketLabel: $('bucket-label')
     };
+
+    // 检测移动设备并应用备用布局
+    function checkMobileLayout() {
+        if (window.innerWidth <= 768) {
+            // 可选：在非常小的设备上使用备用布局
+            if (window.innerWidth <= 360) {
+                diagram.classList.add('mobile-alt-layout');
+            } else {
+                diagram.classList.remove('mobile-alt-layout');
+            }
+        } else {
+            diagram.classList.remove('mobile-alt-layout');
+        }
+    }
+    
+    // 初始检测和窗口大小变化检测
+    window.addEventListener('load', checkMobileLayout);
+    window.addEventListener('resize', checkMobileLayout);
 
     function setEnabled(el, enabled) {
         el.disabled = !enabled;
@@ -431,18 +807,33 @@
         outputs.result.textContent = '请按顺序输入参数';
     }
 
+    // 优化输入处理，防止无效字符
     ['num', 'weight', 'water', 'dispenser', 'conc', 'dosage'].forEach(key => {
         inputs[key].addEventListener('input', function () {
             this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\./g, '$1');
         });
     });
 
-	inputs.num.addEventListener('input', () => {
-		setEnabled(inputs.weight, inputs.num.value > 0);
-		if (inputs.weight.value > 0) {
-			estimateWater();
-		}
-	});
+    // 为移动端优化焦点和滚动行为
+    Object.values(inputs).forEach(input => {
+        if (input.tagName === 'INPUT') {
+            input.addEventListener('focus', function() {
+                // 防止iOS自动缩放
+                if (window.innerWidth <= 768) {
+                    setTimeout(() => {
+                        this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }, 300);
+                }
+            });
+        }
+    });
+
+    inputs.num.addEventListener('input', () => {
+        setEnabled(inputs.weight, inputs.num.value > 0);
+        if (inputs.weight.value > 0) {
+            estimateWater();
+        }
+    });
 
     inputs.weight.addEventListener('input', () => {
         if (inputs.weight.value > 0) {
@@ -515,6 +906,9 @@
         };
     });
 
+    // 添加触摸事件支持
+    document.addEventListener('touchstart', function() {}, {passive: true});
+    
     resetAll();
 </script>
 </body>
